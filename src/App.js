@@ -1,24 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import React from "react";
+import HomePage from "./components/Presentation/HomePage";
+import Switch from "react-bootstrap/Switch";
+import {Route} from 'react-router-dom';
+import LoginPage from "./components/Presentation/LoginPage";
+import NotFoundPage from "./components/utils/NotFoundPage";
+import EmployeeDashboard from "./components/Employee/EmployeeDashboard";
+import PrivateEmployeeRoute from "./components/utils/PrivateEmployeeRoute"
+import NavBar from "./components/utils/NavBar";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <React.Fragment>
+            <Switch>
+              <Route path="/" exact component={HomePage} />
+              <Route path="/login" component={LoginPage}/>
+
+              <PrivateEmployeeRoute path="/employeedashboard" component={EmployeeDashboard}/>
+
+              <Route path="/not-found" component={NotFoundPage} />
+            </Switch>
+      </React.Fragment>
   );
 }
 

@@ -1,38 +1,137 @@
-.App {
-  text-align: center;
+body, html, #root, .app, .container {
+  width: 100%;
+  height: 100%;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body.background-home{
+  background-image: url(./img/office.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body.background-general{
+  background-image: url(./img/656665.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.custom-control {
+  padding: 0px;
+}
+
+/*
+LOGO
+*/
+#logo img {
+  max-height: 80px;
+  transition: all 0.4s;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+}
+#logo img:hover, .hvr-bounce-in:focus, .hvr-bounce-in:active {
+  -webkit-transform: scale(1.2);
+  transform: scale(1.2);
+  -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+  transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}
+
+.navbar {
+  background-color: #00a8cc;
+}
+
+/*
+NAVBAR BUTTONS
+*/
+.btnnavbar{
+  font-size: 20px;
+  transition: font-size 0.5s;
+}
+
+.smaller .btnnavbar{
+  font-size: 16px;
+}
+
+.btnnavbar:hover {
+  color: #f8b500 !important;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/*
+My BUTTON STYLE
+*/
+
+.my-btn {
+  text-transform: uppercase;
+  outline: 0;
+  background: #3b4650 !important;
+  padding: 10px 25px ;
+  color: #f8b500 !important;
+  font-size: 12px;
+  border: solid 1px #222831 !important;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+
+.my-btn:hover {
+  background-color: #f8b500 !important;
+  color: #3b4650 !important;
+  font-weight: bold;
+}
+
+.card-image-home {
+  /* Full height */
+  width: 80%;
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  margin: 0 auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.my-border-form {
+  background: rgba(0, 0 , 0, 0.4);
+  padding: 30px;
+  min-width: 300px;
+}
+
+.my-label {
+  font-size: 18px;
+  font-weight: bold;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.my-label:hover{
+  color: #f8b500 !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.form-group{
+  padding-top: 8px;
+  padding-bottom: 10px;
+}
+.form-control {
+  box-sizing: border-box;
+  outline: none;
+  color: #292929;
+  width: 90%;
+  padding: 8px ;
+  font-size: 14px;
+}
+
+NavLink{
+  color:white;
 }
