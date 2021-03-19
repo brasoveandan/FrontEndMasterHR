@@ -69,20 +69,6 @@ class LoginPage extends React.Component {
                             <h2 className="align-self-center text-white text-uppercase">Autentificare</h2>
                             <hr/>
 
-                            <Form.Row className="align-items-center">
-                                <Col xs="auto">
-                                    <Form.Label htmlFor="inlineFormInputGroup" srOnly>
-                                        Username
-                                    </Form.Label>
-                                    <InputGroup className="mb-2">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text>@</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl id="inlineFormInputGroup" placeholder="Username" />
-                                    </InputGroup>
-                                </Col>
-                            </Form.Row>
-
                             <Form.Group controlId="formUser">
                                 <Form.Label className="my-label">
                                     Nume utilizator
@@ -92,8 +78,6 @@ class LoginPage extends React.Component {
                                     <Form.Control className="align-self-center bg-white" name="username" type="text" placeholder="Nume de utilizator" onChange={this.handleChange}/>
                                 </InputGroup>
                             </Form.Group>
-
-
 
                             <Form.Group controlId="formPassword">
                                 <Form.Label className="my-label">Parola</Form.Label>

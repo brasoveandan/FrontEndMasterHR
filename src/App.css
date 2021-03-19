@@ -115,10 +115,6 @@ My BUTTON STYLE
   color: white;
 }
 
-.my-label:hover{
-  color: #f8b500 !important;
-}
-
 .form-group{
   padding-top: 8px;
   padding-bottom: 10px;
