@@ -1,9 +1,15 @@
-body, html, #root, .app, .container {
-  width: 100%;
-  height: 100%;
-
+* {
+  font-family: 'Montserrat', sans-serif;
 }
 
+.custom-switch{
+  padding-left: 0 !important;
+}
+
+
+/*
+  BACKGROUNDS
+*/
 body.background-home{
   background-image: url(./img/office.jpg);
   background-position: center;
@@ -20,12 +26,32 @@ body.background-general{
   background-repeat: no-repeat;
 }
 
-.custom-control {
-  padding: 0px;
+body.background-admin-dashboard{
+  background-image: url(./img/classified-background-blog-business.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body.background-group-leader-dashboard{
+  background-image: url(./img/group_leader.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body.background-employee-dashboard{
+  background-image: url(./img/656684.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 /*
-LOGO
+  LOGO
 */
 #logo img {
   max-height: 80px;
@@ -45,51 +71,9 @@ LOGO
   transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
 }
 
-.navbar {
-  background-color: #00a8cc;
-}
-
 /*
-NAVBAR BUTTONS
+  IMAGE HOME PAGE
 */
-.btnnavbar{
-  font-size: 20px;
-  transition: font-size 0.5s;
-}
-
-.smaller .btnnavbar{
-  font-size: 16px;
-}
-
-.btnnavbar:hover {
-  color: #f8b500 !important;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-/*
-My BUTTON STYLE
-*/
-
-.my-btn {
-  text-transform: uppercase;
-  outline: 0;
-  background: #3b4650 !important;
-  padding: 10px 25px ;
-  color: #f8b500 !important;
-  font-size: 12px;
-  border: solid 1px #222831 !important;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition-duration: 0.4s;
-}
-
-.my-btn:hover {
-  background-color: #f8b500 !important;
-  color: #3b4650 !important;
-  font-weight: bold;
-}
 
 .card-image-home {
   /* Full height */
@@ -103,31 +87,3 @@ My BUTTON STYLE
   background-size: cover;
 }
 
-.my-border-form {
-  background: rgba(0, 0 , 0, 0.4);
-  padding: 30px;
-  min-width: 300px;
-}
-
-.my-label {
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
-}
-
-.form-group{
-  padding-top: 8px;
-  padding-bottom: 10px;
-}
-.form-control {
-  box-sizing: border-box;
-  outline: none;
-  color: #292929;
-  width: 90%;
-  padding: 8px ;
-  font-size: 14px;
-}
-
-NavLink{
-  color:white;
-}

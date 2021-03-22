@@ -5,7 +5,7 @@ import SidebarDashboard from "./SidebarDashboard";
 import NotFoundPage from "../utils/NotFoundPage";
 import LandingPage from "./LandingPage";
 
-class EmployeeDashboard extends React.Component {
+class GroupLeaderDashboard extends React.Component {
 
     constructor(props){
         super(props);
@@ -23,6 +23,7 @@ class EmployeeDashboard extends React.Component {
             case "vizualizare_pontaj": this.setState({render : <NotFoundPage/>}); break;
             case "fluturas_salariu": this.setState({render: <NotFoundPage />}); break;
             case "vizualizare_concedii" : this.setState({render: <NotFoundPage />}); break;
+            case "vizualizare_cereri" : this.setState({render: <NotFoundPage />}); break;
             case "inregistrare_cerere" : this.setState({render: <NotFoundPage/>}); break;
             case "istoric_cereri" : this.setState({render: <NotFoundPage/>}); break;
             case "logout": this.logout(); break;
@@ -37,15 +38,15 @@ class EmployeeDashboard extends React.Component {
 
     render(){
         document.body.classList = "";
-        document.body.classList.add("background-employee-dashboard");
+        document.body.classList.add("background-group-leader-dashboard");
         return (
             <div className="background-dashboard">
                 <Container fluid>
                     <Row>
-                        <Col className="col-sm-12 col-md-3" xs={3} id="sidebar-wrapper">
+                        <Col xs={3} id="sidebar-wrapper">
                             <SidebarDashboard show={this.show}/>
                         </Col>
-                        <Col className="col-sm-12 col-md-9" xs={9} id="page-content-wrapper">
+                        <Col xs={9} id="page-content-wrapper">
                             { this.state.render }
                         </Col>
                     </Row>
@@ -56,5 +57,5 @@ class EmployeeDashboard extends React.Component {
     }
 }
 
-const Dashboard = withRouter(EmployeeDashboard);
+const Dashboard = withRouter(GroupLeaderDashboard);
 export default Dashboard

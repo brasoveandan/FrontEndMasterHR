@@ -1,16 +1,14 @@
 import React from "react";
 import {Button, Form, InputGroup} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
 import NavBar from "../utils/NavBar";
-import {FaLock, FaUser} from "react-icons/all";
+import {FaEnvelope} from "react-icons/all";
 
-class LoginPage extends React.Component {
+export default class ForgotPasswordPage extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
-            password: ""
+            email: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.doSubmit = this.doSubmit.bind(this);
@@ -20,10 +18,9 @@ class LoginPage extends React.Component {
     doSubmit = (e) => {
         e.preventDefault()
         const payload = {
-            username: this.state.username,
-            password: this.state.password
+            email: this.state.email
         }
-        fetch('http://localhost:8080/login', {
+        fetch('http://localhost:8080/forgot', {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
@@ -38,6 +35,7 @@ class LoginPage extends React.Component {
                         const { adminRole, name } = json
                         localStorage.setItem('adminRole', adminRole)
                         localStorage.setItem('name', name)
+                        console.log(adminRole)
                         if (adminRole === "null")
                             this.props.history.replace("/employeedashboard");
                         else if (adminRole === "GROUP_LEADER")
@@ -84,36 +82,21 @@ class LoginPage extends React.Component {
                 <div className="align-content-center">
                     <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "2%", marginBottom: "2%"}}>
                         <Form className="d-flex  flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
-                            <h3 className="align-self-center text-white text-uppercase">Autentificare</h3>
+                            <h3 className="align-self-center text-white text-uppercase">Schimbare Parola</h3>
                             <hr/>
 
                             <Form.Group controlId="formUser">
-                                <Form.Label className="my-label">Nume utilizator</Form.Label>
-                                <InputGroup className="mb-2">
-                                    <InputGroup.Text className="bg-white mt-3"><FaUser/></InputGroup.Text>
-                                    <Form.Control className="align-self-center bg-white mt-3" name="username" type="text" placeholder="Nume de utilizator" onChange={this.handleChange}/>
+                                <Form.Label className="my-label">Email</Form.Label>
+                                <InputGroup className="mb-2" >
+                                    <InputGroup.Text className="bg-white"><FaEnvelope/></InputGroup.Text>
+                                    <Form.Control className="align-self-center bg-white" name="email" type="email" placeholder="Email" onChange={this.handleChange}/>
                                 </InputGroup>
                             </Form.Group>
 
-                            <Form.Group controlId="formPassword">
-                                <Form.Label className="my-label">Parola</Form.Label>
-                                <InputGroup className="mb-2">
-                                    <InputGroup.Text className="bg-white mt-3"><FaLock/></InputGroup.Text>
-                                    <Form.Control className="align-self-center bg-white mt-3" name="password" type="password" placeholder="Parola" onChange={this.handleChange}/>
-                                </InputGroup>
-                            </Form.Group>
-                            <Form.Group controlId="formBasicCheckbox" className="align-self-center">
-                                <Form.Check className="text-white" type="checkbox" label="Pastreaza datele" />
-                            </Form.Group>
                             <Button className="align-self-center my-btn" type="submit" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
                                 Trimite
                             </Button>
                             <br/>
-                            <Form.Group controlId="formForgotPassword" className="align-self-center">
-                                <Form.Text>
-                                    <NavLink className="nav-link my-label" to="/forgot">Ti-ai uitat parola?</NavLink>
-                                </Form.Text>
-                            </Form.Group>
                         </Form>
                     </div>
                 </div>
@@ -121,5 +104,3 @@ class LoginPage extends React.Component {
         )
     }
 }
-
-export default LoginPage;

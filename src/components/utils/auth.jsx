@@ -9,7 +9,7 @@ const authentication = () => {
     else if (localStorage.getItem('adminRole') === 'HR_EMPLOYEE')
         return 'hr_employee';
     else if (localStorage.getItem('adminRole') === 'HR_DEPARTMENT_RESPONSIVE')
-        return 'hr_department_employee';
+        return 'hr_department_responsive';
     else if (localStorage.getItem('adminRole') === 'ADMIN')
         return 'admin';
 

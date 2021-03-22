@@ -1,0 +1,21 @@
+.navbar {
+    background-color: #00a8cc;
+}
+
+/*
+NAVBAR BUTTONS
+*/
+.btnnavbar{
+    font-size: 20px;
+    transition: font-size 0.5s;
+}
+
+.smaller .btnnavbar{
+    font-size: 16px;
+}
+
+.btnnavbar:hover {
+    color: #f8b500 !important;
+    font-weight: bold;
+    font-size: 20px;
+}

@@ -1,0 +1,190 @@
+#sidebar {
+    overflow: hidden;
+    z-index: 3;
+    margin-left: -15px;
+    min-width: 250px;
+}
+#sidebar .list-group {
+    min-width: 250px;
+    background-color: #191919;
+    min-height: 100vh;
+}
+
+#sidebar .list-group-item {
+    border-radius: 0;
+    background-color: #191919;
+    color: #EEE;
+    border-left: 0;
+    border-right: 0;
+    border-color: #262626;
+    white-space: nowrap;
+}
+
+#sidebar .list-group-item:hover {
+    border-radius: 0;
+    background-color: #f8b500;
+    color: #3b4650;
+    font-weight: bold;
+    border-left: 0;
+    border-right: 0;
+    border-color: #262626;
+    white-space: nowrap;
+}
+
+/* highlight active menu */
+#sidebar .list-group-item:not(.collapsed) {
+    background-color: #161616;
+}
+
+/* closed state */
+#sidebar .list-group .list-group-item[aria-expanded="false"]::after {
+    content: "\f0d7";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 5px;
+}
+
+/* open state */
+#sidebar .list-group .list-group-item[aria-expanded="true"] {
+    background-color: #222;
+}
+#sidebar .list-group .list-group-item[aria-expanded="true"]::after {
+    content: "";
+    font-family: FontAwesome;
+    display: inline;
+    text-align: right;
+    padding-left: 5px;
+}
+
+/* level 1*/
+#sidebar .list-group .collapse .list-group-item,
+#sidebar .list-group .collapsing .list-group-item  {
+    padding-left: 20px;
+}
+
+/* level 2*/
+#sidebar .list-group .collapse > .collapse .list-group-item,
+#sidebar .list-group .collapse > .collapsing .list-group-item {
+    padding-left: 30px;
+}
+
+/* level 3*/
+#sidebar .list-group .collapse > .collapse > .collapse .list-group-item {
+    padding-left: 40px;
+}
+
+#logo-sidebar img {
+    max-height: 80px;
+    transition: all 0.4s;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+}
+#logo-sidebar img:hover, .hvr-bounce-in:focus, .hvr-bounce-in:active {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+    -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+    transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}
+
+.toggle-button{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.sidebar-footer{
+    bottom: 3%;
+    min-width: 250px;
+    position: absolute;
+}
+
+@media (max-width:767.98px) {
+    #sidebar.active {
+        transition: all 0.5s ease;
+        min-width: 250px;
+        overflow: hidden;
+        padding-left: 40px;
+    }
+
+    #logo-sidebar.active{
+        visibility: visible;
+        opacity: 1;
+    }
+
+    #logo-sidebar{
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    .toggle-button{
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .sidebar-footer{
+        text-align: left;
+        min-width: 0;
+        width: 85%;
+    }
+
+    #sidebar {
+        max-width: 70px;
+        overflow-y: auto;
+        overflow-x: visible;
+        transition: all 0.5s ease;
+        transform: translateX(-45px);
+        position: fixed;
+    }
+
+    #sidebar.show {
+        transform: translateX(0);
+    }
+
+    #sidebar::-webkit-scrollbar{ width: 0; }
+
+    #sidebar, #sidebar .list-group {
+        min-width: 10px;
+        overflow: visible;
+    }
+    /* overlay sub levels on small screens */
+    #sidebar .list-group .collapse.show, #sidebar .list-group .collapsing {
+        position: relative;
+        z-index: 1;
+        width: 190px;
+        top: 0;
+    }
+    #sidebar .list-group > .list-group-item {
+        text-align: left;
+        padding: .75rem .5rem .75rem 1rem;
+    }
+    /* hide caret icons of top level when collapsed */
+    #sidebar .list-group > .list-group-item[aria-expanded="true"]::after,
+    #sidebar .list-group > .list-group-item[aria-expanded="false"]::after {
+        display:none;
+    }
+}
+
+.collapse.show {
+    visibility: visible;
+}
+.collapsing {
+    visibility: visible;
+    height: 0;
+    -webkit-transition-property: height, visibility;
+    transition-property: height, visibility;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+.collapsing.width {
+    -webkit-transition-property: width, visibility;
+    transition-property: width, visibility;
+    width: 0;
+    height: 100%;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}

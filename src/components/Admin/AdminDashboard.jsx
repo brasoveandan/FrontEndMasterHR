@@ -3,9 +3,9 @@ import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
 import SidebarDashboard from "./SidebarDashboard";
 import NotFoundPage from "../utils/NotFoundPage";
-import LandingPage from "./LandingPage";
+import LandingPage from "./LandinPage";
 
-class EmployeeDashboard extends React.Component {
+class AdminDashboard extends React.Component {
 
     constructor(props){
         super(props);
@@ -19,12 +19,8 @@ class EmployeeDashboard extends React.Component {
 
     show(type){
         switch(type){
-            case "detalii_contract": this.setState({render: <NotFoundPage/>}); break;
-            case "vizualizare_pontaj": this.setState({render : <NotFoundPage/>}); break;
-            case "fluturas_salariu": this.setState({render: <NotFoundPage />}); break;
-            case "vizualizare_concedii" : this.setState({render: <NotFoundPage />}); break;
-            case "inregistrare_cerere" : this.setState({render: <NotFoundPage/>}); break;
-            case "istoric_cereri" : this.setState({render: <NotFoundPage/>}); break;
+            case "vizualizare_conturi": this.setState({render : <NotFoundPage/>}); break;
+            case "adaugare_cont": this.setState({render: <NotFoundPage />}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <LandingPage/>})
         }
@@ -37,24 +33,23 @@ class EmployeeDashboard extends React.Component {
 
     render(){
         document.body.classList = "";
-        document.body.classList.add("background-employee-dashboard");
+        document.body.classList.add("background-admin-dashboard");
         return (
             <div className="background-dashboard">
                 <Container fluid>
                     <Row>
-                        <Col className="col-sm-12 col-md-3" xs={3} id="sidebar-wrapper">
+                        <Col xs={3} id="sidebar-wrapper">
                             <SidebarDashboard show={this.show}/>
                         </Col>
-                        <Col className="col-sm-12 col-md-9" xs={9} id="page-content-wrapper">
+                        <Col xs={9} id="page-content-wrapper">
                             { this.state.render }
                         </Col>
                     </Row>
-
                 </Container>
             </div>
         );
     }
 }
 
-const Dashboard = withRouter(EmployeeDashboard);
+const Dashboard = withRouter(AdminDashboard);
 export default Dashboard

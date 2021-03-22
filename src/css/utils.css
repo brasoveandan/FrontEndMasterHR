@@ -1,0 +1,57 @@
+/*
+    My BUTTON STYLE
+*/
+.my-btn {
+    text-transform: uppercase;
+    outline: 0;
+    background: #3b4650 !important;
+    padding: 10px 25px ;
+    color: #f8b500 !important;
+    font-size: 12px;
+    border: solid 1px #222831 !important;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.my-btn:hover {
+    background-color: #f8b500 !important;
+    color: #3b4650 !important;
+    font-weight: bold;
+}
+
+
+/*
+    My LABELS
+*/
+.my-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.my-label:hover{
+    color: #f8b500;
+}
+
+
+/*
+    LOGIN FORM
+*/
+.my-border-form {
+    background: rgba(0, 0 , 0, 0.4);
+    padding: 25px;
+    min-width: 300px;
+}
+
+.form-group{
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+.form-control {
+    width: 100%;
+    padding: 8px ;
+    font-size: 12px;
+}
+
