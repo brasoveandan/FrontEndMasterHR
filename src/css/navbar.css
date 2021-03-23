@@ -1,11 +1,12 @@
 .navbar {
-    background-color: #00a8cc;
+    background-color: #222831;
 }
 
 /*
 NAVBAR BUTTONS
 */
 .btnnavbar{
+    color: #F2E9D8 !important;
     font-size: 20px;
     transition: font-size 0.5s;
 }

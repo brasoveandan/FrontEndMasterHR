@@ -4,6 +4,7 @@ import {withRouter} from "react-router-dom";
 import SidebarDashboard from "./SidebarDashboard";
 import NotFoundPage from "../utils/NotFoundPage";
 import LandingPage from "./LandingPage";
+import EmployeeViewContract from "./EmployeeViewContract";
 
 class EmployeeDashboard extends React.Component {
 
@@ -19,7 +20,7 @@ class EmployeeDashboard extends React.Component {
 
     show(type){
         switch(type){
-            case "detalii_contract": this.setState({render: <NotFoundPage/>}); break;
+            case "detalii_contract": this.setState({render: <EmployeeViewContract/>}); break;
             case "vizualizare_pontaj": this.setState({render : <NotFoundPage/>}); break;
             case "fluturas_salariu": this.setState({render: <NotFoundPage />}); break;
             case "vizualizare_concedii" : this.setState({render: <NotFoundPage />}); break;

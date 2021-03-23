@@ -2,6 +2,7 @@ import './App.css';
 import './css/navbar.css'
 import './css/sidebar.css'
 import './css/utils.css'
+import 'bootstrap/dist/css/bootstrap-grid.css'
 import React from "react";
 import HomePage from "./components/Presentation/HomePage";
 import Switch from "react-bootstrap/Switch";

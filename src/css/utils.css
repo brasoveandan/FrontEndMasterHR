@@ -55,3 +55,24 @@
     font-size: 12px;
 }
 
+/*
+    VIEW CONTRACT CARD STYLE
+*/
+.my-card-elem {
+    vertical-align: middle;
+    font-style: italic;
+    font-weight: bold;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+}
+.my-card-elem:hover, .my-card-elem:focus, .my-card-elem:active {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+

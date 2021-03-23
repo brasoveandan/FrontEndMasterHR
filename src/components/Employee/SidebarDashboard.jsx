@@ -1,6 +1,6 @@
 import React from 'react';
 
-import logo from "../../img/logo/MasterHR-logos_transparent.png";
+import logo from "../../img/logo/MasterHR.png";
 import {
     FaBars,
     FaFileInvoiceDollar,
