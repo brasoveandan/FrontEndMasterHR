@@ -6,7 +6,7 @@ const PrivateRouteEmployeeHR = ({component: Component, ...rest}) => {
 
     return (
         <Route {...rest} render={props => {
-            if(authentication() === "employee_hr")
+            if(authentication() === "hr_employee")
                 return <Component {...props}/>;
             return <Redirect to={{pathname: '/login'}}/>
         }}/>

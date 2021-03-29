@@ -35,7 +35,7 @@ body.background-admin-dashboard{
 }
 
 body.background-group-leader-dashboard{
-  background-image: url(./img/group_leader.jpg);
+  background-image: url(./img/business-consultation-1000x667.jpg);
   background-position: center;
   background-attachment: fixed;
   background-size: cover;
@@ -44,6 +44,14 @@ body.background-group-leader-dashboard{
 
 body.background-employee-dashboard{
   background-image: url(./img/656684.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body.background-employee-hr-dashboard{
+  background-image: url(./img/1_QXUrhkBiYzjk90hyAEabhg.png);
   background-position: center;
   background-attachment: fixed;
   background-size: cover;

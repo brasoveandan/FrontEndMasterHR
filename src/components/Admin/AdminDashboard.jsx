@@ -1,9 +1,9 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import SidebarDashboard from "./SidebarDashboard";
 import NotFoundPage from "../utils/NotFoundPage";
-import LandingPage from "./LandinPage";
+import SidebarDashboard from "../../common/SidebarDashboard";
+import AdminLandingPage from "./AdminLandinPage";
 
 class AdminDashboard extends React.Component {
 
@@ -14,15 +14,15 @@ class AdminDashboard extends React.Component {
             adminRole: localStorage.getItem("adminRole")
         };
         this.show = this.show.bind(this);
-        this.state = {render: <LandingPage/>}
+        this.state = {render: <AdminLandingPage/>}
     }
 
     show(type){
         switch(type){
             case "vizualizare_conturi": this.setState({render : <NotFoundPage/>}); break;
-            case "adaugare_cont": this.setState({render: <NotFoundPage />}); break;
+            case "adauga_cont": this.setState({render: <NotFoundPage/>}); break;
             case "logout": this.logout(); break;
-            default: this.setState({render: <LandingPage/>})
+            default: this.setState({render: <AdminLandingPage/>})
         }
     }
 
@@ -38,10 +38,10 @@ class AdminDashboard extends React.Component {
             <div className="background-dashboard">
                 <Container fluid>
                     <Row>
-                        <Col xs={3} id="sidebar-wrapper">
+                        <Col className="col-sm-12 col-md-3" xs={3} id="sidebar-wrapper">
                             <SidebarDashboard show={this.show}/>
                         </Col>
-                        <Col xs={9} id="page-content-wrapper">
+                        <Col className="col-sm-12 col-md-9 col-xl-8" xs={9} id="page-content-wrapper">
                             { this.state.render }
                         </Col>
                     </Row>

@@ -43,9 +43,9 @@ class LoginPage extends React.Component {
                         else if (adminRole === "GROUP_LEADER")
                             this.props.history.replace("/groupleaderdashboard");
                         else if (adminRole === "HR_EMPLOYEE")
-                            this.props.history.replace("/hremployeedashboard");
+                            this.props.history.replace("/employeehrdashboard");
                         else if (adminRole === "HR_DEPARTMENT_RESPONSIVE")
-                            this.props.history.replace("/hrresponsivedashboard");
+                            this.props.history.replace("/responsivehrdashboard");
                         else if (adminRole === "ADMIN") {
                             console.log("Da")
                             this.props.history.replace("/admindashboard");

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default class EmployeeViewContract extends React.Component{
+export default class ViewContract extends React.Component{
     constructor(){
         super(undefined);
         this.state = {
@@ -11,7 +11,6 @@ export default class EmployeeViewContract extends React.Component{
 
         const payload = {
             username: localStorage.getItem('username')
-
         }
 
         fetch('http://localhost:8080/contract/' + payload.username, {
@@ -26,7 +25,6 @@ export default class EmployeeViewContract extends React.Component{
                     res.json().then(json =>{
                         this.setState({contract: json});
                     });
-                    console.log(payload.username)
                     // LOGIN PERSISTANCE
                 }
                 else {
