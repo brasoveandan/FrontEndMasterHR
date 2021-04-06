@@ -1,19 +1,19 @@
 import React from "react";
 
-export default class ViewContract extends React.Component{
+export default class ViewHoliday extends React.Component{
     constructor(){
         super(undefined);
         this.state = {
-            contract: []
+            payslip: []
         };
 
-        this.renderContract = this.renderContract.bind(this);
+        this.renderPayslip = this.renderPayslip.bind(this);
 
         const payload = {
             username: localStorage.getItem('username')
         }
 
-        fetch('http://localhost:8080/contract/' + payload.username, {
+        fetch('http://localhost:8080/payslip/' + payload.username, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
@@ -34,17 +34,14 @@ export default class ViewContract extends React.Component{
             })
     }
 
-    renderContract = (contract) => {
-        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, department, position, grossSalary, type, hireDate, expirationDate} = contract;
-        if(expirationDate == null){
-            expirationDate= false
-        }
+    renderPayslip = (payslip) => {
+        let {firstName, lastName, companyName, personalNumber, year, month , brutSalary, netSalary, realizedSalary, workedHours, homeOfficeHours, requiredHours} = payslip;
         return(
             <React.Fragment>
                 <div className="col-sm-11 col-lg-8 ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
                     <div className="card text-center mb-4 ml-xl-0" style={{opacity: ".75"}} >
                         <div className="card-header text-monospace my-label bg-dark">
-                            Detalii contract
+                            Vizualizare Pontaj
                         </div>
                         <div className="card-body">
                             <div className="card-text">
@@ -61,32 +58,32 @@ export default class ViewContract extends React.Component{
                                     Cod personal: {personalNumber}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    E-mail: {mail}
+                                    An: {year}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    Numar telefon: {phoneNumber}
+                                    Luna: {month}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    CNP: {socialSecurityNumber}
+                                    Salar Brut: {brutSalary}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    Departament: {department}
+                                    Salar Net: {netSalary}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    Functie: {position}
+                                    Salar realizat: {realizedSalary}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    Salar: {grossSalary}
+                                    Ore lucrate: {workedHours}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    Data angajare: {hireDate}
+                                    Ore telemuncă: {homeOfficeHours}
                                 </div>
                                 <div className="my-card-elem border-bottom mt-3">
-                                    Tip: {type}
+                                    Ore necesare: {requiredHours}
                                 </div>
-                                <div className={expirationDate ? 'my-card-elem border-bottom mt-3' : 'invisible'}>
-                                    Data expirarea: {expirationDate}
-                                </div>
+                                {/*<div className={expirationDate ? 'my-card-elem border-bottom mt-3' : 'invisible'}>*/}
+                                {/*    Data expirarea: {expirationDate}*/}
+                                {/*</div>*/}
                             </div>
                         </div>
                     </div>
@@ -95,11 +92,20 @@ export default class ViewContract extends React.Component{
         )
     }
 
+    handleFilter() {
+
+    }
+
     render(){
         return (
             <div className="card-deck justify-content-center d-flex align-items-center align-middle mt-5 col-auto">
-                {this.renderContract(this.state.contract)}
+                <input className="mr-5 my-label" type="text" placeholder="An" />
+                <input className="mr-5 my-label" type="text" placeholder="Luna" />
+                <button className="my-btn" onClick={this.handleFilter}>Filter</button>
+                {this.renderPayslip(this.state.payslip)}
             </div>
         );
     }
+
+
 }
