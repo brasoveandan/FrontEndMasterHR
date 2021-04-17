@@ -3,6 +3,7 @@
     z-index: 3;
     margin-left: -15px;
     min-width: 250px;
+    position: fixed;
 }
 #sidebar .list-group {
     min-width: 250px;
@@ -35,6 +36,7 @@
     border-color: #222831;
     white-space: nowrap;
     transition-duration: 0.4s;
+    cursor: pointer;
 }
 
 /* highlight active menu */
@@ -95,6 +97,7 @@
 #logo-sidebar img:hover, .hvr-grow:focus, .hvr-grow:active {
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
+    cursor: pointer;
 }
 
 .toggle-button{
@@ -138,7 +141,7 @@
     }
 
     #sidebar {
-        max-width: 70px;
+        max-width: 50px;
         overflow-y: auto;
         overflow-x: visible;
         transition: all 0.5s ease;

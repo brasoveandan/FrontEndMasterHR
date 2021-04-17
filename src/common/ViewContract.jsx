@@ -1,4 +1,5 @@
 import React from "react";
+import {FaCheck, FaTimes} from "react-icons/all";
 
 export default class ViewContract extends React.Component{
     constructor(){
@@ -35,57 +36,127 @@ export default class ViewContract extends React.Component{
     }
 
     renderContract = (contract) => {
-        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, department, position, grossSalary, type, hireDate, expirationDate} = contract;
+        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt} = contract;
         if(expirationDate == null){
-            expirationDate= false
+            expirationDate = false
         }
         return(
             <React.Fragment>
-                <div className="col-sm-11 col-lg-8 ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
-                    <div className="card text-center mb-4 ml-xl-0" style={{opacity: ".75"}} >
-                        <div className="card-header text-monospace my-label bg-dark">
-                            Detalii contract
+                <div className="col-xs-12 col-sm-12 d-flex justify-content-md-center">
+                    <div className="card text-left mb-md-4 mt-md-4 ml-xl-0" style={{opacity: ".85"}} >
+                        <div className="card-header text-center text-monospace my-label bg-dark">
+                           <h4>Detalii Contract</h4>
                         </div>
                         <div className="card-body">
-                            <div className="card-text">
-                                <div className="my-card-elem border-bottom">
-                                    Nume: {lastName}
+                            <div className="row">
+                                <div className="col-sm-6 m-b-20">
+                                    <ul className="list-unstyled">
+                                        <li><h5 className="mb-2"><strong>{lastName} {firstName}</strong></h5></li>
+                                        <li><h6>Număr personal: {personalNumber}</h6></li>
+                                        <li><h6>Departament: {department}</h6></li>
+                                        <li><h6>Poziție: {position}</h6></li>
+                                    </ul>
                                 </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Prenume: {firstName}
+                                <div className="col-sm-6 m-b-20">
+                                    <ul className="list-unstyled">
+                                        <li><h5 className="mb-2"><strong>{companyName}</strong></h5></li>
+                                    </ul>
                                 </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Companie: {companyName}
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <div><h4 className="m-b-10 mb-3"><strong>Informații Personale</strong></h4>
+                                        <table className="table list-group-item-dark table-hover">
+                                            <tbody>
+                                            <tr>
+                                                <td><strong>E-mail: </strong>
+                                                    <span className="float-right">{mail}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Număr de telefon: </strong>
+                                                    <span className="float-right">{phoneNumber}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Cod numeric personal: </strong>
+                                                    <span className="float-right">{socialSecurityNumber}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Zi de naștere: </strong>
+                                                    <span className="float-right">{birthday}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Gen: </strong>
+                                                    <span className="float-right">{gender}</span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Cod personal: {personalNumber}
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <div>
+                                        <h5 className=" m-b-10 mb-3"><strong>Informații Contractuale</strong></h5>
+                                        <table className="table list-group-item-dark table-hover">
+                                            <tbody>
+                                            <tr>
+                                                <td><strong>Dată angajare: </strong>
+                                                    <span className="float-right">{hireDate}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Salar de bază: </strong>
+                                                    <span className="float-right">{baseSalary} Ron</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Tip contract: </strong>
+                                                    <span className="float-right">{type}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Procent spor ore suplimentare: </strong>
+                                                    <span className="float-right">{overtimeIncreasePercent} %</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Scutit impozit: </strong>
+                                                    <span className="float-right">{taxExempt ? <FaCheck/> : <FaTimes/>}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Dată expirare contract: </strong>
+                                                    <span className="float-right">{expirationDate ? expirationDate : <FaTimes/>}</span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    E-mail: {mail}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Numar telefon: {phoneNumber}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    CNP: {socialSecurityNumber}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Departament: {department}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Functie: {position}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Salar: {grossSalary}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Data angajare: {hireDate}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Tip: {type}
-                                </div>
-                                <div className={expirationDate ? 'my-card-elem border-bottom mt-3' : 'invisible'}>
-                                    Data expirarea: {expirationDate}
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <div><h5 className="m-b-10 mb-3"><strong>Informații Bancare</strong></h5>
+                                        <table className="table list-group-item-dark table-hover">
+                                            <tbody>
+                                            <tr>
+                                                <td><strong>Nume Bancă: </strong>
+                                                    <span className="float-right">{bankName}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Cont bancar: </strong>
+                                                    <span className="float-right">{bankAccountNumber}</span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +168,7 @@ export default class ViewContract extends React.Component{
 
     render(){
         return (
-            <div className="card-deck justify-content-center d-flex align-items-center align-middle mt-5 col-auto">
+            <div className="card-deck justify-content-center d-flex align-items-center align-middle mt-3 col-auto">
                 {this.renderContract(this.state.contract)}
             </div>
         );

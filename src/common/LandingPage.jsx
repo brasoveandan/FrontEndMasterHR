@@ -11,9 +11,9 @@ export default class LandingPage extends React.Component{
                     </div>
                     <div className="card-body">
                         <h5 className="card-title">Bine ai revenit!</h5>
-                        <p className="card-text">
+                        <span className="card-text">
                             {text}
-                        </p>
+                        </span>
                     </div>
                 </div>
                 <br/>

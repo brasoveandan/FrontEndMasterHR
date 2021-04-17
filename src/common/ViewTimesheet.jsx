@@ -1,111 +1,207 @@
 import React from "react";
+import {Modal} from "react-bootstrap";
 
 export default class ViewTimesheet extends React.Component{
     constructor(){
         super(undefined);
         this.state = {
-            payslip: []
+            payslip: [],
+            show: false
         };
 
-        this.renderPayslip = this.renderPayslip.bind(this);
+        this.openModal = this.openModal.bind(this)
+        this.closeModal = this.closeModal.bind(this)
 
         const payload = {
             username: localStorage.getItem('username')
         }
 
-        fetch('http://localhost:8080/payslip/' + payload.username, {
-            method: 'GET',
-            headers: {
-                'Accept' : 'application/json',
-                'Content-type':'application/json'
-            }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        this.setState({contract: json});
-                    });
-                    // LOGIN PERSISTANCE
-                }
-                else {
-                    console.log("error")
-                    console.log(payload.username)
-                }
-            })
+        // fetch('http://localhost:8080/timesheet/' + payload.username, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Accept' : 'application/json',
+        //         'Content-type':'application/json'
+        //     }
+        // })
+        //     .then(res => {
+        //         if (res.status === 200) {
+        //             res.json().then(json =>{
+        //                 this.setState({contract: json});
+        //             });
+        //             // LOGIN PERSISTANCE
+        //         }
+        //         else {
+        //             console.log("error")
+        //             console.log(payload.username)
+        //         }
+        //     })
     }
 
-    renderPayslip = (payslip) => {
-        let {firstName, lastName, companyName, personalNumber, year, month , brutSalary, netSalary, realizedSalary, workedHours, homeOfficeHours, requiredHours} = payslip;
-        return(
-            <React.Fragment>
-                <div className="col-sm-11 col-lg-8 ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
-                    <div className="card text-center mb-4 ml-xl-0" style={{opacity: ".75"}} >
-                        <div className="card-header text-monospace my-label bg-dark">
-                            Vizualizare Pontaj
-                        </div>
-                        <div className="card-body">
-                            <div className="card-text">
-                                <div className="my-card-elem border-bottom">
-                                    Nume: {lastName}
+    openModal() {
+        this.setState({
+            show: true
+        });
+    }
+
+    closeModal = e => {
+        this.setState({
+            show: false
+        });
+
+    };
+
+    render(){
+        return (
+            <div className="content container-fluid">
+                <div className="row mt-4 mb-4 ml-sm-5 ml-md-0" style={{opacity: ".85"}}>
+                    <div className="col-sm-12">
+                        <div className="card bg-dark">
+                            <div className="card-body">
+                                <div className="row">
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="card punch-status">
+                                            <div className="card-body">
+                                                <h5 className="card-title">Pontaj
+                                                    <span className="text-muted"> 11 Mar 2019</span>
+                                                </h5>
+                                                <div className="punch-det text-white bg-dark">
+                                                    <h6>Pontat la</h6>
+                                                    <p>Wed, 11th Mar 2019 10.00 AM</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <button className="my-btn punch-btn" type="button">Depontare</button>
+                                                </div>
+                                            </div>
+                                            <div className="card-footer bg-white border-top border-dark text-center">
+                                                <button className="my-btn" type="button" onClick={this.openModal}>Adaugă pontaj manual</button>
+                                            </div>
+                                            <Modal show={this.state.show} onHide={this.closeModal}>
+                                                <Modal.Header closeButton>
+                                                    <Modal.Title>Adaugă pontaj</Modal.Title>
+                                                </Modal.Header>
+                                                <Modal.Body>
+                                                    <div className="container container-fluid mt-5 mb-5">
+                                                        <div className="card">
+                                                            <div className="card-header">
+                                                                <div className="card-body">
+                                                                    <form>
+                                                                        <div className="form-group">
+                                                                            <label>Tip<span className="text-danger">*</span></label>
+                                                                            <select className="select select2-hidden-accessible" data-select2-id="7" tabIndex="-1" aria-hidden="true">
+                                                                                <option data-select2-id="9">Selectează Tip</option>
+                                                                                <option data-select2-id="18">Telemuncă</option>
+                                                                                <option data-select2-id="19">Normal</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label>Oră intrare <span className="text-danger">*</span></label>
+                                                                            <div className="cal-icon">
+                                                                                <input className="form-control" placeholder="Ora intrare" type="datetime-local"/>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label>Oră ieșire <span className="text-danger">*</span></label>
+                                                                            <div className="cal-icon">
+                                                                                <input className="form-control" placeholder="Ora iesire" type="datetime-local"/>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="form-group">
+                                                                            <label>Motiv <span className="text-danger">*</span></label>
+                                                                            <textarea rows="3" className="form-control"/>
+                                                                        </div>
+                                                                        <div className="submit-section text-center">
+                                                                            <button className="my-btn">Trimite</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Modal.Body>
+                                            </Modal>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="card att-statistics rounded">
+                                            <div className="card-body">
+                                                <h5 className="card-title">Statistici ore</h5>
+                                                <div className="stats-list">
+                                                    <div className="stats-info bg-dark text-white">
+                                                        <span>Luna curentă <strong>90 <small>/ 160 ore</small></strong></span>
+                                                        <div className="progress">
+                                                            <div className="progress-bar" role="progressbar" aria-valuenow={3.45/8*100} aria-valuemin="0" aria-valuemax="100" style={{width: "35%"}}/>
+                                                        </div>
+                                                    </div>
+                                                    <div className="stats-info bg-dark text-white">
+                                                        <span>Ore telemuncă <strong>28 <small>/ 40</small></strong></span>
+                                                        <div className="progress">
+                                                            <div className="progress-bar" role="progressbar" aria-valuenow="31" aria-valuemin="0" aria-valuemax="100"/>
+                                                        </div>
+                                                    </div>
+                                                    <div className="stats-info bg-dark text-white">
+                                                        <span>Ore necesare <strong>90 <small>/ 160</small></strong></span>
+                                                        <div className="progress">
+                                                            <div className="progress-bar" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" style={{width: "35%"}}/>
+                                                        </div>
+                                                    </div>
+                                                    <div className="stats-info bg-dark text-white">
+                                                        <span>Ore suplimentare luna curentă <strong>90</strong></span>
+                                                        <div className="progress">
+                                                            <div className="progress-bar" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" style={{width: "35%"}}/>
+                                                        </div>
+                                                    </div>
+                                                    <div className="stats-info bg-dark text-white">
+                                                        <span>Total ore suplimentare <strong>4</strong></span>
+                                                        <div className="progress">
+                                                            <div className="progress-bar" role="progressbar" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100" style={{width: "35%"}}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-12 text-center mb-3">
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="an" type="text" placeholder="An" onChange={this.handleChange}/>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="luna" type="text" placeholder="Luna" onChange={this.handleChange}/>
+                                        <button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="submit" onClick={this.handleFilter}>Caută</button>
+                                    </div>
+                                    <div className="col-sm-12">
+                                        <div className="table-responsive rounded">
+                                            <table className="table bg-white table-striped">
+                                                <thead className="text-center">
+                                                <tr>
+                                                    <th>Ziua</th>
+                                                    <th>Oră intrare</th>
+                                                    <th>Oră ieșire</th>
+                                                    <th>Ore lucrate</th>
+                                                    <th>Ore suplimentare</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody className="text-center">
+                                                <tr>
+                                                    <td>19</td>
+                                                    <td>10:00</td>
+                                                    <td>19:00</td>
+                                                    <td>9 ore</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>20</td>
+                                                    <td>10:00</td>
+                                                    <td>19:00</td>
+                                                    <td>9 ore</td>
+                                                    <td>0</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Prenume: {firstName}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Companie: {companyName}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Cod personal: {personalNumber}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    An: {year}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Luna: {month}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Salar Brut: {brutSalary}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Salar Net: {netSalary}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Salar realizat: {realizedSalary}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Ore lucrate: {workedHours}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Ore telemuncă: {homeOfficeHours}
-                                </div>
-                                <div className="my-card-elem border-bottom mt-3">
-                                    Ore necesare: {requiredHours}
-                                </div>
-                                {/*<div className={expirationDate ? 'my-card-elem border-bottom mt-3' : 'invisible'}>*/}
-                                {/*    Data expirarea: {expirationDate}*/}
-                                {/*</div>*/}
                             </div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
-
-    handleFilter() {
-
-    }
-
-    render(){
-        return (
-            <div className="card-deck justify-content-center d-flex align-items-center align-middle mt-5 col-auto">
-                <input className="mr-5 my-label" type="text" placeholder="An" />
-                <input className="mr-5 my-label" type="text" placeholder="Luna" />
-                <button className="my-btn" onClick={this.handleFilter}>Filter</button>
-                {this.renderPayslip(this.state.payslip)}
             </div>
         );
     }
-
-
 }

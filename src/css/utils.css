@@ -70,9 +70,14 @@
     -webkit-transition-property: transform;
     transition-property: transform;
 }
+
 .my-card-elem:hover, .my-card-elem:focus, .my-card-elem:active {
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
+
+
+
+
 
 

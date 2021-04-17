@@ -2,7 +2,6 @@ import React from 'react';
 
 import logo from "../../src/img/logo/MasterHR.png";
 import {Logo} from "react-sidebar-ui";
-import {Link} from "react-router-dom";
 import SidebarButton from "./SidebarButton";
 
 
@@ -63,11 +62,11 @@ export default class SidebarDashboard extends React.Component {
 
     renderLogo(){
         return(
-            <Link className={this.state.isCollapsed ? 'active' : "align-self-center"} id="logo-sidebar" onClick={() => this.props.show()}>
+            <div className={this.state.isCollapsed ? 'active' : "align-self-center"} id="logo-sidebar" onClick={() => this.props.show()}>
                 <Logo
                     image={logo}
                     imageName='logo'/>
-            </Link>
+            </div>
         )
     }
 
@@ -77,7 +76,7 @@ export default class SidebarDashboard extends React.Component {
                 <div className="row">
                     <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
-                            <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
+                            <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" />
                             {this.renderLogo()}
                             <br/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare conturi" show = {this.show}/>
@@ -96,16 +95,15 @@ export default class SidebarDashboard extends React.Component {
         return (
             <div className="container-fluid" onClick={this.handleCollapse}>
                 <div className="row">
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
-                            <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
+                            <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" show = {this.show}/>
                             {this.renderLogo()}
                             <br/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Detalii contract" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Adaugă pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Înregistrare cerere" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>

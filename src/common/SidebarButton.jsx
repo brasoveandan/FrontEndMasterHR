@@ -38,7 +38,7 @@ export default class SidebarButton extends Component {
             case 'Detalii contract': this.props.show("detalii_contract"); break;
             case 'Vizualizare pontaj': this.props.show("vizualizare_pontaj"); break;
             case 'Fluturaș salariu': this.props.show("fluturas_salariu"); break;
-            case "vizualizare_concedii" : this.props.show("vizualizare_concedii"); break;
+            case "Vizualizare concedii" : this.props.show("vizualizare_concedii"); break;
             case 'Înregistrare cerere' : this.props.show("inregistrare_cerere"); break;
             case 'Istoric cereri' : this.props.show("istoric_cereri"); break;
             case 'Vizualizare conturi':this.props.show("vizualizare_conturi"); break;
@@ -49,6 +49,7 @@ export default class SidebarButton extends Component {
             case 'Calcul salar':this.props.show("calcul_salar"); break;
             case 'Adaugă pontaj':this.props.show("adauga_pontaj"); break;
             case 'Deconectare': this.props.show("logout"); break;
+            case '': break;
             default: this.props.show();
         }
     }

@@ -1,0 +1,78 @@
+.punch-det{
+background-color: #f9f9f9;
+border: 1px solid #e3e3e3;
+border-radius: 4px;
+margin-bottom: 20px;
+padding: 10px 15px;
+}
+
+.punch-info {
+    margin-bottom: 20px;
+}
+
+.punch-btn {
+    text-transform: uppercase;
+    background: #3b4650 !important;
+    padding: 10px ;
+    color: #f8b500 !important;
+    font-size: 12px;
+    border: solid 1px #222831 !important;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+
+.stats-list {
+    height: 331px;
+    overflow-y: auto;
+}
+
+.att-statistics .stats-info {
+    margin-bottom: 5px;
+}
+
+.att-statistics .progress {
+    height: 4px;
+}
+
+.progress {
+    display: -ms-flexbox;
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    line-height: 0;
+    font-size: .75rem;
+    background-color: #e9ecef;
+    border-radius: .25rem;
+}
+
+.stats-info {
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: center;
+}
+
+.progress-bar {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #007bff;
+    transition: width .6s ease;
+}
+
+.progress > .progress-bar {
+    background-color: #f8b500;
+}
+
