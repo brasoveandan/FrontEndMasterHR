@@ -167,7 +167,7 @@ export default class ViewTimesheet extends React.Component{
                                     </div>
                                     <div className="col-sm-12">
                                         <div className="table-responsive rounded">
-                                            <table className="table bg-white table-striped">
+                                            <table className="table bg-white table-striped table-hover">
                                                 <thead className="text-center">
                                                 <tr>
                                                     <th>Ziua</th>

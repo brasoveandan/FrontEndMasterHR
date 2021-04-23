@@ -76,6 +76,12 @@
     transform: scale(1.1);
 }
 
+.my-btn-table:hover{
+    background-color: #f8b500 !important;
+    color: #3b4650 !important;
+    font-weight: bold;
+}
+
 
 
 

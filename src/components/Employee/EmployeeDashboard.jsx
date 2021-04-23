@@ -9,6 +9,7 @@ import ViewPayslip from "../../common/ViewPayslip";
 import AddRequestForm from "../../common/AddRequestForm";
 import ViewTimesheet from "../../common/ViewTimesheet";
 import ViewHoliday from "../../common/ViewHoliday";
+import ViewRequest from "../../common/ViewRequest";
 
 class EmployeeDashboard extends React.Component {
 
@@ -29,7 +30,7 @@ class EmployeeDashboard extends React.Component {
             case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
             case "inregistrare_cerere" : this.setState({render: <AddRequestForm/>}); break;
-            case "istoric_cereri" : this.setState({render: <NotFoundPage/>}); break;
+            case "istoric_cereri" : this.setState({render: <ViewRequest/>}); break;
             case "adauga_pontaj" : this.setState({render: <NotFoundPage/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <LandingPage/>})
