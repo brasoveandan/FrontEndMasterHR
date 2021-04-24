@@ -3,6 +3,7 @@ import React from 'react';
 import logo from "../../src/img/logo/MasterHR.png";
 import {Logo} from "react-sidebar-ui";
 import SidebarButton from "./SidebarButton";
+import {Container, Row} from "react-bootstrap";
 
 
 
@@ -72,8 +73,8 @@ export default class SidebarDashboard extends React.Component {
 
     renderAdminSidebar() {
         return (
-            <div className="container-fluid" onClick={this.handleCollapse}>
-                <div className="row">
+            <Container fluid onClick={this.handleCollapse}>
+                <Row>
                     <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" />
@@ -86,15 +87,15 @@ export default class SidebarDashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Container>
         )
     }
 
     renderEmployeeSidebar(){
         return (
-            <div className="container-fluid" onClick={this.handleCollapse}>
-                <div className="row">
+            <Container fluid onClick={this.handleCollapse}>
+                <Row>
                     <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" show = {this.show}/>
@@ -110,15 +111,15 @@ export default class SidebarDashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Container>
         )
     }
 
     renderGroupLeaderSidebar() {
         return (
-            <div className="container-fluid" onClick={this.handleCollapse}>
-                <div className="row">
+            <Container fluid onClick={this.handleCollapse}>
+                <Row>
                     <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
@@ -136,15 +137,15 @@ export default class SidebarDashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Container>
         )
     }
 
     renderEmployeeHRSidebar(){
         return (
-            <div className="container-fluid" onClick={this.handleCollapse}>
-                <div className="row">
+            <Container fluid onClick={this.handleCollapse}>
+                <Row>
                     <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
@@ -164,15 +165,15 @@ export default class SidebarDashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Container>
         )
     }
 
     renderResponsiveHRSidebar(){
         return (
-            <div className="container-fluid" onClick={this.handleCollapse}>
-                <div className="row">
+            <Container fluid onClick={this.handleCollapse}>
+                <Row>
                     <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
@@ -189,8 +190,8 @@ export default class SidebarDashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </Row>
+            </Container>
         )
     }
 
