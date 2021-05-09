@@ -1,9 +1,10 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import NotFoundPage from "../utils/NotFoundPage";
 import SidebarDashboard from "../../common/SidebarDashboard";
 import AdminLandingPage from "./AdminLandinPage";
+import ViewAccounts from "./viewAccounts";
+import AddAccount from "./addAccount";
 
 class AdminDashboard extends React.Component {
 
@@ -19,8 +20,8 @@ class AdminDashboard extends React.Component {
 
     show(type){
         switch(type){
-            case "vizualizare_conturi": this.setState({render : <NotFoundPage/>}); break;
-            case "adauga_cont": this.setState({render: <NotFoundPage/>}); break;
+            case "vizualizare_conturi": this.setState({render : <ViewAccounts/>}); break;
+            case "adauga_cont": this.setState({render: <AddAccount/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <AdminLandingPage/>})
         }

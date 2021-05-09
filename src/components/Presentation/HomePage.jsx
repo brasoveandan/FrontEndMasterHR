@@ -1,6 +1,8 @@
 import React from "react";
 import backImage from "../../img/logo/MasterHR-logos_transparent.png"
 import NavBar from "../utils/NavBar";
+import {Card, CardImg} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 class HomePage extends React.Component{
     render() {
@@ -9,17 +11,17 @@ class HomePage extends React.Component{
         return (
             <React.Fragment>
                 <NavBar/>
-                <div className="card bg-transparent border-0" style={{width: "100%",margin: "0 auto"}}>
-                    <img className="card-img-bottom card-image-home" alt="cardImage" style={{borderRadius: "5%"}} src={backImage} />
-                    <div className="card-footer bg-transparent align-self-center">
+                <Card className="bg-transparent border-0" style={{width: "100%",margin: "0 auto"}}>
+                    <CardImg variant="bottom" className="card-image-home" alt="cardImage" style={{borderRadius: "5%"}} src={backImage} />
+                    <Card.Footer className="bg-transparent align-self-center">
                         <h5 className="text-muted">
-                            <a href="/login" className="btn my-btn" style={{fontSize: "18px"}}>Conectare</a>
+                            <Link to="/login" className="btn my-btn" style={{fontSize: "18px"}}>Conectare</Link>
                         </h5>
-                    </div>
-                </div>
+                    </Card.Footer>
+                </Card>
             </React.Fragment>
         );
     }
-};
+}
 
 export default HomePage;

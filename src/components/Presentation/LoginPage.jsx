@@ -10,12 +10,11 @@ class LoginPage extends React.Component {
         super(props);
         this.state = {
             username: "",
-            password: ""
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.doSubmit = this.doSubmit.bind(this);
-    }
+            password: "",
+        }
 
+        this.handleChange = this.handleChange.bind(this);
+    }
 
     doSubmit = (e) => {
         e.preventDefault()
@@ -47,7 +46,6 @@ class LoginPage extends React.Component {
                         else if (adminRole === "HR_DEPARTMENT_RESPONSIVE")
                             this.props.history.replace("/responsivehrdashboard");
                         else if (adminRole === "ADMIN") {
-                            console.log("Da")
                             this.props.history.replace("/admindashboard");
                         }
                     });
@@ -83,10 +81,9 @@ class LoginPage extends React.Component {
                 <NavBar/>
                 <div className="align-content-center">
                     <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "2%", marginBottom: "2%"}}>
-                        <Form className="d-flex  flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
+                        <Form className="d-flex flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
                             <h3 className="align-self-center text-white text-uppercase">Autentificare</h3>
                             <hr/>
-
                             <Form.Group controlId="formUser">
                                 <Form.Label className="my-label">Nume utilizator</Form.Label>
                                 <InputGroup className="mb-2">
@@ -94,7 +91,6 @@ class LoginPage extends React.Component {
                                     <Form.Control className="align-self-center bg-white mt-3" name="username" type="text" placeholder="Nume de utilizator" onChange={this.handleChange}/>
                                 </InputGroup>
                             </Form.Group>
-
                             <Form.Group controlId="formPassword">
                                 <Form.Label className="my-label">Parola</Form.Label>
                                 <InputGroup className="mb-2">
@@ -106,7 +102,7 @@ class LoginPage extends React.Component {
                                 <Form.Check className="text-white" type="checkbox" label="Pastreaza datele" />
                             </Form.Group>
                             <Button className="align-self-center my-btn" type="submit" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
-                                Trimite
+                                Autetintificare
                             </Button>
                             <br/>
                             <Form.Group controlId="formForgotPassword" className="align-self-center">

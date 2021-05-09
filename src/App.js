@@ -4,6 +4,7 @@ import './css/sidebar.css'
 import './css/utils.css'
 import './css/timesheetView.css'
 import 'bootstrap/dist/css/bootstrap-grid.css'
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import React from "react";
 import HomePage from "./components/Presentation/HomePage";
 import Switch from "react-bootstrap/Switch";

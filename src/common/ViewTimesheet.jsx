@@ -1,6 +1,19 @@
 import React from "react";
-import {Button, Card, Col, Container, Modal, ProgressBar, Row, Table} from "react-bootstrap";
-import {FaTimes, MdEdit} from "react-icons/all";
+import {
+    Button,
+    Card,
+    Col,
+    Container,
+    Form,
+    FormGroup,
+    FormLabel,
+    Modal,
+    ProgressBar,
+    Row,
+    Table
+} from "react-bootstrap";
+import {FaTimes} from "react-icons/all";
+import { format } from "date-fns";
 
 export default class ViewTimesheet extends React.Component{
     constructor(){
@@ -8,22 +21,28 @@ export default class ViewTimesheet extends React.Component{
         this.state = {
             timesheet: [],
             clocking: [],
-            pontaj: false,
-            show: false
+            status: localStorage.getItem("status") ? localStorage.getItem("status") : "depontat",
+            workDate: localStorage.getItem("workDate") ? new Date(localStorage.getItem("workDate")) : "",
+            workDateAfterClocking: localStorage.getItem("workDateAfterClocking") ? new Date(localStorage.getItem("workDateAfterClocking")) : "",
+            show: false,
+            value: "",
+            ora_intrare: "",
+            ora_iesire: "",
+            motiv: ""
         };
 
         this.openModal = this.openModal.bind(this)
         this.closeModal = this.closeModal.bind(this)
+        this.handlePontaj = this.handlePontaj.bind(this)
+        this.handleDepontaj = this.handleDepontaj.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.handlePontajManual = this.handlePontajManual.bind(this)
+        this.handleFilter = this.handleFilter.bind(this)
 
         let newDate = new Date();
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
-
-        const payload = {
-            idTimesheet: localStorage.getItem('username') + year + month
-        }
-
-        fetch('http://localhost:8080/timesheet/' + payload.idTimesheet, {
+        fetch('http://localhost:8080/timesheet/' + localStorage.getItem('username') + year + month, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
@@ -35,14 +54,13 @@ export default class ViewTimesheet extends React.Component{
                     res.json().then(json =>{
                         this.setState({timesheet: json});
                     });
-                    // LOGIN PERSISTANCE
                 }
                 else {
-                    console.log("error")
-                    console.log(payload.idTimesheet)
+                    console.log("error timesheet")
                 }
             })
-        fetch('http://localhost:8080/clocking', {
+
+        fetch('http://localhost:8080/clocking/' + localStorage.getItem('username'), {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
@@ -54,7 +72,6 @@ export default class ViewTimesheet extends React.Component{
                     res.json().then(json =>{
                         this.setState({clocking: json});
                     });
-                    // LOGIN PERSISTANCE
                 }
                 else {
                     console.log("error clocking")
@@ -74,22 +91,120 @@ export default class ViewTimesheet extends React.Component{
         });
     };
 
+    handlePontaj() {
+        const payload = {
+            usernameEmployee: localStorage.getItem("username"),
+            fromHour: new Date(),
+            toHour: new Date(),
+        }
+        fetch('http://localhost:8080/clocking', {
+            method: 'POST',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(res => {
+                if (res.status === 200)
+                {
+                    this.setState({
+                        status: "pontat",
+                        workDate: payload.fromHour,
+                    })
+                    localStorage.setItem("status", "pontat")
+                    localStorage.setItem("workDate", payload.fromHour)
+                    alert("Succes")
+                }
+                else if (res.status === 409)
+                    alert("Conflict")
+                else
+                    alert("Exception")
+            })
+
+    }
+
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    };
+
+    handlePontajManual() {
+        const payload = {
+            usernameEmployee: localStorage.getItem("username"),
+            type: this.state.value,
+            fromHour: this.state.ora_intrare,
+            toHour: this.state.ora_iesire,
+            reason: this.state.motiv
+        }
+        fetch('http://localhost:8080/clocking', {
+            method: 'POST',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(res => {
+                if (res.status === 200)
+                    alert("Succes")
+                else if (res.status === 409)
+                    alert("Conflict")
+                else
+                    alert("Exception")
+            })
+        this.setState({
+            show: false
+        });
+    }
+
+    handleDepontaj() {
+        const payload = {
+            usernameEmployee: localStorage.getItem("username"),
+            toHour: new Date()
+        }
+        fetch('http://localhost:8080/clocking', {
+            method: 'PUT',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    this.setState({
+                        status: "endOfDay",
+                        workDateAfterClocking: payload.toHour,
+                    })
+                    localStorage.setItem("status", "endOfDay")
+                    localStorage.setItem("workDateAfterClocking", payload.toHour)
+                    alert("Succes")
+                }
+                else if (res.status === 409)
+                    alert("Conflict")
+                else
+                    alert("Exception")
+            })
+    }
+
     handleFilter () {
         return (
-            this.state.clocking.map((item, index) => (
-                    <tr>
-                        <td>{index + 1}</td>
-                        <td>{item.fromHour}</td>
-                        <td>{item.toHour}</td>
-                        <td>{item.fromHour - item.toHour}</td>
-                        <td>0</td>
-                    </tr>
-                ))
+            this.state.clocking.map((item) => (
+                <tr>
+                    <td>{item.day}</td>
+                    <td>{item.fromHour}</td>
+                    <td>{item.toHour}</td>
+                    <td>{item.workedHours}</td>
+                    <td>{item.overtimeHours ? item.overtimeHours : <FaTimes/>}</td>
+                </tr>
+            ))
         )
     }
 
     render(){
-        let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeLeave, fromHourClocking, toHourClocking} = this.state.timesheet;
+        let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeLeave} = this.state.timesheet;
         return (
             <Container fluid>
                 <Row className="mt-4 mb-4 ml-sm-5 ml-md-0" style={{opacity: ".85"}}>
@@ -98,18 +213,45 @@ export default class ViewTimesheet extends React.Component{
                             <Card.Body>
                                 <Row>
                                     <Col sm={6} className="mb-3">
-                                        <Card className="punch-status">
+                                        <Card className="punch-status"  style={{height: "407px"}}>
                                             <Card.Body>
                                                 <h5 className="card-title">Pontaj
-                                                    <span className="text-muted"> 11 Mar 2019</span>
+                                                    <span className="text-muted ml-2">
+                                                         {new Date().toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})}
+                                                    </span>
                                                 </h5>
-                                                <div className="punch-det text-white bg-dark">
-                                                    <h6>Pontat la</h6>
-                                                    <p>Wed, 11th Mar 2019 10.00 AM</p>
-                                                </div>
+                                                {this.state.status === "depontat" ?
+                                                    <div className="punch-det text-white bg-dark">
+                                                        <h6>Status: NEPONTAT</h6>
+                                                        <p>Adăugare pontaj manual - pontare pentru o altă zi sau ziua de telemuncă.</p>
+                                                        <p>Pontare - adaugă pontaj pentru ziua în curs.</p>
+                                                    </div>
+                                                    :
+                                                    this.state.status === "pontat" ?
+                                                        <div className="punch-det text-white bg-dark">
+                                                            <h6>Status: PONTAT</h6>
+                                                            <p>{this.state.workDate.toLocaleDateString("ro-RO", {hour: "numeric", minute: "numeric", weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
+                                                        </div>
+                                                        : ""
+                                                }
                                                 <div className="text-center">
-                                                    <Button className="my-btn punch-btn" type="button">{(this.state.pontaj) ? "Depontare" : "Pontare"}</Button>
+                                                    {this.state.status === "depontat" ?
+                                                        <Button className="my-btn punch-btn" type="button" onClick={this.handlePontaj}>{"Pontare"}</Button>
+                                                        :
+                                                        this.state.status === "pontat" ?
+                                                            <Button className="my-btn punch-btn" type="button" onClick={this.handleDepontaj}>{"Depontare"}</Button>
+                                                            : ""
+                                                    }
                                                 </div>
+                                                {this.state.status === "endOfDay" ?
+                                                    <div className="punch-det text-white bg-dark text-center">
+                                                        <div><h6 className="font-weight-bold mb-3">- Sumarul zilei -</h6></div>
+                                                        <p>Pontat:  {format(this.state.workDate, "HH:mm")}</p>
+                                                        <p>Depontat: {format(this.state.workDateAfterClocking, "HH:mm")}</p>
+                                                        <p>Ore lucrate: {this.state.workDateAfterClocking.getHours() - this.state.workDate.getHours()}</p>
+                                                    </div>
+                                                    : ""
+                                                }
                                             </Card.Body>
                                             <div className="card-footer bg-white border-top border-dark text-center">
                                                 <Button className="my-btn" type="button" onClick={this.openModal}>Adaugă pontaj manual</Button>
@@ -120,41 +262,41 @@ export default class ViewTimesheet extends React.Component{
                                                 </Modal.Header>
                                                 <Modal.Body>
                                                     <div className="container container-fluid mt-5 mb-5">
-                                                        <div className="card">
-                                                            <div className="card-header">
-                                                                <div className="card-body">
-                                                                    <form>
-                                                                        <div className="form-group">
-                                                                            <label>Tip<span className="text-danger">*</span></label>
-                                                                            <select className="select select2-hidden-accessible" data-select2-id="7" tabIndex="-1" aria-hidden="true">
-                                                                                <option data-select2-id="9">Selectează Tip</option>
-                                                                                <option data-select2-id="18">Telemuncă</option>
-                                                                                <option data-select2-id="19">Normal</option>
+                                                        <Card>
+                                                            <Card.Header>
+                                                                <Card.Body>
+                                                                    <Form>
+                                                                        <FormGroup>
+                                                                            <FormLabel>Tip<span className="text-danger">*</span></FormLabel>
+                                                                            <select className="form-control" name="value" value={this.state.value} onChange={this.handleChange}>
+                                                                                <option>Selectează Tip</option>
+                                                                                <option value="Telemuncă">Telemuncă</option>
+                                                                                <option value="Normal">Normal</option>
                                                                             </select>
-                                                                        </div>
-                                                                        <div className="form-group">
+                                                                        </FormGroup>
+                                                                        <FormGroup>
                                                                             <label>Oră intrare <span className="text-danger">*</span></label>
                                                                             <div className="cal-icon">
-                                                                                <input className="form-control" placeholder="Ora intrare" type="datetime-local"/>
+                                                                                <input className="form-control" placeholder="Ora intrare" name="ora_intrare" type="datetime-local" onChange={this.handleChange}/>
                                                                             </div>
-                                                                        </div>
-                                                                        <div className="form-group">
+                                                                        </FormGroup>
+                                                                        <FormGroup>
                                                                             <label>Oră ieșire <span className="text-danger">*</span></label>
                                                                             <div className="cal-icon">
-                                                                                <input className="form-control" placeholder="Ora iesire" type="datetime-local"/>
+                                                                                <input className="form-control" placeholder="Ora iesire" name="ora_iesire" type="datetime-local" onChange={this.handleChange}/>
                                                                             </div>
-                                                                        </div>
-                                                                        <div className="form-group">
+                                                                        </FormGroup>
+                                                                        <FormGroup>
                                                                             <label>Motiv <span className="text-danger">*</span></label>
-                                                                            <textarea rows="3" className="form-control"/>
-                                                                        </div>
+                                                                            <textarea rows="3" className="form-control" name="motiv" onChange={this.handleChange}/>
+                                                                        </FormGroup>
                                                                         <div className="submit-section text-center">
-                                                                            <button className="my-btn">Trimite</button>
+                                                                            <button className="my-btn" type="button" onClick={this.handlePontajManual}>Trimite</button>
                                                                         </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                                    </Form>
+                                                                </Card.Body>
+                                                            </Card.Header>
+                                                        </Card>
                                                     </div>
                                                 </Modal.Body>
                                             </Modal>
@@ -168,15 +310,15 @@ export default class ViewTimesheet extends React.Component{
                                                 </Card.Title>
                                                 <div className="stats-list">
                                                     <div className="stats-info bg-dark text-white">
-                                                        <span>Luna curentă <strong>{workedHours} <small>/ {requiredHours} ore</small></strong></span>
+                                                        <span>Ore lucrate <strong>{workedHours} <small>/ {requiredHours} ore</small></strong></span>
                                                         <ProgressBar now={workedHours / requiredHours * 100}/>
                                                     </div>
                                                     <div className="stats-info bg-dark text-white">
-                                                        <span>Ore telemuncă <strong>{homeOfficeHours} <small>/ 40</small></strong></span>
-                                                        <ProgressBar now={homeOfficeHours / 40 * 100}/>
+                                                        <span>Ore telemuncă <strong>{homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
+                                                        <ProgressBar now={homeOfficeHours / requiredHours * 100}/>
                                                     </div>
                                                     <div className="stats-info bg-dark text-white">
-                                                        <span>Ore necesare <strong>{workedHours + homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
+                                                        <span>Luna curentă <strong>{workedHours + homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
                                                         <ProgressBar now={(workedHours + homeOfficeHours) / requiredHours * 100}/>
                                                     </div>
                                                     <div className="stats-info bg-dark text-white">
@@ -190,9 +332,11 @@ export default class ViewTimesheet extends React.Component{
                                         </Card>
                                     </Col>
                                     <Col sm={12} className="text-center mb-3">
+                                        <label className="text-white font-weight-bold">An:</label>
                                         <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="an" type="text" placeholder="An" defaultValue={year} onChange={this.handleChange}/>
+                                        <label className="text-white font-weight-bold">Luna:</label>
                                         <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="luna" type="text" placeholder="Luna" defaultValue={month} onChange={this.handleChange}/>
-                                        <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="submit" onClick={this.handleFilter}>Caută</Button>
+                                        <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="button" onClick={this.handleFilter}>Caută</Button>
                                     </Col>
                                     <Col sm={12}>
                                         <Table responsive striped hover className="bg-white">
@@ -218,4 +362,5 @@ export default class ViewTimesheet extends React.Component{
             </Container>
         );
     }
+
 }

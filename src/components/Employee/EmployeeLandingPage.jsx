@@ -7,7 +7,7 @@ export default class EmployeeLandingPage extends LandingPage{
         return (
             <div>
                 {this.renderPage(
-                    <p className="card-text">
+                    <p>
                         Navigând prin meniul din stânga vei putea efectua următoarele:
                         <br/>- poți vizualiza detaliile contractuale
                         <br/>- poți înregistra o cerere

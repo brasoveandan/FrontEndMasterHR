@@ -75,7 +75,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-2 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" />
                             {this.renderLogo()}
@@ -96,7 +96,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" show = {this.show}/>
                             {this.renderLogo()}
@@ -105,7 +105,6 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
                             </div>
@@ -120,7 +119,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
                             {this.renderLogo()}
@@ -128,9 +127,8 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Detalii contract" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Adaugă pontaj" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare cereri" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Înregistrare cerere" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
@@ -146,7 +144,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
                             {this.renderLogo()}
@@ -154,9 +152,7 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Detalii contract" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Adaugă pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Înregistrare cerere" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Editare conturi" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Inchidere luna" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Calcul salar" show = {this.show}/>
@@ -174,7 +170,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
                             {this.renderLogo()}
@@ -182,7 +178,7 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Detalii contract" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Adaugă pontaj" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Înregistrare cerere" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
                             <div className="sidebar-footer">

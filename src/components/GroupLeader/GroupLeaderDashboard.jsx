@@ -5,6 +5,10 @@ import NotFoundPage from "../utils/NotFoundPage";
 import GroupLeaderLandingPage from "./GroupLeaderLandingPage";
 import ViewContract from "../../common/ViewContract";
 import SidebarDashboard from "../../common/SidebarDashboard";
+import ViewPayslip from "../../common/ViewPayslip";
+import ViewTimesheet from "../../common/ViewTimesheet";
+import ViewHoliday from "../../common/ViewHoliday";
+import ViewRequest from "../../common/ViewRequest";
 
 class GroupLeaderDashboard extends React.Component {
 
@@ -21,13 +25,11 @@ class GroupLeaderDashboard extends React.Component {
     show(type){
         switch(type){
             case "detalii_contract": this.setState({render: <ViewContract/>}); break;
-            case "vizualizare_pontaj": this.setState({render : <NotFoundPage/>}); break;
-            case "fluturas_salariu": this.setState({render: <NotFoundPage />}); break;
-            case "vizualizare_concedii" : this.setState({render: <NotFoundPage />}); break;
-            case "vizualizare_cereri" : this.setState({render: <NotFoundPage />}); break;
-            case "inregistrare_cerere" : this.setState({render: <NotFoundPage/>}); break;
+            case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
+            case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
+            case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
+            case "vizualizare_cereri" : this.setState({render: <ViewRequest/>}); break;
             case "istoric_cereri" : this.setState({render: <NotFoundPage/>}); break;
-            case "adauga_pontaj" : this.setState({render: <NotFoundPage/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <GroupLeaderLandingPage/>})
         }

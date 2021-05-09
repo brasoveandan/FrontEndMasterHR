@@ -8,7 +8,7 @@ export default class GroupLeaderLandingPage extends LandingPage{
         return (
             <div>
                 {this.renderPage(
-                    <p className="card-text">
+                    <p>
                         Ca Group Leader vei putea efectua următoarele:
                         <br/>- poți vizualiza detaliile contractuale
                         <br/>- poți vizualiza cererile echipei tale

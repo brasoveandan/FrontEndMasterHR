@@ -11,9 +11,7 @@ export default class ForgotPasswordPage extends React.Component {
             email: ""
         };
         this.handleChange = this.handleChange.bind(this);
-        this.doSubmit = this.doSubmit.bind(this);
     }
-
 
     doSubmit = (e) => {
         e.preventDefault()
@@ -81,10 +79,9 @@ export default class ForgotPasswordPage extends React.Component {
                 <NavBar/>
                 <div className="align-content-center">
                     <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "2%", marginBottom: "2%"}}>
-                        <Form className="d-flex  flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
+                        <Form className="d-flex flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
                             <h3 className="align-self-center text-white text-uppercase">Schimbare Parola</h3>
                             <hr/>
-
                             <Form.Group controlId="formUser">
                                 <Form.Label className="my-label">Email</Form.Label>
                                 <InputGroup className="mb-2" >
@@ -92,7 +89,6 @@ export default class ForgotPasswordPage extends React.Component {
                                     <Form.Control className="align-self-center bg-white" name="email" type="email" placeholder="Email" onChange={this.handleChange}/>
                                 </InputGroup>
                             </Form.Group>
-
                             <Button className="align-self-center my-btn" type="submit" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
                                 Trimite
                             </Button>

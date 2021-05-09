@@ -1,15 +1,12 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import NotFoundPage from "../utils/NotFoundPage";
 import LandingPage from "./EmployeeLandingPage";
 import ViewContract from "../../common/ViewContract";
 import SidebarDashboard from "../../common/SidebarDashboard";
 import ViewPayslip from "../../common/ViewPayslip";
-import AddRequestForm from "../../common/AddRequestForm";
 import ViewTimesheet from "../../common/ViewTimesheet";
 import ViewHoliday from "../../common/ViewHoliday";
-import ViewRequest from "../../common/ViewRequest";
 
 class EmployeeDashboard extends React.Component {
 
@@ -29,9 +26,6 @@ class EmployeeDashboard extends React.Component {
             case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
             case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
-            case "inregistrare_cerere" : this.setState({render: <AddRequestForm/>}); break;
-            case "istoric_cereri" : this.setState({render: <ViewRequest/>}); break;
-            case "adauga_pontaj" : this.setState({render: <NotFoundPage/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <LandingPage/>})
         }
@@ -48,10 +42,10 @@ class EmployeeDashboard extends React.Component {
         return (
                 <Container fluid>
                     <Row>
-                        <Col className="col-sm-12 col-md-3" xs={3} id="sidebar-wrapper">
+                        <Col xs={3} sm={12} md={3}  id="sidebar-wrapper">
                             <SidebarDashboard show={this.show}/>
                         </Col>
-                        <Col className="col-sm-12 col-md-9 col-xl-8" xs={9} id="page-content-wrapper">
+                        <Col xs={9}  sm={12} md={9} xl={8} id="page-content-wrapper">
                             { this.state.render }
                         </Col>
                     </Row>

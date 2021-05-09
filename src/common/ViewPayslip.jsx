@@ -1,6 +1,6 @@
 import React from "react";
 import {FaTimes} from "react-icons/all";
-import {Button, Card, CardColumns, CardDeck, Col, Row, Table} from "react-bootstrap";
+import {Button, Card, CardDeck, Col, Row, Table} from "react-bootstrap";
 
 export default class ViewPayslip extends React.Component{
     constructor(){
@@ -26,7 +26,7 @@ export default class ViewPayslip extends React.Component{
                         Fluturaș Salariu
                     </Card.Header>
                     <Card.Body>
-                        <h4 className="payslip-title">Fluturaș Salariu {month}-{year}</h4>
+                        <h4 className="payslip-title">Fluturaș Salariu <strong className="font-italic">{new Date(year, month - 1).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long'})}</strong></h4>
                         <Row>
                             <Col sm={6} className="col-sm-6 m-b-20">
                                 <ul className="list-unstyled">
@@ -206,7 +206,7 @@ export default class ViewPayslip extends React.Component{
             <CardDeck className="justify-content-center d-flex align-items-center align-middle mt-3 col-auto">
                 <input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-lg-0 mr-5 rounded border" name="an" type="text" placeholder="An" onChange={this.handleChange}/>
                 <input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-md-0 mr-5 rounded border" name="luna" type="text" placeholder="Luna" onChange={this.handleChange}/>
-                <Button className="my-btn mt-md-4 mb-2" onClick={this.handleFilter}>Caută</Button>
+                <Button className="my-btn mt-md-4 mb-2" onClick={this.handleFilter}>Vizualizare</Button>
                 {this.state.bool ? null : this.renderPayslip(this.state.payslip)}
             </CardDeck>
     );
