@@ -291,7 +291,7 @@ export default class ViewTimesheet extends React.Component{
                                                                             <textarea rows="3" className="form-control" name="motiv" onChange={this.handleChange}/>
                                                                         </FormGroup>
                                                                         <div className="submit-section text-center">
-                                                                            <button className="my-btn" type="button" onClick={this.handlePontajManual}>Trimite</button>
+                                                                            <button className="my-btn" type="button" onClick={this.handlePontajManual}>Pontare</button>
                                                                         </div>
                                                                     </Form>
                                                                 </Card.Body>

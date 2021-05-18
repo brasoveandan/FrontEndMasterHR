@@ -22,7 +22,6 @@ import ResetPasswordPage from "./components/Presentation/ResetPasswordPage";
 import PrivateRouteEmployeeHR from "./components/utils/PrivateRouteEmployeeHR";
 import EmployeeHRDashboard from "./components/EmployeeHR/EmployeeHRDashboard";
 import PrivateRouteResponsiveHR from "./components/utils/PrivateRouteResponsiveHR";
-import ResponsiveHRDashboard from "./components/ResponsiveHR/ResponsiveHRDashboard";
 
 function App() {
   return (
@@ -36,7 +35,6 @@ function App() {
               <PrivateRouteAdmin path="/admindashboard" component={AdminDashboard}/>
               <PrivateRouteEmployeeHR path="/employeehrdashboard" component={EmployeeHRDashboard}/>
               <PrivateRouteGroupLeader path="/groupleaderdashboard" component={GroupLeaderDashboard}/>
-              <PrivateRouteResponsiveHR path="/responsivehrdashboard" component={ResponsiveHRDashboard}/>
               <PrivateRouteEmployee path="/employeedashboard" component={EmployeeDashboard}/>
 
               <Route path="/not-found" component={NotFoundPage} />

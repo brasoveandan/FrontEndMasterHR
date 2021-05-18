@@ -18,7 +18,7 @@ export default class ViewPayslip extends React.Component{
     }
 
      renderPayslip = (payslip) => {
-        let {year, month, idPayslip, firstName, lastName, companyName, personalNumber, department, position, baseSalary, grossSalary, overtimeIncreases, increases, ticketsValue, workedHours, homeOfficeHours, requiredHours, overtimeHours, cas, cass, iv, taxExempt, netSalary} = payslip;
+        let {year, month, idPayslip, firstName, lastName, companyName, personalNumber, department, position, baseSalary, currency, grossSalary, overtimeIncreases, increases, ticketsValue, workedHours, homeOfficeHours, requiredHours, overtimeHours, cas, cass, iv, taxExempt, netSalary} = payslip;
         return (
             <Col xs={12} md={10} className="ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
                 <Card className="text-left mb-4 ml-xl-0" style={{opacity: ".85"}} >
@@ -50,31 +50,31 @@ export default class ViewPayslip extends React.Component{
                                     <tbody>
                                         <tr>
                                             <td><strong>Salariu de bază</strong>
-                                                <span className="float-right">{baseSalary} Ron</span>
+                                                <span className="float-right">{baseSalary} {currency}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Plată ore suplimentare</strong>
-                                                <span className="float-right">{overtimeIncreases} Ron</span>
+                                                <span className="float-right">{overtimeIncreases} {currency}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Sporuri</strong> <span
-                                                className="float-right">{increases} Ron</span></td>
+                                                className="float-right">{increases} {currency}</span></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Salariu Brut</strong>
-                                                <span className="float-right"><strong>{grossSalary} Ron</strong></span>
+                                                <span className="float-right"><strong>{grossSalary} {currency}</strong></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Tichete de masă</strong>
-                                                <span className="float-right">{ticketsValue} Ron</span>
+                                                <span className="float-right">{ticketsValue} {currency}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Total Venituri</strong>
-                                                <span className="float-right"><strong>{baseSalary + ticketsValue + overtimeIncreases + increases} Ron</strong></span>
+                                                <span className="float-right"><strong>{baseSalary + ticketsValue + overtimeIncreases + increases} {currency}</strong></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -119,22 +119,22 @@ export default class ViewPayslip extends React.Component{
                                     <tbody>
                                     <tr>
                                         <td><strong>Asigurări Sociale (CAS) 25%</strong>
-                                            <span className="float-right">{cas} Ron</span>
+                                            <span className="float-right">{cas} {currency}</span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Asigurări Sociale de Sănătate (CASS) 10%</strong>
-                                            <span className="float-right">{cass} Ron</span>
+                                            <span className="float-right">{cass} {currency}</span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Impozit pe venit (IV) 10%</strong>
-                                            <span className="float-right">{taxExempt ? <FaTimes/> : iv + " Ron"} </span>
+                                            <span className="float-right">{taxExempt ? <FaTimes/> : iv + " " + currency} </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Total Taxe</strong>
-                                            <span className="float-right"><strong>{cas + cass + iv} Ron</strong></span>
+                                            <span className="float-right"><strong>{cas + cass + iv} {currency}</strong></span>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -148,12 +148,12 @@ export default class ViewPayslip extends React.Component{
                                     <tbody>
                                     <tr>
                                         <td className="text-center"><strong>Salariu Net: </strong>
-                                            <span>{netSalary} Ron</span>
+                                            <span>{netSalary} {currency}</span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td className="text-center"><strong>Tichete de masă: </strong>
-                                            <span>{ticketsValue * 90 / 100} Ron</span>
+                                            <span>{ticketsValue * 90 / 100} {currency}</span>
                                         </td>
                                     </tr>
                                     </tbody>

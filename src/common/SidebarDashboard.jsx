@@ -22,18 +22,15 @@ export default class SidebarDashboard extends React.Component {
     show(type){
         switch(type){
             case "detalii_contract": this.props.show("detalii_contract"); break;
-            case "vizualizare_pontaj": this.props.show("vizualizare_pontaj"); break;
             case "fluturas_salariu": this.props.show("fluturas_salariu"); break;
+            case "vizualizare_pontaj": this.props.show("vizualizare_pontaj"); break;
             case "vizualizare_concedii" : this.props.show("vizualizare_concedii"); break;
-            case "inregistrare_cerere" : this.props.show("inregistrare_cerere"); break;
-            case "istoric_cereri" : this.props.show("istoric_cereri"); break;
+            case "vizualizare_cereri" : this.props.show("vizualizare_cereri"); break;
             case "vizualizare_conturi" : this.props.show("vizualizare_conturi"); break;
             case "adauga_cont" : this.props.show("adauga_cont"); break;
-            case "vizualizare_cereri" : this.props.show("vizualizare_cereri"); break;
-            case "editare_conturi" : this.props.show("editare_conturi"); break;
-            case "inchidere_luna" : this.props.show("inchidere_luna"); break;
-            case "calcul_salar" : this.props.show("calcul_salar"); break;
-            case "adauga_pontaj" : this.props.show("adauga_pontaj"); break;
+            case "cereri_angajati" : this.props.show("cereri_angajati"); break;
+            case "contracte_angajati" : this.props.show("contracte_angajati"); break;
+            case "pontaje_angajati" : this.props.show("pontaje_angajati"); break;
             case "logout": this.props.show("logout"); break;
             default: this.props.show();
         }
@@ -128,8 +125,7 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare cereri" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Cereri angajați" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
                             </div>
@@ -153,34 +149,8 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Editare conturi" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Inchidere luna" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Calcul salar" show = {this.show}/>
-                            <div className="sidebar-footer">
-                                <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
-                            </div>
-                        </div>
-                    </div>
-                </Row>
-            </Container>
-        )
-    }
-
-    renderResponsiveHRSidebar(){
-        return (
-            <Container fluid onClick={this.handleCollapse}>
-                <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
-                        <div className="list-group text-center text-md-left">
-                            <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
-                            {this.renderLogo()}
-                            <br/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Detalii contract" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Înregistrare cerere" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Istoric cereri" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Contracte Angajați" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Pontaje Angajați" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
                             </div>
@@ -192,7 +162,7 @@ export default class SidebarDashboard extends React.Component {
     }
 
     render() {
-        if (this.state.adminRole === "null") {
+        if (this.state.adminRole === "DEFAULT") {
             return (
                 this.renderEmployeeSidebar()
             )
@@ -210,11 +180,6 @@ export default class SidebarDashboard extends React.Component {
         else if (this.state.adminRole === "HR_EMPLOYEE") {
             return (
                 this.renderEmployeeHRSidebar()
-            )
-        }
-        else if (this.state.adminRole === "HR_DEPARTMENT_RESPONSIVE") {
-            return (
-                this.renderResponsiveHRSidebar()
             )
         }
     };

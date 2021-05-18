@@ -5,6 +5,9 @@ import NotFoundPage from "../utils/NotFoundPage";
 import ViewContract from "../../common/ViewContract";
 import SidebarDashboard from "../../common/SidebarDashboard";
 import EmployeeHRLandingPage from "./EmployeeHRLandingPage";
+import ViewPayslip from "../../common/ViewPayslip";
+import ViewTimesheet from "../../common/ViewTimesheet";
+import ViewHoliday from "../../common/ViewHoliday";
 
 class EmployeeHRDashboard extends React.Component {
 
@@ -21,15 +24,11 @@ class EmployeeHRDashboard extends React.Component {
     show(type){
         switch(type){
             case "detalii_contract": this.setState({render: <ViewContract/>}); break;
-            case "vizualizare_pontaj": this.setState({render : <NotFoundPage/>}); break;
-            case "fluturas_salariu": this.setState({render: <NotFoundPage />}); break;
-            case "vizualizare_concedii" : this.setState({render: <NotFoundPage />}); break;
-            case "inregistrare_cerere" : this.setState({render: <NotFoundPage/>}); break;
-            case "istoric_cereri" : this.setState({render: <NotFoundPage/>}); break;
-            case "editare_conturi" : this.setState({render: <NotFoundPage/>}); break;
-            case "inchidere_luna" : this.setState({render: <NotFoundPage/>}); break;
-            case "calcul_salar" : this.setState({render: <NotFoundPage/>}); break;
-            case "adauga_pontaj" : this.setState({render: <NotFoundPage/>}); break;
+            case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
+            case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
+            case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
+            case "contracte_angajati" : this.setState({render: <NotFoundPage/>}); break;
+            case "pontaje_angajati" : this.setState({render: <NotFoundPage/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <EmployeeHRLandingPage/>})
         }

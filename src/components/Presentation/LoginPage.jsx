@@ -37,7 +37,7 @@ class LoginPage extends React.Component {
                         const { adminRole, name } = json
                         localStorage.setItem('adminRole', adminRole)
                         localStorage.setItem('name', name)
-                        if (adminRole === "null")
+                        if (adminRole === "DEFAULT")
                             this.props.history.replace("/employeedashboard");
                         else if (adminRole === "GROUP_LEADER")
                             this.props.history.replace("/groupleaderdashboard");

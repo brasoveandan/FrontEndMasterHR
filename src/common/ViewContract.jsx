@@ -37,7 +37,7 @@ export default class ViewContract extends React.Component{
     }
 
     renderContract = (contract) => {
-        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt} = contract;
+        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt} = contract;
         if(expirationDate == null){
             expirationDate = false
         }
@@ -109,7 +109,12 @@ export default class ViewContract extends React.Component{
                                     </tr>
                                     <tr>
                                         <td><strong>Salar de bază: </strong>
-                                            <span className="float-right">{baseSalary} Ron</span>
+                                            <span className="float-right">{baseSalary}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Valută: </strong>
+                                            <span className="float-right">{currency}</span>
                                         </td>
                                     </tr>
                                     <tr>
