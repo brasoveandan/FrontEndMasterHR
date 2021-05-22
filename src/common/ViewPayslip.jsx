@@ -1,23 +1,45 @@
 import React from "react";
 import {FaTimes} from "react-icons/all";
-import {Button, Card, CardDeck, Col, Row, Table} from "react-bootstrap";
+import {Button, Card, CardDeck, Col, Modal, Row, Table} from "react-bootstrap";
+import MyForm from "../components/utils/MyForm";
+import * as Joi from "joi-browser";
 
-export default class ViewPayslip extends React.Component{
+export default class ViewPayslip extends MyForm{
     constructor(){
         super(undefined);
         this.state = {
             payslip: [],
-            an: "",
-            luna: "",
-            bool: true
+            data: {
+                year: "",
+                month: ""
+            },
+            errors: {},
+            bool: true,
+            showAlert: false
         };
 
         this.renderPayslip = this.renderPayslip.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleFilter = this.handleFilter.bind(this);
     }
 
-     renderPayslip = (payslip) => {
+    schema = {
+        year: Joi.string().required().error(() => {return {message: "Anul trebuie selectat."}}),
+        month: Joi.string().required().error(() => {return {message: "Luna trebuie selectată."}}),
+    }
+
+    closeAlert = () => {
+        this.setState({
+            showAlert: false
+        })
+    }
+
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    };
+
+    renderPayslip = (payslip) => {
         let {year, month, idPayslip, firstName, lastName, companyName, personalNumber, department, position, baseSalary, currency, grossSalary, overtimeIncreases, increases, ticketsValue, workedHours, homeOfficeHours, requiredHours, overtimeHours, cas, cass, iv, taxExempt, netSalary} = payslip;
         return (
             <Col xs={12} md={10} className="ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
@@ -166,19 +188,13 @@ export default class ViewPayslip extends React.Component{
         );
     }
 
-    handleChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    };
-
-    handleFilter = () => {
+    doSubmit = (action) => {
         const payload = {
             username: localStorage.getItem('username'),
-            an : this.state.an,
-            luna: this.state.luna
+            year : this.state.data.year,
+            month: this.state.data.month
         }
-        let payslipID = payload.username + payload.an + payload.luna
+        let payslipID = payload.username + payload.year + payload.month
         fetch('http://localhost:8080/payslip/' + payslipID, {
             method: 'GET',
             headers: {
@@ -189,14 +205,17 @@ export default class ViewPayslip extends React.Component{
             .then(res => {
                 if (res.status === 200) {
                     res.json().then(json =>{
-                        this.setState({payslip: json});
-                        this.setState({bool: false});
+                        this.setState({
+                            payslip: json,
+                            bool: false
+                        });
                     });
-                    // LOGIN PERSISTANCE
                 }
                 else {
-                    console.log("error")
-                    console.log(payload.username)
+                    this.setState({
+                        msg: "Nu există fluturaș de salariu pentru anul și luna introduse. Reîncercați!",
+                        showAlert: true
+                    });
                 }
             })
     }
@@ -204,9 +223,25 @@ export default class ViewPayslip extends React.Component{
     render(){
         return (
             <CardDeck className="justify-content-center d-flex align-items-center align-middle mt-3 col-auto">
-                <input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-lg-0 mr-5 rounded border" name="an" type="text" placeholder="An" onChange={this.handleChange}/>
-                <input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-md-0 mr-5 rounded border" name="luna" type="text" placeholder="Luna" onChange={this.handleChange}/>
-                <Button className="my-btn mt-md-4 mb-2" onClick={this.handleFilter}>Vizualizare</Button>
+                {/*<input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-lg-0 mr-5 rounded border" name="an" type="text" placeholder="An" onChange={this.handleChange}/>*/}
+                {/*<input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-md-0 mr-5 rounded border" name="luna" type="text" placeholder="Luna" onChange={this.handleChange}/>*/}
+                {/*<Button className="my-btn mt-md-4 mb-2" onClick={this.handleFilter}>Vizualizare</Button>*/}
+                {this.renderSelect("form-control ml-5 ml-md-0 mr-5", "year", "", ["2021"])}
+                {this.renderSelect("form-control ml-5 ml-md-0 mr-5", "month", "", ["1", "2", "3"])}
+                <div className="text-center" onClick={(e) => this.handleSubmit(null, e)}>
+                    {this.renderButton("my-btn mt-md-4 mb-2", "VIZUALIZARE", "button")}
+                </div>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
+                    <Modal.Header>Notificare</Modal.Header>
+                    <Modal.Body>
+                        {this.state.msg}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.closeAlert}>
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 {this.state.bool ? null : this.renderPayslip(this.state.payslip)}
             </CardDeck>
     );

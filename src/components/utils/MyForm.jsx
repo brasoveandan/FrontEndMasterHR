@@ -32,14 +32,14 @@ export default class MyForm extends React.Component{
         return error ? error.details[0].message : null;
     }
 
-    handleSubmit = e => {
+    handleSubmit = (action, e) => {
         e.preventDefault();
 
         const errors = this.validate();
         this.setState({errors: errors || {} });
         if (errors) return;
 
-        this.doSubmit();
+        this.doSubmit(action);
     }
 
     handleChange = ({currentTarget: input }) => {

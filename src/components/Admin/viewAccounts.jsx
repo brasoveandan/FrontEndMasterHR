@@ -362,7 +362,7 @@ export default class ViewAccounts extends MyForm{
                             <td onClick={(e) => this.openDetailsModal(account, e)}>{account.username}</td>
                             <td onClick={(e) => this.openDetailsModal(account, e)}>{account.personalNumber}</td>
                             <td onClick={(e) => this.openDetailsModal(account, e)}>{account.mail}</td>
-                            <td className="text-center">
+                            <td>
                                 <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Editează" onClick={(e) => this.openEditModal(account, e)}><FiEdit/></Button>
                                 <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(account, e)}><FaBan/></Button>
                             </td>
@@ -373,7 +373,7 @@ export default class ViewAccounts extends MyForm{
                 <ReactPaginate
                     previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
                     nextClassName={this.state.pageCount === this.state.currentPage ? "invisible" : "visible"}
-                    containerClassName={this.state.pageCount > 0 ? "pagination visibile" : "invisible"}
+                    containerClassName={this.state.pageCount > 0 ? "pagination visible" : "invisible"}
                     previousLabel={"← Înapoi"}
                     nextLabel={"Mai Departe →"}
                     pageCount={this.state.pageCount}

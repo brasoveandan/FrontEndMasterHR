@@ -168,25 +168,25 @@ export default class ViewHoliday extends React.Component{
                     </Card.Header>
                     <Row>
                         <Col sm={3}>
-                            <div className="stats-info rounded-circle bg-dark text-white">
+                            <div className="stats-info m-1 rounded h-100 bg-dark text-white">
                                 <h6>Concediu Anual disponibil</h6>
                                 <h4><strong>{daysAvailable - daysTaken} <small>/ {daysAvailable} zile</small></strong></h4>
                             </div>
                         </Col>
                         <Col sm={3}>
-                            <div className="stats-info rounded-circle bg-dark text-white">
+                            <div className="stats-info m-1 rounded h-100 bg-dark text-white">
                                 <h6>Total Zile Concediu Medical</h6>
                                 {({medicalLeave}>0) ? <h4>{({medicalLeave}>1) ? "3 zile" : "1 zi"}</h4> : <h4><FaTimes/></h4>}
                             </div>
                         </Col>
                         <Col sm={3}>
-                            <div className="stats-info rounded-circle bg-dark text-white">
+                            <div className="stats-info m-1 rounded h-100 bg-dark text-white">
                                 <h6>Concediu din Ore Suplimentare</h6>
                                 <h4>{overtimeLeave}</h4>
                             </div>
                         </Col>
                         <Col sm={3}>
-                            <div className="stats-info rounded-circle bg-dark text-white">
+                            <div className="stats-info m-1 rounded h-100 bg-dark text-white">
                                 <h6>Total Alte Tipuri Concedii</h6>
                                 {({otherLeave}>0) ? <h4>{({otherLeave}>1) ? {otherLeave} + "zile" : "1 zi"}</h4> : <h4><FaTimes/></h4>}
                             </div>
@@ -194,10 +194,10 @@ export default class ViewHoliday extends React.Component{
                     </Row>
                     <Row>
                         <Col>
-                            <Button className="my-btn mb-4 mt-2" type="button" onClick={this.openModal}>
+                            <Button className="my-btn mt-4" type="button" onClick={this.openModal}>
                                 Adaugă Cerere Concediu
                             </Button>
-                            <Modal show={this.state.show} onHide={this.closeModal}>
+                            <Modal backdrop="static" keyboard={false} show={this.state.show} onHide={this.closeModal}>
                                 <Modal.Header closeButton>
                                     <Modal.Title>Adaugă cerere de concediu</Modal.Title>
                                 </Modal.Header>
@@ -259,40 +259,41 @@ export default class ViewHoliday extends React.Component{
                             <SearchBox placeholder="Caută după dată început" value={this.state.searchQuery} onChange={this.handleSearch}/>
                         </Col>
                     </Row>
-                    <Table responsive hover striped borderless className="text-nowrap">
-                        <thead className="bg-dark text-white">
-                        <tr>
-                            <th>#</th>
-                            <th>Tip Concediu</th>
-                            <th>De la</th>
-                            <th>Pâna la</th>
-                            <th>Număr zile</th>
-                            <th>Înlocuitor</th>
-                            <th>Status</th>
-                            <th>Acțiune</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {holidays.map((holiday, index) => (
+                    {holidays.length > 0 ?
+                        <Table responsive hover striped borderless className="text-nowrap">
+                            <thead className="bg-dark text-white">
                             <tr>
-                                <td>{index + 1}</td>
-                                <td>{holiday.type}</td>
-                                <td>{holiday.fromDate}</td>
-                                <td>{holiday.toDate}</td>
-                                <td className="text-center">{holiday.numberOfDays}</td>
-                                <td className="text-center">{holiday.proxyUsername ? holiday.proxyUsername : <FaTimes/>}</td>
-                                <td className="font-weight-bold">{holiday.status}</td>
-                                <td className="text-center">
-                                    <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Editează"><FiEdit/></Button>
-                                    <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" data-type="confirm"><FaBan/></Button>
-                                </td>
+                                <th>#</th>
+                                <th>Tip Concediu</th>
+                                <th>De la</th>
+                                <th>Pâna la</th>
+                                <th>Număr zile</th>
+                                <th>Înlocuitor</th>
+                                <th>Status</th>
+                                <th>Acțiune</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-
-
-
+                            </thead>
+                            <tbody>
+                            {holidays.map((holiday, index) => (
+                                <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{holiday.type}</td>
+                                    <td>{holiday.fromDate}</td>
+                                    <td>{holiday.toDate}</td>
+                                    <td className="text-center">{holiday.numberOfDays}</td>
+                                    <td className="text-center">{holiday.proxyUsername ? holiday.proxyUsername : <FaTimes/>}</td>
+                                    <td className="font-weight-bold">{holiday.status}</td>
+                                    <td className="text-center">
+                                        <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Editează"><FiEdit/></Button>
+                                        <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" data-type="confirm"><FaBan/></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                        :
+                        <Modal.Header className="bg-dark text-white font-weight-bold">Nu există date</Modal.Header>
+                    }
                 </Card>
         );
     }

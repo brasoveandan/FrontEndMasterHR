@@ -1,13 +1,13 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import NotFoundPage from "../utils/NotFoundPage";
 import GroupLeaderLandingPage from "./GroupLeaderLandingPage";
 import ViewContract from "../../common/ViewContract";
 import SidebarDashboard from "../../common/SidebarDashboard";
 import ViewPayslip from "../../common/ViewPayslip";
 import ViewTimesheet from "../../common/ViewTimesheet";
 import ViewHoliday from "../../common/ViewHoliday";
+import ViewAllRequests from "./ViewAllRequests";
 
 class GroupLeaderDashboard extends React.Component {
 
@@ -27,7 +27,7 @@ class GroupLeaderDashboard extends React.Component {
             case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
             case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
-            case "cereri_angajati" : this.setState({render: <NotFoundPage/>}); break;
+            case "cereri_angajati" : this.setState({render: <ViewAllRequests/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <GroupLeaderLandingPage/>})
         }

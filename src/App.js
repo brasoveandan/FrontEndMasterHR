@@ -21,7 +21,6 @@ import ForgotPasswordPage from "./components/Presentation/ForgotPasswordPage";
 import ResetPasswordPage from "./components/Presentation/ResetPasswordPage";
 import PrivateRouteEmployeeHR from "./components/utils/PrivateRouteEmployeeHR";
 import EmployeeHRDashboard from "./components/EmployeeHR/EmployeeHRDashboard";
-import PrivateRouteResponsiveHR from "./components/utils/PrivateRouteResponsiveHR";
 
 function App() {
   return (

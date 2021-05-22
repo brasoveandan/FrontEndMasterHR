@@ -37,7 +37,6 @@ export default class ViewTimesheet extends React.Component{
         this.handleDepontaj = this.handleDepontaj.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handlePontajManual = this.handlePontajManual.bind(this)
-        this.handleFilter = this.handleFilter.bind(this)
 
         let newDate = new Date();
         let month = newDate.getMonth() + 1;
@@ -189,20 +188,6 @@ export default class ViewTimesheet extends React.Component{
             })
     }
 
-    handleFilter () {
-        return (
-            this.state.clocking.map((item) => (
-                <tr>
-                    <td>{item.day}</td>
-                    <td>{item.fromHour}</td>
-                    <td>{item.toHour}</td>
-                    <td>{item.workedHours}</td>
-                    <td>{item.overtimeHours ? item.overtimeHours : <FaTimes/>}</td>
-                </tr>
-            ))
-        )
-    }
-
     render(){
         let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeLeave} = this.state.timesheet;
         return (
@@ -256,7 +241,7 @@ export default class ViewTimesheet extends React.Component{
                                             <div className="card-footer bg-white border-top border-dark text-center">
                                                 <Button className="my-btn" type="button" onClick={this.openModal}>Adaugă pontaj manual</Button>
                                             </div>
-                                            <Modal show={this.state.show} onHide={this.closeModal}>
+                                            <Modal backdrop="static" keyboard={false} show={this.state.show} onHide={this.closeModal}>
                                                 <Modal.Header closeButton>
                                                     <Modal.Title>Adaugă pontaj</Modal.Title>
                                                 </Modal.Header>
@@ -333,26 +318,38 @@ export default class ViewTimesheet extends React.Component{
                                     </Col>
                                     <Col sm={12} className="text-center mb-3">
                                         <label className="text-white font-weight-bold">An:</label>
-                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="an" type="text" placeholder="An" defaultValue={year} onChange={this.handleChange}/>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="an" type="text" placeholder="ex: 2021" defaultValue={year} onChange={this.handleChange}/>
                                         <label className="text-white font-weight-bold">Luna:</label>
-                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="luna" type="text" placeholder="Luna" defaultValue={month} onChange={this.handleChange}/>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="luna" type="text" placeholder="ex: 2" defaultValue={month} onChange={this.handleChange}/>
                                         <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="button" onClick={this.handleFilter}>Caută</Button>
                                     </Col>
                                     <Col sm={12}>
-                                        <Table responsive striped hover className="bg-white">
-                                            <thead className="text-center">
-                                            <tr>
-                                                <th>Ziua</th>
-                                                <th>Oră intrare</th>
-                                                <th>Oră ieșire</th>
-                                                <th>Ore lucrate</th>
-                                                <th>Ore suplimentare</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody className="text-center">
-                                                {this.handleFilter()}
-                                            </tbody>
-                                        </Table>
+                                        {this.state.clocking.length > 0 ?
+                                            <Table responsive striped hover className={"bg-white"}>
+                                                <thead className="text-center">
+                                                <tr>
+                                                    <th>Ziua</th>
+                                                    <th>Oră intrare</th>
+                                                    <th>Oră ieșire</th>
+                                                    <th>Ore lucrate</th>
+                                                    <th>Ore suplimentare</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody className="text-center">
+                                                {this.state.clocking.map((item) => (
+                                                    <tr>
+                                                        <td>{item.day}</td>
+                                                        <td>{item.fromHour}</td>
+                                                        <td>{item.toHour}</td>
+                                                        <td>{item.workedHours}</td>
+                                                        <td>{item.overtimeHours ? item.overtimeHours : <FaTimes/>}</td>
+                                                    </tr>
+                                                ))}
+                                                </tbody>
+                                            </Table>
+                                            :
+                                            <Modal.Header className="bg-white font-weight-bold">Nu există date</Modal.Header>
+                                        }
                                     </Col>
                                 </Row>
                             </Card.Body>

@@ -72,7 +72,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-2 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : "col-md-2 col-xl-1 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" />
                             {this.renderLogo()}
@@ -93,7 +93,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : "col-md-2 col-xl-1 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText="" show = {this.show}/>
                             {this.renderLogo()}
@@ -116,7 +116,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-2 col-xl-1 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
                             {this.renderLogo()}
@@ -140,7 +140,7 @@ export default class SidebarDashboard extends React.Component {
         return (
             <Container fluid onClick={this.handleCollapse}>
                 <Row>
-                    <div className={this.state.isCollapsed ? 'active' : " col-md-3 col-xl-2 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
+                    <div className={this.state.isCollapsed ? 'active' : " col-md-2 col-xl-1 float-left col-1 pl-0 pr-0 collapse width show"} id="sidebar">
                         <div className="list-group text-center text-md-left">
                             <SidebarButton className="toggle-button" isCollapsed={this.state.isCollapsed} btnText=""/>
                             {this.renderLogo()}

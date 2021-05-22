@@ -37,10 +37,11 @@ export default class ViewContract extends React.Component{
     }
 
     renderContract = (contract) => {
-        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt} = contract;
+        let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = contract;
         if(expirationDate == null){
             expirationDate = false
         }
+        const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
         return(
             <Col xs={12} sm={12} className="col-xs-12 col-sm-12 d-flex justify-content-md-center">
                 <Card className="text-left mb-md-4 mt-md-4 ml-xl-0" style={{opacity: ".85"}} >
@@ -85,7 +86,7 @@ export default class ViewContract extends React.Component{
                                     </tr>
                                     <tr>
                                         <td><strong>Zi de naștere: </strong>
-                                            <span className="float-right">{birthday}</span>
+                                            <span className="float-right">{birthdayDate}</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -118,8 +119,18 @@ export default class ViewContract extends React.Component{
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td><strong>Valoare tichet de masă: </strong>
+                                            <span className="float-right">{ticketValue}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td><strong>Tip contract: </strong>
                                             <span className="float-right">{type}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Număr zile concediu anual: </strong>
+                                            <span className="float-right">{daysOff}</span>
                                         </td>
                                     </tr>
                                     <tr>

@@ -15,10 +15,6 @@ export default class AddAccount extends MyForm{
                 firstName: "",
                 lastName: "",
                 mail: "",
-                phoneNumber: "",
-                socialSecurityNumber: "",
-                birthday: "",
-                gender: ""
             },
             errors: {},
         };
@@ -34,10 +30,6 @@ export default class AddAccount extends MyForm{
         lastName: Joi.string().required().error(() => {return {message: "Numele este obligatoriu."}}),
         adminRole: Joi.string().required().error(() => {return {message: "Trebuie setate permisiunile contului."}}),
         mail: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['ro', 'com', 'net'] } }).min(13).required().error(() => {return {message: "E-mail invalid."}}),
-        phoneNumber: Joi.string().length(10).regex(/^[0-9]+$/).required().error(() => {return {message: "Numărul de telefon este obligatoriu și trebuie să conțină 10 cifre."}}),
-        socialSecurityNumber: Joi.string().length(13).regex(/^[0-9]+$/).error(() => {return {message: "Codul numeric personal este obligatoriu și trebuie să conțină 13 cifre."}}),
-        birthday: Joi.string().optional().allow(""),
-        gender: Joi.string().valid("Masculin", "Feminin").required().error(() => {return {message: "Genul trebuie sa fie Masculin sau Feminin."}})
     }
 
     doSubmit = () => {
@@ -60,10 +52,6 @@ export default class AddAccount extends MyForm{
                         firstName: "",
                         lastName: "",
                         mail: "",
-                        phoneNumber: "",
-                        socialSecurityNumber: "",
-                        birthday: "",
-                        gender: ""
                     };
                 }
                 else if(res.status === 417){
@@ -94,16 +82,12 @@ export default class AddAccount extends MyForm{
                     <Card.Body>
                         <Form>
                             {this.renderInput("form-control", "username", "Utilizator:", "Nume de utilizator", "text")}
-                            {this.renderInput("form-control", "password", "Parola:", "Parola", "password")}
-                            {this.renderInput("form-control", "personalNumber", "Număr personal:", "Număr personal", "text")}
+                            {this.renderInput("form-control", "password", "Parola:", "Parola", "text")}
                             {this.renderSelect("form-control", "adminRole", "Permisiune cont:", Array.of("DEFAULT", "ADMIN", "GROUP_LEADER", "HR_EMPLOYEE", "HR_DEPARTMENT_RESPONSIVE"), "text")}
+                            {this.renderInput("form-control", "personalNumber", "Număr personal:", "Număr personal", "text")}
                             {this.renderInput("form-control", "lastName", "Nume:", "Nume", "text")}
                             {this.renderInput("form-control", "firstName", "Prenume:", "Prenume", "text")}
                             {this.renderInput("form-control", "mail", "E-mail:", "E-mail", "mail")}
-                            {this.renderInput("form-control", "phoneNumber", "Număr de telefon:", "Număr de telefon", "text")}
-                            {this.renderInput("form-control", "socialSecurityNumber", "Cod numeric personal:", "Cod numeric personal", "text")}
-                            {this.renderInput("form-control", "birthday", "Data nașterii:", "Data nașterii", "date")}
-                            {this.renderInput("form-control", "gender", "Gen", "Gen", "text")}
                             <div className="text-center" onClick={this.handleSubmit}>
                                 {this.renderButton("my-btn", "SALVEAZĂ", "button")}
                             </div>

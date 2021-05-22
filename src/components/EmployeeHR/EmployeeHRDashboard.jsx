@@ -1,13 +1,14 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import NotFoundPage from "../utils/NotFoundPage";
 import ViewContract from "../../common/ViewContract";
 import SidebarDashboard from "../../common/SidebarDashboard";
 import EmployeeHRLandingPage from "./EmployeeHRLandingPage";
 import ViewPayslip from "../../common/ViewPayslip";
 import ViewTimesheet from "../../common/ViewTimesheet";
 import ViewHoliday from "../../common/ViewHoliday";
+import ViewAllContracts from "./ViewAllContracts";
+import ViewAllTimesheet from "./ViewAllTimesheet";
 
 class EmployeeHRDashboard extends React.Component {
 
@@ -27,8 +28,8 @@ class EmployeeHRDashboard extends React.Component {
             case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
             case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
-            case "contracte_angajati" : this.setState({render: <NotFoundPage/>}); break;
-            case "pontaje_angajati" : this.setState({render: <NotFoundPage/>}); break;
+            case "contracte_angajati" : this.setState({render: <ViewAllContracts/>}); break;
+            case "pontaje_angajati" : this.setState({render: <ViewAllTimesheet/>}); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <EmployeeHRLandingPage/>})
         }
