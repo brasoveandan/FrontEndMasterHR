@@ -1,20 +1,24 @@
 import React from "react";
 import {FaCheck, FaTimes} from "react-icons/all";
-import {Card, CardDeck, Col, Row, Table} from "react-bootstrap";
+import {Card, CardDeck, Col, Row, Table, Modal} from "react-bootstrap";
 
 export default class ViewContract extends React.Component{
     constructor(){
         super(undefined);
         this.state = {
-            contract: []
+            contract: [],
+            showContract: true
         };
 
         this.renderContract = this.renderContract.bind(this);
 
+        this.loadData()
+    }
+
+    loadData = () => {
         const payload = {
             username: localStorage.getItem('username')
         }
-
         fetch('http://localhost:8080/contract/' + payload.username, {
             method: 'GET',
             headers: {
@@ -27,20 +31,19 @@ export default class ViewContract extends React.Component{
                     res.json().then(json =>{
                         this.setState({contract: json});
                     });
-                    // LOGIN PERSISTANCE
                 }
                 else {
-                    console.log("error")
-                    console.log(payload.username)
+                    this.setState({
+                        showContract: false
+                    });
                 }
             })
+            // eslint-disable-next-line no-unused-vars
+            .catch(error => { const mute = error} );
     }
 
     renderContract = (contract) => {
         let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = contract;
-        if(expirationDate == null){
-            expirationDate = false
-        }
         const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
         return(
             <Col xs={12} sm={12} className="col-xs-12 col-sm-12 d-flex justify-content-md-center">
@@ -180,7 +183,16 @@ export default class ViewContract extends React.Component{
     render(){
         return (
             <CardDeck className="justify-content-center d-flex align-items-center align-middle mt-3">
-                {this.renderContract(this.state.contract)}
+                {this.state.showContract ? this.renderContract(this.state.contract):
+                    <Card>
+                        <Card.Body>
+                            <Modal.Header>
+                                Până în acest moment nu a fost adăugat contracul de muncă.
+                                Vă rugăm să reveniți mai târziu!
+                            </Modal.Header>
+                        </Card.Body>
+                    </Card>
+                }
             </CardDeck>
         );
     }

@@ -16,7 +16,7 @@ export default class ViewAllRequests extends React.Component {
             perPage: 10,
             pageCount: 0,
             searchQuery: "",
-            msg: "",
+            message: "",
             showAlert: false
         };
 
@@ -34,23 +34,20 @@ export default class ViewAllRequests extends React.Component {
                 'Content-type': 'application/json'
             }
         })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        const data = json;
-                        let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(json =>{
+                    const data = json;
+                    let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
 
-                        this.setState({
-                            pageCount: Math.ceil(data.length / this.state.perPage),
-                            originalData: json,
-                            requests: slice
-                        })
-                    });
-                }
-                else {
-                    console.log("error")
-                }
-            })
+                    this.setState({
+                        pageCount: Math.ceil(data.length / this.state.perPage),
+                        originalData: json,
+                        requests: slice
+                    })
+                });
+            }
+        })
     }
 
     closeAlert = () => {
@@ -119,7 +116,7 @@ export default class ViewAllRequests extends React.Component {
                 if (res.status === 200) {
                     this.setState({
                         showAlert: true,
-                        msg: "Statusul cererii a fost modificat cu succes."
+                        message: "Statusul cererii a fost modificat cu succes."
                     })
                     this.loadData()
                 }
@@ -127,14 +124,14 @@ export default class ViewAllRequests extends React.Component {
                     res.text().then(text =>{
                         this.setState({
                             showAlert: true,
-                            msg: text
+                            message: text
                         })
                     });
                 }
                 else if (res.status === 409)
                     this.setState({
                         showAlert: true,
-                        msg: "Cererea este deja revizuită"
+                        message: "Cererea este deja revizuită"
                     })
             })
     }
@@ -166,7 +163,7 @@ export default class ViewAllRequests extends React.Component {
                     <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
                         <Modal.Header>Notificare</Modal.Header>
                         <Modal.Body>
-                            {this.state.msg}
+                            {this.state.message}
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="primary" onClick={this.closeAlert}>
@@ -175,38 +172,42 @@ export default class ViewAllRequests extends React.Component {
                         </Modal.Footer>
                     </Modal>
                     <SearchBox placeholder="Caută după nume de utilizator..." value={this.state.searchQuery} onChange={this.handleSearch}/>
-                    <Table responsive hover striped borderless className="text-nowrap">
-                        <thead className="bg-dark text-white">
-                        <tr>
-                            <th>#</th>
-                            <th>Utilizator</th>
-                            <th>Tip Cerere</th>
-                            <th>De la</th>
-                            <th>Până la</th>
-                            <th>Status</th>
-                            <th>Acțiune</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {requests.map((elem, index) => (
+                    {requests.length > 0 ?
+                        <Table responsive hover striped borderless className="text-nowrap">
+                            <thead className="bg-dark text-white">
                             <tr>
-                                <td>{(this.state.currentPage - 1) * this.state.perPage + index + 1}</td>
-                                <td>{elem.user}</td>
-                                <td>{elem.type}</td>
-                                <td>{elem.fromDate}</td>
-                                <td>{elem.toDate}</td>
-                                <td className="font-weight-bold">{elem.status}</td>
-                                <td>
-                                    <Button type="button" size={"sm"} className=" mr-2 btn-success" title="Confirmă" disabled={elem.status !== "IN ASTEPTARE"} onClick={(e) => this.handleAccept(elem, e)}><FaCheck/></Button>
-                                    <Button type="button" size={"sm"} className="mr-2 btn-danger" title="Respinge" disabled={elem.status !== "IN ASTEPTARE"} onClick={(e) => this.handleDecline(elem, e)}><FaTimes/></Button>
-                                </td>
+                                <th>#</th>
+                                <th>Utilizator</th>
+                                <th>Tip Cerere</th>
+                                <th>De la</th>
+                                <th>Până la</th>
+                                <th>Status</th>
+                                <th>Acțiune</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                            {requests.map((elem, index) => (
+                                <tr>
+                                    <td>{(this.state.currentPage - 1) * this.state.perPage + index + 1}</td>
+                                    <td>{elem.user}</td>
+                                    <td>{elem.type}</td>
+                                    <td>{elem.fromDate}</td>
+                                    <td>{elem.toDate}</td>
+                                    <td className="font-weight-bold">{elem.status}</td>
+                                    <td>
+                                        <Button type="button" size={"sm"} className=" mr-2 btn-success" title="Confirmă" disabled={elem.status !== "IN ASTEPTARE"} onClick={(e) => this.handleAccept(elem, e)}><FaCheck/></Button>
+                                        <Button type="button" size={"sm"} className="mr-2 btn-danger" title="Respinge" disabled={elem.status !== "IN ASTEPTARE"} onClick={(e) => this.handleDecline(elem, e)}><FaTimes/></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    :
+                        <Modal.Header className="bg-dark text-white font-weight-bold">Nu există nicio cerere înregistrată.</Modal.Header>
+                    }
                     <ReactPaginate
                         previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
-                        nextClassName={this.state.pageCount === this.state.currentPage ? "invisible" : "visible"}
+                        nextClassName={this.state.pageCount === this.state.currentPage || requests.length === 0 ? "invisible" : "visible"}
                         containerClassName={this.state.pageCount > 0 ? "pagination invisible" : "visible"}
                         previousLabel={"← Înapoi"}
                         nextLabel={"Mai Departe →"}

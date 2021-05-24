@@ -105,7 +105,7 @@ export default class ViewAllContracts extends MyForm{
         })
             .then(res => {
                 if (res.status === 200) {
-                    res.json().then(json =>{
+                    res.json().then(json => {
                         this.setState({
                             employees: json
                         })
@@ -118,20 +118,6 @@ export default class ViewAllContracts extends MyForm{
                     })
                 }
             })
-
-        let employeesWithoutContract = []
-        this.state.employees.map(employee => {
-            let ok = true;
-            this.state.contracts.map(contract => {
-                if (employee.username === contract.usernameEmployee)
-                    ok = false;
-            })
-            if (ok)
-                employeesWithoutContract.push(employee)
-        })
-        this.setState({
-            employees: employeesWithoutContract
-        })
     }
 
     schema = {
@@ -252,7 +238,7 @@ export default class ViewAllContracts extends MyForm{
     };
 
     handleUpdateData = () => {
-        this.state.employees.map(employee => {
+        this.state.employees.forEach(employee => {
             if (this.state.data.username === employee.username){
                 const payload = this.state.data
                 payload["mail"] = employee.mail
@@ -359,14 +345,16 @@ export default class ViewAllContracts extends MyForm{
     render(){
         const { contracts } = this.getPagedData();
         let {firstName, lastName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = this.state.contractDetails;
-        if(expirationDate == null){
-            expirationDate = false
-        }
         const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
-        let employeesWithoutContracts = []
-        this.state.employees.map(employee => {
-            if (employee.adminRole !== "ADMIN")
-                employeesWithoutContracts.push(employee.username)
+        let usernameWithoutContract = []
+        this.state.employees.forEach(employee => {
+            let ok = 1;
+            this.state.contracts.forEach(contract => {
+                if (contract.username === employee.username)
+                    ok = 0
+            })
+            if (ok === 1)
+                usernameWithoutContract.push(employee.username)
         })
         return (
             <Card className="my-md-4 my-2 ml-md-5 ml-xl-0 d-flex justify-content-center" style={{opacity: ".85"}}>
@@ -393,7 +381,7 @@ export default class ViewAllContracts extends MyForm{
                         </thead>
                         <tbody>
                         {contracts.map((account, index) => (
-                            <tr className="text-center">
+                            <tr key={index} className="text-center">
                                 <td onClick={(e) => this.openDetailsModal(account, e)}>
                                     {(this.state.currentPage - 1) * this.state.perPage + index + 1}
                                 </td>
@@ -595,7 +583,7 @@ export default class ViewAllContracts extends MyForm{
                                 <Card.Body  className="rounded">
                                     <Form>
                                         {this.state.data.username ? this.handleUpdateData() : ""}
-                                        {this.renderSelect("form-control", "username", "Utilizator:", employeesWithoutContracts)}
+                                        {this.renderSelect("form-control", "username", "Utilizator:", usernameWithoutContract)}
                                         {this.renderInput("form-control", "lastName", "Nume:", "Nume", "text")}
                                         {this.renderInput("form-control", "firstName", "Prenume:", "Prenume", "text")}
                                         {this.renderInput("form-control", "personalNumber", "Număr personal:", "Număr personal", "text")}

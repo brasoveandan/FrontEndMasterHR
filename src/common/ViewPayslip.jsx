@@ -1,30 +1,61 @@
 import React from "react";
 import {FaTimes} from "react-icons/all";
-import {Button, Card, CardDeck, Col, Modal, Row, Table} from "react-bootstrap";
-import MyForm from "../components/utils/MyForm";
-import * as Joi from "joi-browser";
+import {Button, Card, CardDeck, Col, Form, Modal, Row, Table} from "react-bootstrap";
 
-export default class ViewPayslip extends MyForm{
+export default class ViewPayslip extends React.Component{
     constructor(){
         super(undefined);
         this.state = {
             payslip: [],
-            data: {
-                year: "",
-                month: ""
-            },
-            errors: {},
+            yearOptions: [],
+            monthOptions: [],
+            year: "",
+            month: "",
             bool: true,
             showAlert: false
         };
 
         this.renderPayslip = this.renderPayslip.bind(this);
         this.handleChange = this.handleChange.bind(this);
+
+        this.loadData()
     }
 
-    schema = {
-        year: Joi.string().required().error(() => {return {message: "Anul trebuie selectat."}}),
-        month: Joi.string().required().error(() => {return {message: "Luna trebuie selectată."}}),
+    loadData = () => {
+        fetch('http://localhost:8080/payslip', {
+            method: 'GET',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json'
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(json =>{
+                        const data = json;
+                        let yearOptions = [];
+                        let monthOptions = [];
+                        data.forEach(payslip => {
+                            if (payslip.usernameEmployee === localStorage.getItem("username")) {
+                                yearOptions.push(payslip.year)
+                                monthOptions.push(payslip.month)
+                            }
+                        })
+                        this.setState({
+                            yearOptions: yearOptions,
+                            monthOptions: monthOptions
+                        })
+                    });
+                }
+                else {
+                    this.setState({
+                        showAlert: true,
+                        message: "Nu există date"
+                    })
+                }
+            })
+            // eslint-disable-next-line no-unused-vars
+            .catch(error => { const mute = error} );
     }
 
     closeAlert = () => {
@@ -188,11 +219,11 @@ export default class ViewPayslip extends MyForm{
         );
     }
 
-    doSubmit = (action) => {
+    handleFilter = () => {
         const payload = {
             username: localStorage.getItem('username'),
-            year : this.state.data.year,
-            month: this.state.data.month
+            year : this.state.year,
+            month: this.state.month
         }
         let payslipID = payload.username + payload.year + payload.month
         fetch('http://localhost:8080/payslip/' + payslipID, {
@@ -213,7 +244,7 @@ export default class ViewPayslip extends MyForm{
                 }
                 else {
                     this.setState({
-                        msg: "Nu există fluturaș de salariu pentru anul și luna introduse. Reîncercați!",
+                        msg: "Nu există fluturaș de salariu pentru datele introduse. Reîncercați!",
                         showAlert: true
                     });
                 }
@@ -221,16 +252,44 @@ export default class ViewPayslip extends MyForm{
     }
 
     render(){
+        const {yearOptions, monthOptions} = this.state;
         return (
             <CardDeck className="justify-content-center d-flex align-items-center align-middle mt-3 col-auto">
-                {/*<input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-lg-0 mr-5 rounded border" name="an" type="text" placeholder="An" onChange={this.handleChange}/>*/}
-                {/*<input className="col-sm-2 mt-md-4 mb-2 ml-5 ml-md-0 mr-5 rounded border" name="luna" type="text" placeholder="Luna" onChange={this.handleChange}/>*/}
-                {/*<Button className="my-btn mt-md-4 mb-2" onClick={this.handleFilter}>Vizualizare</Button>*/}
-                {this.renderSelect("form-control ml-5 ml-md-0 mr-5", "year", "", ["2021"])}
-                {this.renderSelect("form-control ml-5 ml-md-0 mr-5", "month", "", ["1", "2", "3"])}
-                <div className="text-center" onClick={(e) => this.handleSubmit(null, e)}>
-                    {this.renderButton("my-btn mt-md-4 mb-2", "VIZUALIZARE", "button")}
-                </div>
+                <Row>
+                    <Col sm={6}>
+                        <Form className="ml-2">
+                            <Form.Group>
+                                <Form.Label className="text-white font-weight-bold">An</Form.Label>
+                                <Form.Control as="select" custom name="year" onChange={this.handleChange}>
+                                    <option value="">Selectează anul...</option>
+                                    {yearOptions ? yearOptions.map((year, index) => (
+                                            <option key={index} value={year}>
+                                                {year}
+                                            </option>
+                                        ))
+                                        : ""}
+                                </Form.Control>
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    <Col sm={6}>
+                        <Form.Group>
+                            <Form.Label className="text-white font-weight-bold">Lună</Form.Label>
+                            <Form.Control as="select" custom name="month" onChange={this.handleChange}>
+                                <option value="">Selectează luna...</option>
+                                {monthOptions ? monthOptions.map((month, index) => (
+                                        <option key={index} value={month}>
+                                            {month}
+                                        </option>
+                                    ))
+                                    : ""}
+                            </Form.Control>
+                        </Form.Group>
+                    </Col>
+                    <Col sm={12} className="text-center">
+                        <Button className="my-btn my-2 col-sm-8" onClick={this.handleFilter}>Vizualizare</Button>
+                    </Col>
+                </Row>
                 <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
                     <Modal.Header>Notificare</Modal.Header>
                     <Modal.Body>

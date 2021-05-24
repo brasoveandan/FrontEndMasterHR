@@ -1,63 +1,34 @@
 import React from "react"
-import {FaCheck, FaRegCalendarCheck, FaTimes} from "react-icons/all"
-import {Button, Card, Col, Container, Form, Modal, Row, Table} from "react-bootstrap"
+import {FaLock, FaLockOpen, FaRegCalendarCheck} from "react-icons/all"
+import {Button, Card, Col, Form, Modal, Row, Table} from "react-bootstrap"
 import SearchBox from "../utils/searchBox"
 import {paginate} from "../utils/pagination";
 import ReactPaginate from 'react-paginate';
-import MyForm from "../utils/MyForm";
-import * as Joi from "joi-browser";
-import {
-    contractTypeOptions,
-    currencyOptions,
-    departmentOptions,
-    positionOptions,
-    taxExemptOptions
-} from "../utils/select";
+import { departmentOptions } from "../utils/select";
 
 
-export default class ViewAllTimesheet extends MyForm{
+export default class ViewAllTimesheet extends React.Component{
     constructor(){
         super(undefined);
         this.state = {
-            employees: [],
-            contracts: [],
+            timesheets: [],
             originalData: [],
             currentPage: 1,
             offset: 0,
             perPage: 10,
             pageCount: 0,
-            contractDetails: [],
+
+            timesheetDetails: [],
+            year: "",
+            month: "",
+            department: "",
+
             searchQuery: "",
             showDetailsModal: false,
-            showAddModal: false,
-            showEditModal: false,
             showAlert: false,
+            showDataTable: false,
             message: "",
-            data: {
-                username: "",
-                lastName: "",
-                firstName: "",
-                personalNumber: "",
-                mail: "",
-                phoneNumber: "",
-                socialSecurityNumber: "",
-                companyName: "",
-                baseSalary: "",
-                currency: "",
-                hireDate: "",
-                type: "",
-                expirationDate: "",
-                department: "",
-                position: "",
-                birthday: "",
-                gender: "",
-                bankName: "",
-                bankAccountNumber: "",
-                overtimeIncreasePercent: "",
-                taxExempt: "",
-                ticketValue: "",
-                daysOff: ""
-            },
+            data: {},
             errors: {},
         };
 
@@ -68,175 +39,52 @@ export default class ViewAllTimesheet extends MyForm{
     }
 
     loadData() {
-        fetch('http://localhost:8080/contract', {
+        fetch('http://localhost:8080/timesheet', {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json'
             }
         })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        const data = json;
-                        let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(json =>{
+                    const data = json;
+                    let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
 
-                        this.setState({
-                            pageCount: Math.ceil(data.length / this.state.perPage),
-                            originalData: json,
-                            contracts: slice
-                        })
-                    });
-                }
-                else {
-                    this.setState({
-                        showAlert: true,
-                        message: "Nu există date"
+                    let yearOptions = [];
+                    let monthOptions = [];
+                    data.forEach(payslip => {
+                        yearOptions.push(payslip.year)
+                        monthOptions.push(payslip.month)
                     })
-                }
-            })
 
-        fetch('http://localhost:8080/employee', {
-            method: 'GET',
-            headers: {
-                'Accept' : 'application/json',
-                'Content-type':'application/json'
+                    this.setState({
+                        pageCount: Math.ceil(data.length / this.state.perPage),
+                        originalData: json,
+                        timesheets: slice,
+                        yearOptions: yearOptions,
+                        monthOptions: monthOptions
+                    })
+                });
             }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        this.setState({
-                            employees: json
-                        })
-                    });
-                }
-                else {
-                    this.setState({
-                        showAlert: true,
-                        message: "Nu s-au găsit utilizatori"
-                    })
-                }
+        }).catch( err => {
+            err.text().then( errorMessage => {
+                console.log(errorMessage)
             })
-
-        let employeesWithoutContract = []
-        this.state.employees.map(employee => {
-            let ok = true;
-            this.state.contracts.map(contract => {
-                if (employee.username === contract.usernameEmployee)
-                    ok = false;
-            })
-            if (ok)
-                employeesWithoutContract.push(employee)
-        })
-        this.setState({
-            employees: employeesWithoutContract
         })
     }
 
-    schema = {
-        username: Joi.string().min(3).required().error(() => {return {message: "Numele de utilizator este obligatoriu."}}),
-        lastName: Joi.string().required().error(() => {return {message: "Numele este obligatoriu."}}),
-        firstName: Joi.string().required().error(() => {return {message: "Prenumele este obligatoriu."}}),
-        personalNumber: Joi.string().min(6).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 6 cifre."}}),
-        mail: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['ro', 'com', 'net'] } }).min(13).required().error(() => {return {message: "E-mail invalid."}}),
-        phoneNumber: Joi.string().length(10).regex(/^[0-9]+$/).required().error(() => {return {message: "Numărul de telefon este obligatoriu și trebuie să conțină 10 cifre."}}),
-        socialSecurityNumber: Joi.string().length(13).regex(/^[0-9]+$/).error(() => {return {message: "Codul numeric personal este obligatoriu și trebuie să conțină 13 cifre."}}),
-        companyName: Joi.string().required().error(() => {return {message: "Trebuie completată denumirea firmei."}}),
-        baseSalary: Joi.number().required().error(() => {return {message: "Salariul trebuie completat."}}),
-        currency: Joi.string().required().error(() => {return {message: "Trebuie selectată valuta."}}),
-        hireDate: Joi.date().iso().required().error(() => {return {message: "Data de angajare este obligatorie."}}),
-        type: Joi.string().required().error(() => {return {message: "Trebuie selectat tipul."}}),
-        expirationDate: Joi.date().allow(null).allow(""),
-        department: Joi.string().required().error(() => {return {message: "Trebuie selectat departamentul."}}),
-        position: Joi.string().required().error(() => {return {message: "Trebuie selectată poziția."}}),
-        birthday: Joi.date().allow(null).allow(""),
-        gender: Joi.string().valid("Masculin", "Feminin").required().error(() => {return {message: "Genul trebuie sa fie Masculin sau Feminin."}}),
-        bankName: Joi.string().required().error(() => {return {message: "Trebuie completat numele băncii."}}),
-        bankAccountNumber: Joi.string().min(24).required().error(() => {return {message: "IBAN invalid."}}),
-        overtimeIncreasePercent: Joi.number().integer().min(75).max(300).required().error(() => {return {message: "Procentul trebuie să fie minim 75 și mai mic decât 300."}}),
-        taxExempt: Joi.string().required().error(() => {return {message: "Câmp obligatoriu."}}),
-        ticketValue: Joi.number().integer().min(10).max(30).required().error(() => {return {message: "Valoarea tichetului trebuie să fie de minim 10 și mai mic decât 30."}}),
-        daysOff: Joi.number().integer().required().error(() => {return {message: "Câmpul este obligatoriu un întreg"}}),
-    }
-
-    openDetailsModal = contract => {
+    openDetailsModal = timesheet => {
         this.setState({
-            contractDetails: contract,
+            timesheetDetails: timesheet,
             showDetailsModal: true
-        });
-    }
-
-    openAddModal = () => {
-        const payload = {
-            username: "",
-            lastName: "",
-            firstName: "",
-            personalNumber: "",
-            mail: "",
-            phoneNumber: "",
-            socialSecurityNumber: "",
-            companyName: "",
-            baseSalary: "",
-            currency: "",
-            hireDate: "",
-            type: "",
-            expirationDate: "",
-            department: "",
-            position: "",
-            birthday: "",
-            gender: "",
-            bankName: "",
-            bankAccountNumber: "",
-            overtimeIncreasePercent: "",
-            taxExempt: "",
-            ticketValue: "",
-            daysOff: ""
-        }
-        this.setState({
-            data: payload,
-            showAddModal: true
-
-        });
-    }
-
-    openEditModal = contract => {
-        const payload = {
-            username: contract.username,
-            lastName: contract.lastName,
-            firstName: contract.firstName,
-            personalNumber: contract.personalNumber,
-            mail: contract.mail,
-            phoneNumber: contract.phoneNumber,
-            socialSecurityNumber: contract.socialSecurityNumber,
-            companyName: contract.companyName,
-            baseSalary: contract.baseSalary,
-            currency: contract.currency,
-            hireDate: contract.hireDate,
-            type: contract.type,
-            expirationDate: contract.expirationDate,
-            department: contract.department,
-            position: contract.position,
-            birthday: contract.birthday,
-            gender: contract.gender,
-            bankName: contract.bankName,
-            bankAccountNumber: contract.bankAccountNumber,
-            overtimeIncreasePercent: contract.overtimeIncreasePercent,
-            taxExempt: contract.taxExempt ? "Da" : "Nu",
-            ticketValue: contract.ticketValue,
-            daysOff: contract.daysOff
-        }
-        this.setState({
-            data: payload,
-            showEditModal: true
         });
     }
 
     closeModal = () => {
         this.setState({
             showDetailsModal: false,
-            showAddModal: false,
-            showEditModal: false,
             showAlert: false
         });
     }
@@ -250,67 +98,6 @@ export default class ViewAllTimesheet extends MyForm{
             [event.target.name]: event.target.value
         })
     };
-
-    handleUpdateData = () => {
-        this.state.employees.map(employee => {
-            if (this.state.data.username === employee.username){
-                const payload = this.state.data
-                payload["mail"] = employee.mail
-                payload["personalNumber"] = employee.personalNumber
-                payload["firstName"] = employee.firstName
-                payload["lastName"] = employee.lastName
-            }
-        })
-    };
-
-    doSubmit = (action) => {
-        const payload = this.state.data
-        payload.taxExempt === "Da" ? payload["taxExempt"] = true : payload["taxExempt"] = false
-        if (action === "add") {
-            fetch('http://localhost:8080/contract', {
-                method: 'POST',
-                headers: {
-                    'Accept' : 'application/json',
-                    'Content-type':'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-                .then(res => {
-                    if (res.status === 200) {
-                        alert("Contractul a fost adăugat cu succes!")
-                        this.closeModal()
-                        this.loadData()
-                    }
-                    else if(res.status === 417){
-                        res.text().then(text =>{
-                            console.log(text);
-                        });
-                    }
-                })
-        }
-        if (action === "edit") {
-            fetch('http://localhost:8080/contract', {
-                method: 'PUT',
-                headers: {
-                    'Accept' : 'application/json',
-                    'Content-type':'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-                .then(res => {
-                    if (res.status === 200) {
-                        alert("Contractul a fost modificat cu succes!")
-                        this.closeModal()
-                        this.loadData()
-                    }
-                    else if(res.status === 417){
-                        res.text().then(text =>{
-                            console.log(text);
-                        });
-                    }
-                })
-        }
-    }
 
     handlePageClick = (e) => {
         const selectedPage = e.selected + 1;
@@ -329,61 +116,138 @@ export default class ViewAllTimesheet extends MyForm{
         const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
         this.setState({
             pageCount: Math.ceil(data.length / this.state.perPage),
-            contracts: slice
+            timesheets: slice
         })
     }
 
-    getPagedData = () => {
+    getPageData = () => {
         const {
-            originalData: allContracts,
+            originalData: allTimesheets,
             perPage,
             currentPage,
-            searchQuery
+            searchQuery,
+            year,
+            month,
+            department
         } = this.state;
 
-        let filtered = allContracts;
+        let filtered = [];
+
+        if (year && month && department) {
+            filtered = allTimesheets.filter(timesheet =>
+                timesheet.year === parseInt(year) &&
+                timesheet.month === parseInt(month) &&
+                timesheet.department.toLowerCase() === department.toLowerCase()
+            )
+        }
+
+        let filtered1 = []
         if (searchQuery)
-            filtered = allContracts.filter(contract =>
-                contract.user.toLowerCase().startsWith(searchQuery.toLowerCase())
+            filtered1 = filtered.filter(timesheet =>
+                timesheet.usernameEmployee.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
-        if (filtered.length === 0)
-            filtered = allContracts.filter(contract =>
-                contract.personalNumber.toLowerCase().startsWith(searchQuery.toLowerCase())
+
+        if (filtered1.length === 0 && searchQuery)
+            filtered = filtered.filter(timesheet =>
+                timesheet.personalNumber.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
         const result = paginate(filtered, currentPage, perPage);
-        return { contracts: result };
+        return { timesheets : result }
+    }
+
+    handleShowData = (timesheets) => {
+        const {year, month, department} = this.state
+        return (
+            timesheets.length > 0 && year && month && department ?
+                this.setState({
+                    showDataTable: true
+                })
+                :
+                this.setState({
+                    showDataTable: false,
+                    showAlert: true,
+                    message: "Nu există niciun pontaj înregistrat pentru datele selectate. Reîncercați!"
+                })
+        )
+    }
+
+    handleConfirmTimesheet = (timesheet) => {
+        const payload = timesheet
+        console.log(payload)
+        let {workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours} = payload
+        if (workedHours + homeOfficeHours + overtimeHours + totalOvertimeHours < requiredHours) {
+            this.setState({
+                showAlert: true,
+                message: "Angajatul nu are destule ore."
+            })
+        }
+        else {
+            payload["status"] = "CLOSED"
+            fetch('http://localhost:8080/timesheet', {
+                method: 'PUT',
+                headers: {
+                    'Accept' : 'application/json',
+                    'Content-type':'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.setState({
+                            showAlert: true,
+                            message: "Pontajul a fost confirmat."
+                        })
+                        this.loadData()
+                    }
+                    else if (res.status === 417)
+                    {
+                        res.text().then(text => {
+                            payload["status"] = "OPENED"
+                            this.setState({
+                                showAlert: true,
+                                message: text
+                            })
+                        });
+                    }
+                    else if (res.status === 409) {
+                        this.setState({
+                            showAlert: true,
+                            message: "Pontajul este deja confirmat."
+                        })
+                    }
+                }).catch( err => {
+                err.text().then( errorMessage => {
+                    console.log(errorMessage)
+                })
+            })
+        }
     }
 
     render(){
-        const { contracts } = this.getPagedData();
-        let {firstName, lastName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = this.state.contractDetails;
-        if(expirationDate == null){
-            expirationDate = false
-        }
-        const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
-        let employeesWithoutContracts = []
-        this.state.employees.map(employee => {
-            if (employee.adminRole !== "ADMIN")
-                employeesWithoutContracts.push(employee.username)
-        })
+        const {timesheets} = this.getPageData()
+        const {yearOptions, monthOptions} = this.state
+        let {usernameEmployee, personalNumber, year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours, status} = this.state.timesheetDetails;
+        const date = new Date(year + "-" + month).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long'})
         return (
             <Card className="my-md-4 my-2 ml-md-5 ml-xl-0 d-flex justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
-                    <h4>Vizualizare Contracte Angajați</h4>
+                    <h4>Vizualizare Pontaje Angajați</h4>
                 </Card.Header>
                 <Row>
                    <Col sm={4}>
                        <Form className="ml-2">
                            <Form.Group>
                                <Form.Label>An</Form.Label>
-                               <Form.Control as="select" custom>
-                                   <option>1</option>
-                                   <option>2</option>
-                                   <option>3</option>
-                                   <option>4</option>
-                                   <option>5</option>
+                               <Form.Control as="select" custom name="year" onChange={this.handleChange}>
+                                   <option value="">Selectează anul...</option>
+                                   {yearOptions ? yearOptions.map((year, index) => (
+                                       <option key={index} value={year}>
+                                           {year}
+                                       </option>
+                                   ))
+                                   : ""}
                                </Form.Control>
                            </Form.Group>
                        </Form>
@@ -391,12 +255,14 @@ export default class ViewAllTimesheet extends MyForm{
                     <Col sm={4}>
                         <Form.Group>
                             <Form.Label>Lună</Form.Label>
-                            <Form.Control as="select" custom>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                            <Form.Control as="select" custom name="month" onChange={this.handleChange}>
+                                <option value="">Selectează luna...</option>
+                                {monthOptions ? monthOptions.map((month, index) => (
+                                    <option key={index} value={month}>
+                                        {month}
+                                    </option>
+                                ))
+                                : ""}
                             </Form.Control>
                         </Form.Group>
                     </Col>
@@ -404,72 +270,76 @@ export default class ViewAllTimesheet extends MyForm{
                         <Form className="mr-2">
                             <Form.Group>
                                 <Form.Label>Departament</Form.Label>
-                                <Form.Control as="select" custom>
+                                <Form.Control as="select" custom name="department" onChange={this.handleChange}>
                                     <option value="">Selectează departament...</option>
-                                    {departmentOptions.map((option, index) => (
+                                    {departmentOptions ? departmentOptions.map((option, index) => (
                                         <option key={index} value={option}>
                                             {option}
                                         </option>
                                         )
-                                    )}
+                                    )
+                                    : ""}
                                 </Form.Control>
                             </Form.Group>
                         </Form>
                     </Col>
                 </Row>
-                <Col sm={8} className="align-self-center">
+                <Col sm={8} className="align-self-center mb-2">
                     <div className="text-center">
-                        <Button className="my-btn" type="button" onClick={this.openAddModal}>Vizualizare</Button>
+                        <Button className="my-btn" type="button" onClick={() =>this.handleShowData(timesheets)}>Vizualizare</Button>
                     </div>
-                    <SearchBox placeholder="Caută după numele de utilizator sau numărul personal" value={this.state.searchQuery} onChange={this.handleSearch}/>
                 </Col>
-                {this.state.contracts.length > 0 ?
-                    <Table responsive hover striped borderless className="text-nowrap">
-                        <thead className="bg-dark text-white">
-                        <tr className="text-center">
-                            <th>#</th>
-                            <th>Nume de utilizator</th>
-                            <th>Număr personal</th>
-                            <th>Ore lucrate</th>
-                            <th>Ore necesare</th>
-                            <th>Status</th>
-                            <th>Acțiune</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {contracts.map((account, index) => (
+                {this.state.showDataTable ?
+                    <React.Fragment>
+                        <Col sm={8} className="align-self-center">
+                            <SearchBox placeholder="Caută după numele de utilizator sau numărul personal" value={this.state.searchQuery} onChange={this.handleSearch}/>
+                        </Col>
+                        <Table responsive hover striped borderless className="text-nowrap">
+                            <thead className="bg-dark text-white">
                             <tr className="text-center">
-                                <td onClick={(e) => this.openDetailsModal(account, e)}>
-                                    {(this.state.currentPage - 1) * this.state.perPage + index + 1}
-                                </td>
-                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.username}</td>
-                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.lastName} {account.firstName}</td>
-                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.personalNumber}</td>
-                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.mail}</td>
-                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.ticketValue}</td>
-                                <td>
-                                    <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Editează" onClick={(e) => this.openEditModal(account, e)}><FaRegCalendarCheck/></Button>
-                                </td>
+                                <th>#</th>
+                                <th>Nume de utilizator</th>
+                                <th>Număr personal</th>
+                                <th>Total ore lucrate</th>
+                                <th>Ore necesare</th>
+                                <th>Status</th>
+                                <th>Acțiune</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                    :
-                    <Modal.Header className="bg-white font-weight-bold">Nu există niciun contract înregistrat.</Modal.Header>
+                            </thead>
+                            <tbody>
+                            {timesheets.map((timesheet, index) => (
+                                <tr className="text-center">
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>
+                                        {(this.state.currentPage - 1) * this.state.perPage + index + 1}
+                                    </td>
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.usernameEmployee}</td>
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.personalNumber}</td>
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.workedHours}</td>
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.requiredHours}</td>
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.status === "CLOSED" ? <FaLock/> : <FaLockOpen/>}</td>
+                                    <td>
+                                        <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Confirmă pontaj" disabled={timesheet.status === "CLOSED"} onClick={(e) => this.handleConfirmTimesheet(timesheet, e)}><FaRegCalendarCheck/></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                        <ReactPaginate
+                            previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
+                            nextClassName={this.state.pageCount === this.state.currentPage || this.state.timesheets.length === 0 ? "invisible" : "visible"}
+                            containerClassName={this.state.pageCount > 0 ? "pagination invisible" : "visible"}
+                            previousLabel={"← Înapoi"}
+                            nextLabel={"Mai Departe →"}
+                            pageCount={this.state.pageCount}
+                            onPageChange={this.handlePageClick}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                        />
+                    </React.Fragment>
+                    : ""
                 }
-                <ReactPaginate
-                    previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
-                    nextClassName={this.state.pageCount === this.state.currentPage || this.state.contracts.length === 0 ? "invisible" : "visible"}
-                    containerClassName={this.state.pageCount > 0 ? "pagination invisible" : "visible"}
-                    previousLabel={"← Înapoi"}
-                    nextLabel={"Mai Departe →"}
-                    pageCount={this.state.pageCount}
-                    onPageChange={this.handlePageClick}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    subContainerClassName={"pages pagination"}
-                    activeClassName={"active"}
-                />
                 <Modal show={this.state.showAlert} onHide={this.closeModal} centered close>
                     <Modal.Header>Notificare</Modal.Header>
                     <Modal.Body>
@@ -483,67 +353,25 @@ export default class ViewAllTimesheet extends MyForm{
                 </Modal>
                 <Modal show={this.state.showDetailsModal} onHide={this.closeModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Vizualizare Contract</Modal.Title>
+                        <Modal.Title>Vizualizare Detalii Pontaj</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Card.Body className="bg-light rounded">
                             <Row>
                                 <Col sm={12}>
-                                    <h4 className="m-b-10 mb-3"><strong>Informații Personale</strong></h4>
-                                    <Table hover className="list-group-item-dark">
+                                    <h4 className="m-b-10 mb-3 text-center text-dark">Pontaj
+                                        <span className="text-muted ml-2">
+                                            {date}
+                                        </span>
+                                    </h4>
+                                    <h5 className="m-b-10 mb-3 text-center text-dark">
+                                        Status: {status === "CLOSED" ? <FaLock/> : <FaLockOpen/>}
+                                    </h5>
+                                    <Table hover className="list-group-flush text-dark">
                                         <tbody>
                                         <tr>
-                                            <td><strong>Nume: </strong>
-                                                <span className="float-right">{lastName}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Prenume: </strong>
-                                                <span className="float-right">{firstName}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>E-mail: </strong>
-                                                <span className="float-right">{mail}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Număr de telefon: </strong>
-                                                <span className="float-right">{phoneNumber}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Cod numeric personal: </strong>
-                                                <span className="float-right">{socialSecurityNumber}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Zi de naștere: </strong>
-                                                <span className="float-right">{birthdayDate}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Gen: </strong>
-                                                <span className="float-right">{gender}</span>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </Table>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col sm={12}>
-                                    <h4 className="m-b-10 mb-3"><strong>Informații Generale</strong></h4>
-                                    <Table hover className="list-group-item-dark">
-                                        <tbody>
-                                        <tr>
-                                            <td><strong>Departament:  </strong>
-                                                <span className="float-right">{department}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Poziție: </strong>
-                                                <span className="float-right">{position}</span>
+                                            <td><strong>Nume de utilizator: </strong>
+                                                <span className="float-right">{usernameEmployee}</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -551,162 +379,35 @@ export default class ViewAllTimesheet extends MyForm{
                                                 <span className="float-right">{personalNumber}</span>
                                             </td>
                                         </tr>
-                                        </tbody>
-                                    </Table>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col sm={12}>
-                                    <h5 className=" m-b-10 mb-3"><strong>Informații Contractuale</strong></h5>
-                                    <Table hover className="list-group-item-dark">
-                                        <tbody>
                                         <tr>
-                                            <td><strong>Dată angajare: </strong>
-                                                <span className="float-right">{hireDate}</span>
+                                            <td><strong>Ore lucrate: </strong>
+                                                <span className="float-right">{workedHours}</span>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Salar de bază: </strong>
-                                                <span className="float-right">{baseSalary}</span>
+                                            <td><strong>Ore telemuncă: </strong>
+                                                <span className="float-right">{homeOfficeHours}</span>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Valută: </strong>
-                                                <span className="float-right">{currency}</span>
+                                            <td><strong>Ore necesare: </strong>
+                                                <span className="float-right">{requiredHours}</span>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Valoare tichet de masă: </strong>
-                                                <span className="float-right">{ticketValue}</span>
+                                            <td><strong>Ore suplimentare luna curentă: </strong>
+                                                <span className="float-right">{overtimeHours}</span>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Tip contract: </strong>
-                                                <span className="float-right">{type}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Număr zile concediu anual: </strong>
-                                                <span className="float-right">{daysOff}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Procent spor ore suplimentare: </strong>
-                                                <span className="float-right">{overtimeIncreasePercent} %</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Scutit impozit: </strong>
-                                                <span className="float-right">{taxExempt ? <FaCheck/> : <FaTimes/>}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Dată expirare contract: </strong>
-                                                <span className="float-right">{expirationDate ? expirationDate : <FaTimes/>}</span>
+                                            <td><strong>Ore suplimentare anterioare: </strong>
+                                                <span className="float-right">{totalOvertimeHours}</span>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </Table>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col sm={12}>
-                                    <h5 className="m-b-10 mb-3"><strong>Informații Bancare</strong></h5>
-                                    <Table hover className="list-group-item-dark">
-                                        <tbody>
-                                        <tr>
-                                            <td><strong>Nume Bancă: </strong>
-                                                <span className="float-right">{bankName}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Cont bancar: </strong>
-                                                <span className="float-right">{bankAccountNumber}</span>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </Table>
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Modal.Body>
-                </Modal>
-                <Modal backdrop="static" keyboard={false} show={this.state.showAddModal} onHide={this.closeModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Adaugă contract nou</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Container fluid className="mb-3 mt-3">
-                            <Card style={{backgroundColor: "#e1e5ea"}}>
-                                <Card.Body  className="rounded">
-                                    <Form>
-                                        {this.state.data.username ? this.handleUpdateData() : ""}
-                                        {this.renderSelect("form-control", "username", "Utilizator:", employeesWithoutContracts)}
-                                        {this.renderInput("form-control", "lastName", "Nume:", "Nume", "text")}
-                                        {this.renderInput("form-control", "firstName", "Prenume:", "Prenume", "text")}
-                                        {this.renderInput("form-control", "personalNumber", "Număr personal:", "Număr personal", "text")}
-                                        {this.renderInput("form-control", "mail", "E-mail:", "E-mail", "mail")}
-                                        {this.renderInput("form-control", "phoneNumber", "Număr de telefon:", "Număr de telefon", "text")}
-                                        {this.renderInput("form-control", "socialSecurityNumber", "Cod numeric personal:", "Cod numeric personal", "text")}
-                                        {this.renderInput("form-control", "companyName", "Companie:", "Companie", "text")}
-                                        {this.renderInput("form-control", "baseSalary", "Salariu:", "ex: 5000", "float")}
-                                        {this.renderSelect("form-control", "currency", "Valută:",  currencyOptions)}
-                                        {this.renderInput("form-control", "hireDate", "Dată angajare:", "MM/dd/yyyy",  "date")}
-                                        {this.renderSelect("form-control", "type", "Tip contract:", contractTypeOptions)}
-                                        {this.renderInput("form-control", "expirationDate", "Dată expirare:", "MM/dd/yyyy", "date")}
-                                        {this.renderSelect("form-control", "department", "Departament:",  departmentOptions)}
-                                        {this.renderSelect("form-control", "position", "Poziție:",  positionOptions)}
-                                        {this.renderInput("form-control", "birthday", "Data nașterii:", "MM/dd/yyyy", "date")}
-                                        {this.renderInput("form-control", "gender", "Gen", "ex: Masculin", "text")}
-                                        {this.renderInput("form-control", "bankName", "Nume bancă:", "Nume bancă", "text")}
-                                        {this.renderInput("form-control", "bankAccountNumber", "Cont bancar:", "ex: RO49 AAAA 1B31 0075 9384 0000",  "text")}
-                                        {this.renderInput("form-control", "overtimeIncreasePercent", "Procent plată ore suplimentare:", "ex:75",  "int")}
-                                        {this.renderSelect("form-control", "taxExempt", "Scutit impozit:",  taxExemptOptions)}
-                                        {this.renderInput("form-control", "ticketValue", "Valoare tichet masă:", "ex: 15",  "int")}
-                                        {this.renderInput("form-control", "daysOff", "Număr zile concediu anual:", "ex: 24",  "int")}
-                                        <div className="text-center" onClick={(e) => this.handleSubmit("add", e)}>
-                                            {this.renderButton("my-btn", "SALVEAZĂ", "button")}
-                                        </div>
-                                    </Form>
-                                </Card.Body>
-                            </Card>
-                        </Container>
-                    </Modal.Body>
-                </Modal>
-                <Modal backdrop="static" keyboard={false} show={this.state.showEditModal} onHide={this.closeModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Editare contract - {this.state.data.username}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Card.Body className="bg-light rounded">
-                            <Form>
-                                {this.renderInput("form-control", "username", "Nume de utilizator:", "Nume de utilizator", "text", true)}
-                                {this.renderInput("form-control", "lastName", "Nume:", "Nume", "text")}
-                                {this.renderInput("form-control", "firstName", "Prenume:", "Prenume", "text")}
-                                {this.renderInput("form-control", "personalNumber", "Număr personal:", "Număr personal", "text")}
-                                {this.renderInput("form-control", "mail", "E-mail:", "E-mail", "mail")}
-                                {this.renderInput("form-control", "phoneNumber", "Număr de telefon:", "Număr de telefon", "text")}
-                                {this.renderInput("form-control", "socialSecurityNumber", "Cod numeric personal:", "Cod numeric personal", "text")}
-                                {this.renderInput("form-control", "companyName", "Companie:", "Companie", "text")}
-                                {this.renderInput("form-control", "baseSalary", "Salariu:", "ex: 5000", "float")}
-                                {this.renderSelect("form-control", "currency", "Valută:",  currencyOptions)}
-                                {this.renderInput("form-control", "hireDate", "Dată angajare:", "MM/dd/yyyy",  "date")}
-                                {this.renderSelect("form-control", "type", "Tip contract:",  contractTypeOptions)}
-                                {this.renderInput("form-control", "expirationDate", "Dată expirare:", "MM/dd/yyyy", "date")}
-                                {this.renderSelect("form-control", "department", "Departament:",  departmentOptions)}
-                                {this.renderSelect("form-control", "position", "Poziție:",  positionOptions)}
-                                {this.renderInput("form-control", "birthday", "Data nașterii:", "MM/dd/yyyy", "date")}
-                                {this.renderInput("form-control", "gender", "Gen", "ex: Masculin", "text")}
-                                {this.renderInput("form-control", "bankName", "Nume bancă:", "Nume bancă", "text")}
-                                {this.renderInput("form-control", "bankAccountNumber", "Cont bancar:", "IBAN",  "text")}
-                                {this.renderInput("form-control", "overtimeIncreasePercent", "Procent plată ore suplimentare:", "ex:75",  "int")}
-                                {this.renderSelect("form-control", "taxExempt", "Scutit impozit:",  ["Da", "Nu"])}
-                                {this.renderInput("form-control", "ticketValue", "Valoare tichet masă:", "ex: 15", "int")}
-                                {this.renderInput("form-control", "daysOff", "Număr zile concediu anual:", "ex: 24", "int")}
-                                <div className="text-center" onClick={(e)=>this.handleSubmit("edit", e)}>
-                                    {this.renderButton("my-btn", "SALVEAZĂ", "button")}
-                                </div>
-                            </Form>
                         </Card.Body>
                     </Modal.Body>
                 </Modal>

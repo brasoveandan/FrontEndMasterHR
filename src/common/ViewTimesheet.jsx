@@ -20,6 +20,7 @@ export default class ViewTimesheet extends React.Component{
         super(undefined);
         this.state = {
             timesheet: [],
+            showTimesheet: true,
             clocking: [],
             status: localStorage.getItem("status") ? localStorage.getItem("status") : "depontat",
             workDate: localStorage.getItem("workDate") ? new Date(localStorage.getItem("workDate")) : "",
@@ -28,7 +29,8 @@ export default class ViewTimesheet extends React.Component{
             value: "",
             ora_intrare: "",
             ora_iesire: "",
-            motiv: ""
+            motiv: "",
+            message: ""
         };
 
         this.openModal = this.openModal.bind(this)
@@ -38,9 +40,14 @@ export default class ViewTimesheet extends React.Component{
         this.handleChange = this.handleChange.bind(this)
         this.handlePontajManual = this.handlePontajManual.bind(this)
 
+        this.loadData()
+    }
+
+    loadData = () => {
         let newDate = new Date();
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
+
         fetch('http://localhost:8080/timesheet/' + localStorage.getItem('username') + year + month, {
             method: 'GET',
             headers: {
@@ -55,9 +62,13 @@ export default class ViewTimesheet extends React.Component{
                     });
                 }
                 else {
-                    console.log("error timesheet")
+                    this.setState({
+                        showTimesheet: false
+                    })
                 }
             })
+            // eslint-disable-next-line no-unused-vars
+            .catch(error => { const mute = error} );
 
         fetch('http://localhost:8080/clocking/' + localStorage.getItem('username'), {
             method: 'GET',
@@ -73,9 +84,13 @@ export default class ViewTimesheet extends React.Component{
                     });
                 }
                 else {
-                    console.log("error clocking")
+                    this.setState({
+                        message: "Nu au fost înregistrate pontări."
+                    })
                 }
             })
+            // eslint-disable-next-line no-unused-vars
+            .catch(error => { const mute = error} );
     }
 
     openModal() {
@@ -84,7 +99,7 @@ export default class ViewTimesheet extends React.Component{
         });
     }
 
-    closeModal = e => {
+    closeModal = () => {
         this.setState({
             show: false
         });
@@ -120,6 +135,8 @@ export default class ViewTimesheet extends React.Component{
                 else
                     alert("Exception")
             })
+            // eslint-disable-next-line no-unused-vars
+            .catch(error => { const mute = error} );
 
     }
 
@@ -145,17 +162,19 @@ export default class ViewTimesheet extends React.Component{
             },
             body: JSON.stringify(payload)
         })
-            .then(res => {
-                if (res.status === 200)
-                    alert("Succes")
-                else if (res.status === 409)
-                    alert("Conflict")
-                else
-                    alert("Exception")
-            })
+        .then(res => {
+            if (res.status === 200)
+                alert("Succes")
+            else if (res.status === 409)
+                alert("Conflict")
+            else
+                alert("Exception")
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch(error => { const mute = error} );
         this.setState({
             show: false
-        });
+        })
     }
 
     handleDepontaj() {
@@ -171,25 +190,28 @@ export default class ViewTimesheet extends React.Component{
             },
             body: JSON.stringify(payload)
         })
-            .then(res => {
-                if (res.status === 200) {
-                    this.setState({
-                        status: "endOfDay",
-                        workDateAfterClocking: payload.toHour,
-                    })
-                    localStorage.setItem("status", "endOfDay")
-                    localStorage.setItem("workDateAfterClocking", payload.toHour)
-                    alert("Succes")
-                }
-                else if (res.status === 409)
-                    alert("Conflict")
-                else
-                    alert("Exception")
-            })
+        .then(res => {
+            if (res.status === 200) {
+                this.setState({
+                    status: "endOfDay",
+                    workDateAfterClocking: payload.toHour,
+                })
+                localStorage.setItem("status", "endOfDay")
+                localStorage.setItem("workDateAfterClocking", payload.toHour)
+                alert("Succes")
+            }
+            else if (res.status === 409)
+                alert("Conflict")
+            else
+                alert("Exception")
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch(error => { const mute = error} );
     }
 
     render(){
         let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeLeave} = this.state.timesheet;
+        const clockingLength = this.state.clocking.length;
         return (
             <Container fluid>
                 <Row className="mt-4 mb-4 ml-sm-5 ml-md-0" style={{opacity: ".85"}}>
@@ -293,38 +315,42 @@ export default class ViewTimesheet extends React.Component{
                                                 <Card.Title>
                                                     <h5>Statistici ore</h5>
                                                 </Card.Title>
-                                                <div className="stats-list">
-                                                    <div className="stats-info bg-dark text-white">
-                                                        <span>Ore lucrate <strong>{workedHours} <small>/ {requiredHours} ore</small></strong></span>
-                                                        <ProgressBar now={workedHours / requiredHours * 100}/>
+                                                {this.state.showTimesheet ?
+                                                    <div className="stats-list">
+                                                        <div className="stats-info bg-dark text-white">
+                                                            <span>Ore lucrate <strong>{workedHours} <small>/ {requiredHours} ore</small></strong></span>
+                                                            <ProgressBar now={workedHours / requiredHours * 100}/>
+                                                        </div>
+                                                        <div className="stats-info bg-dark text-white">
+                                                            <span>Ore telemuncă <strong>{homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
+                                                            <ProgressBar now={homeOfficeHours / requiredHours * 100}/>
+                                                        </div>
+                                                        <div className="stats-info bg-dark text-white">
+                                                            <span>Luna curentă <strong>{workedHours + homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
+                                                            <ProgressBar now={(workedHours + homeOfficeHours) / requiredHours * 100}/>
+                                                        </div>
+                                                        <div className="stats-info bg-dark text-white">
+                                                            <span>Ore suplimentare lună curentă <strong>{overtimeHours}</strong></span>
+                                                        </div>
+                                                        <div className="stats-info bg-dark text-white">
+                                                            <span>Total ore suplimentare <strong>{totalOvertimeLeave}</strong></span>
+                                                        </div>
                                                     </div>
-                                                    <div className="stats-info bg-dark text-white">
-                                                        <span>Ore telemuncă <strong>{homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
-                                                        <ProgressBar now={homeOfficeHours / requiredHours * 100}/>
-                                                    </div>
-                                                    <div className="stats-info bg-dark text-white">
-                                                        <span>Luna curentă <strong>{workedHours + homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
-                                                        <ProgressBar now={(workedHours + homeOfficeHours) / requiredHours * 100}/>
-                                                    </div>
-                                                    <div className="stats-info bg-dark text-white">
-                                                        <span>Ore suplimentare lună curentă <strong>{overtimeHours}</strong></span>
-                                                    </div>
-                                                    <div className="stats-info bg-dark text-white">
-                                                        <span>Total ore suplimentare <strong>{totalOvertimeLeave}</strong></span>
-                                                    </div>
-                                                </div>
+                                                :
+                                                    <Modal.Header>Nu există statistica.</Modal.Header>
+                                                }
                                             </Card.Body>
                                         </Card>
                                     </Col>
                                     <Col sm={12} className="text-center mb-3">
                                         <label className="text-white font-weight-bold">An:</label>
-                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="an" type="text" placeholder="ex: 2021" defaultValue={year} onChange={this.handleChange}/>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" disabled={!(clockingLength> 0)} name="an" type="text" placeholder="ex: 2021" defaultValue={year} onChange={this.handleChange}/>
                                         <label className="text-white font-weight-bold">Luna:</label>
-                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="luna" type="text" placeholder="ex: 2" defaultValue={month} onChange={this.handleChange}/>
-                                        <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="button" onClick={this.handleFilter}>Caută</Button>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" disabled={!(clockingLength> 0)} name="luna" type="text" placeholder="ex: 2" defaultValue={month} onChange={this.handleChange}/>
+                                        <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="button" disabled={!(clockingLength> 0)} onClick={this.handleFilter}>Caută</Button>
                                     </Col>
                                     <Col sm={12}>
-                                        {this.state.clocking.length > 0 ?
+                                        {clockingLength > 0 ?
                                             <Table responsive striped hover className={"bg-white"}>
                                                 <thead className="text-center">
                                                 <tr>
@@ -336,8 +362,8 @@ export default class ViewTimesheet extends React.Component{
                                                 </tr>
                                                 </thead>
                                                 <tbody className="text-center">
-                                                {this.state.clocking.map((item) => (
-                                                    <tr>
+                                                {this.state.clocking.map((item, index) => (
+                                                    <tr key={index}>
                                                         <td>{item.day}</td>
                                                         <td>{item.fromHour}</td>
                                                         <td>{item.toHour}</td>
@@ -348,7 +374,7 @@ export default class ViewTimesheet extends React.Component{
                                                 </tbody>
                                             </Table>
                                             :
-                                            <Modal.Header className="bg-white font-weight-bold">Nu există date</Modal.Header>
+                                            <Modal.Header className="bg-white font-weight-bold">{this.state.message}</Modal.Header>
                                         }
                                     </Col>
                                 </Row>
@@ -359,5 +385,4 @@ export default class ViewTimesheet extends React.Component{
             </Container>
         );
     }
-
 }

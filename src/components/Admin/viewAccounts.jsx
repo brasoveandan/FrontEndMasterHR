@@ -36,33 +36,10 @@ export default class ViewAccounts extends MyForm{
         this.handlePageClick = this.handlePageClick.bind(this)
         this.handleChange = this.handleChange.bind(this)
 
-        fetch('http://localhost:8080/employee', {
-            method: 'GET',
-            headers: {
-                'Accept' : 'application/json',
-                'Content-type':'application/json'
-            }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        const data = json;
-                        let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-
-                        this.setState({
-                            pageCount: Math.ceil(data.length / this.state.perPage),
-                            originalData: json,
-                            accounts: slice
-                        })
-                    });
-                }
-                else {
-                    console.log("error")
-                }
-            })
+        this.loadData()
     }
 
-    refreshData() {
+    loadData = () => {
         fetch('http://localhost:8080/employee', {
             method: 'GET',
             headers: {
@@ -169,7 +146,7 @@ export default class ViewAccounts extends MyForm{
                 if (res.status === 200) {
                     alert("Cont-ul a fost sters");
                     this.closeDeleteModal()
-                    this.refreshData()
+                    this.loadData()
                 }
                 else if(res.status === 417){
                     res.text().then(text =>{
@@ -192,7 +169,7 @@ export default class ViewAccounts extends MyForm{
             if (res.status === 200) {
                 alert("Cont modificat cu succes!")
                 this.closeEditModal()
-                this.refreshData()
+                this.loadData()
             }
             else if(res.status === 417){
                 res.text().then(text =>{
@@ -343,36 +320,40 @@ export default class ViewAccounts extends MyForm{
                         </Card.Body>
                     </Modal.Body>
                 </Modal>
-                <Table responsive hover striped borderless className="text-nowrap">
-                    <thead className="bg-dark text-white">
-                    <tr className="text-center">
-                        <th>#</th>
-                        <th>Nume de utilizator</th>
-                        <th>Număr personal</th>
-                        <th>E-mail</th>
-                        <th>Acțiune</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {accounts.map((account, index) => (
+                {accounts.length > 0 ?
+                    <Table responsive hover striped borderless className="text-nowrap">
+                        <thead className="bg-dark text-white">
                         <tr className="text-center">
-                            <td onClick={(e) => this.openDetailsModal(account, e)}>
-                                {(this.state.currentPage - 1) * this.state.perPage + index + 1}
-                            </td>
-                            <td onClick={(e) => this.openDetailsModal(account, e)}>{account.username}</td>
-                            <td onClick={(e) => this.openDetailsModal(account, e)}>{account.personalNumber}</td>
-                            <td onClick={(e) => this.openDetailsModal(account, e)}>{account.mail}</td>
-                            <td>
-                                <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Editează" onClick={(e) => this.openEditModal(account, e)}><FiEdit/></Button>
-                                <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(account, e)}><FaBan/></Button>
-                            </td>
+                            <th>#</th>
+                            <th>Nume de utilizator</th>
+                            <th>Număr personal</th>
+                            <th>E-mail</th>
+                            <th>Acțiune</th>
                         </tr>
-                    ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                        {accounts.map((account, index) => (
+                            <tr key={index} className="text-center">
+                                <td onClick={(e) => this.openDetailsModal(account, e)}>
+                                    {(this.state.currentPage - 1) * this.state.perPage + index + 1}
+                                </td>
+                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.username}</td>
+                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.personalNumber}</td>
+                                <td onClick={(e) => this.openDetailsModal(account, e)}>{account.mail}</td>
+                                <td>
+                                    <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Editează" onClick={(e) => this.openEditModal(account, e)}><FiEdit/></Button>
+                                    <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(account, e)}><FaBan/></Button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+                :
+                    <Modal.Header className="text-white bg-dark font-weight-bold">Nu este salvat niciun cont.</Modal.Header>
+                }
                 <ReactPaginate
                     previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
-                    nextClassName={this.state.pageCount === this.state.currentPage ? "invisible" : "visible"}
+                    nextClassName={this.state.pageCount === this.state.currentPage || accounts.length === 0 ? "invisible" : "visible"}
                     containerClassName={this.state.pageCount > 0 ? "pagination visible" : "invisible"}
                     previousLabel={"← Înapoi"}
                     nextLabel={"Mai Departe →"}

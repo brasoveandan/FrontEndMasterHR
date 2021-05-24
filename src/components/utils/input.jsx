@@ -1,6 +1,6 @@
 import {FormGroup, FormLabel} from "react-bootstrap";
 
-const MyInput = ({className, name, label, type, readOnly, error, ...rest}) => {
+const MyInput = ({className, name, label, type, readOnly, disable, error, ...rest}) => {
     return (
         <FormGroup>
             <FormLabel htmlFor={name}>{ label }</FormLabel>
@@ -14,6 +14,7 @@ const MyInput = ({className, name, label, type, readOnly, error, ...rest}) => {
                 name={name}
                 id={name}
                 className={className}
+                disabled={disable}
             />
             {error && <div className="alert alert-danger">{error}</div>}
         </FormGroup>
