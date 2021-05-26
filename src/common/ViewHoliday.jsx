@@ -37,7 +37,8 @@ export default class ViewHoliday extends React.Component{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -48,13 +49,14 @@ export default class ViewHoliday extends React.Component{
             }
         })
         // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
+        .catch(error => { console.log(error)} );
 
         fetch('http://localhost:8080/summaryHoliday/' + payload.username, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -65,13 +67,14 @@ export default class ViewHoliday extends React.Component{
             }
         })
         // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
+        .catch(error => { console.log(error)} );
 
         fetch('http://localhost:8080/employee', {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -82,7 +85,7 @@ export default class ViewHoliday extends React.Component{
             }
         })
         // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
+        .catch(error => { console.log(error)} );
     }
 
     handleSearch = query => {
@@ -124,7 +127,8 @@ export default class ViewHoliday extends React.Component{
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             },
             body: JSON.stringify(payload)
         })

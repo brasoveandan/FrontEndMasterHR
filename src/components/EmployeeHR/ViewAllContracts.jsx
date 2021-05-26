@@ -72,7 +72,8 @@ export default class ViewAllContracts extends MyForm{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
             .then(res => {
@@ -100,7 +101,8 @@ export default class ViewAllContracts extends MyForm{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
             .then(res => {
@@ -223,8 +225,13 @@ export default class ViewAllContracts extends MyForm{
             showDetailsModal: false,
             showAddModal: false,
             showEditModal: false,
-            showAlert: false
         });
+    }
+
+    closeAlert = () => {
+        this.setState({
+            showAlert: false
+        })
     }
 
     handleSearch = query => {
@@ -257,44 +264,58 @@ export default class ViewAllContracts extends MyForm{
                 method: 'POST',
                 headers: {
                     'Accept' : 'application/json',
-                    'Content-type':'application/json'
+                    'Content-type':'application/json',
+                    'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
                 },
                 body: JSON.stringify(payload)
             })
-                .then(res => {
-                    if (res.status === 200) {
-                        alert("Contractul a fost adăugat cu succes!")
-                        this.closeModal()
-                        this.loadData()
-                    }
-                    else if(res.status === 417){
-                        res.text().then(text =>{
-                            console.log(text);
-                        });
-                    }
-                })
+            .then(res => {
+                if (res.status === 200) {
+                    this.setState({
+                        showAlert: true,
+                        message: "Contractul a fost adăugat cu succes!"
+                    })
+                    this.closeModal()
+                    this.loadData()
+                }
+                else if(res.status === 417){
+                    res.text().then(text =>{
+                        this.setState({
+                            showAlert: true,
+                            message: text
+                        })
+                    });
+                }
+            })
         }
         if (action === "edit") {
             fetch('http://localhost:8080/contract', {
                 method: 'PUT',
                 headers: {
                     'Accept' : 'application/json',
-                    'Content-type':'application/json'
+                    'Content-type':'application/json',
+                    'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
                 },
                 body: JSON.stringify(payload)
             })
-                .then(res => {
-                    if (res.status === 200) {
-                        alert("Contractul a fost modificat cu succes!")
-                        this.closeModal()
-                        this.loadData()
-                    }
-                    else if(res.status === 417){
-                        res.text().then(text =>{
-                            console.log(text);
-                        });
-                    }
-                })
+            .then(res => {
+                if (res.status === 200) {
+                    this.setState({
+                        showAlert: true,
+                        message: "Contractul a fost modificat cu succes!"
+                    })
+                    this.closeModal()
+                    this.loadData()
+                }
+                else if(res.status === 417){
+                    res.text().then(text =>{
+                        this.setState({
+                            showAlert: true,
+                            message: text
+                        })
+                    });
+                }
+            })
         }
     }
 
@@ -330,7 +351,7 @@ export default class ViewAllContracts extends MyForm{
         let filtered = allContracts;
         if (searchQuery)
             filtered = allContracts.filter(contract =>
-                contract.user.toLowerCase().startsWith(searchQuery.toLowerCase())
+                contract.username.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
         if (filtered.length === 0)
@@ -353,7 +374,7 @@ export default class ViewAllContracts extends MyForm{
                 if (contract.username === employee.username)
                     ok = 0
             })
-            if (ok === 1)
+            if (ok === 1 && employee.username !== localStorage.getItem("username"))
                 usernameWithoutContract.push(employee.username)
         })
         return (
@@ -412,13 +433,13 @@ export default class ViewAllContracts extends MyForm{
                     subContainerClassName={"pages pagination"}
                     activeClassName={"active"}
                 />
-                <Modal show={this.state.showAlert} onHide={this.closeModal} centered close>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
                     <Modal.Header>Notificare</Modal.Header>
                     <Modal.Body>
                         {this.state.message}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={this.closeModal}>
+                        <Button variant="primary" onClick={this.closeAlert}>
                             Ok
                         </Button>
                     </Modal.Footer>

@@ -44,7 +44,8 @@ export default class ViewAccounts extends MyForm{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
             .then(res => {
@@ -139,7 +140,8 @@ export default class ViewAccounts extends MyForm{
             method: 'DELETE',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             },
         })
             .then(res => {
@@ -161,7 +163,8 @@ export default class ViewAccounts extends MyForm{
             method: 'PUT',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             },
             body: JSON.stringify(this.state.data)
         })

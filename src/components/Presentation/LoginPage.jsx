@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import {Button, Form, InputGroup, Modal} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
 import NavBar from "../utils/NavBar";
 import {FaLock, FaUser} from "react-icons/all";
@@ -11,9 +11,17 @@ class LoginPage extends React.Component {
         this.state = {
             username: "",
             password: "",
+            showAlert: false,
+            message: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
+    }
+
+    closeAlert = () => {
+        this.setState({
+            showAlert: false
+        })
     }
 
     doSubmit = (e) => {
@@ -30,35 +38,40 @@ class LoginPage extends React.Component {
             },
             body: JSON.stringify(payload)
         })
-            .then(res => {
-                if (res.status === 200) {
-                    localStorage.setItem('username', this.state.username)
-                    res.json().then(json =>{
-                        const { adminRole, name } = json
-                        localStorage.setItem('adminRole', adminRole)
-                        localStorage.setItem('name', name)
-                        if (adminRole === "DEFAULT")
-                            this.props.history.replace("/employeedashboard");
-                        else if (adminRole === "GROUP_LEADER")
-                            this.props.history.replace("/groupleaderdashboard");
-                        else if (adminRole === "HR_EMPLOYEE")
-                            this.props.history.replace("/employeehrdashboard");
-                        else if (adminRole === "HR_DEPARTMENT_RESPONSIVE")
-                            this.props.history.replace("/responsivehrdashboard");
-                        else if (adminRole === "ADMIN") {
-                            this.props.history.replace("/admindashboard");
-                        }
-                    });
+        .then(res => {
+            if (res.status === 200) {
+                localStorage.setItem('username', this.state.username)
+                res.json().then(json =>{
+                    const { adminRole, name, jwt } = json
+                    localStorage.setItem('adminRole', adminRole)
+                    localStorage.setItem('name', name)
+                    localStorage.setItem('jwt', jwt)
+                    if (adminRole === "DEFAULT")
+                        this.props.history.replace("/employeedashboard");
+                    else if (adminRole === "GROUP_LEADER")
+                        this.props.history.replace("/groupleaderdashboard");
+                    else if (adminRole === "HR_EMPLOYEE")
+                        this.props.history.replace("/employeehrdashboard");
+                    else if (adminRole === "ADMIN") {
+                        this.props.history.replace("/admindashboard");
+                    }
+                });
 
-                    // LOGIN PERSISTENCE
-                }
-                else if (res.status === 404) {
-                    alert("Utilizatorul nu exista!")
-                }
-                else if (res.status === 401) {
-                    alert("Parola gresita!")
-                }
-            })
+                // LOGIN PERSISTENCE
+            }
+            else if (res.status === 403) {
+                this.setState({
+                    showAlert: true,
+                    message: "Utilizatorul nu există!"
+                })
+            }
+            else if (res.status === 401) {
+                this.setState({
+                    showAlert: true,
+                    message: "Numele de utilizator sau parola sunt incorecte! Reîncercați!"
+                })
+            }
+        })
     }
 
     handleChange(event) {
@@ -79,9 +92,24 @@ class LoginPage extends React.Component {
         return (
             <React.Fragment>
                 <NavBar/>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
+                    <Modal.Header className="font-weight-bold">
+                        <Modal.Title>
+                            Autentificare eșuată
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.state.message}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.closeAlert}>
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <div className="align-content-center">
-                    <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "2%", marginBottom: "2%"}}>
-                        <Form className="d-flex flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
+                    <div className="d-flex justify-content-center align-items-center my-4">
+                        <Form className="d-flex flex-column my-border-form border rounded border-secondary w-50" onSubmit={this.doSubmit}>
                             <h3 className="align-self-center text-white text-uppercase">Autentificare</h3>
                             <hr/>
                             <Form.Group controlId="formUser">
@@ -97,9 +125,6 @@ class LoginPage extends React.Component {
                                     <InputGroup.Text className="bg-white mt-3"><FaLock/></InputGroup.Text>
                                     <Form.Control className="align-self-center bg-white mt-3" name="password" type="password" placeholder="Parola" onChange={this.handleChange}/>
                                 </InputGroup>
-                            </Form.Group>
-                            <Form.Group controlId="formBasicCheckbox" className="align-self-center">
-                                <Form.Check className="text-white" type="checkbox" label="Pastreaza datele" />
                             </Form.Group>
                             <Button className="align-self-center my-btn" type="submit" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
                                 Autetintificare

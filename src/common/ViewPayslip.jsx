@@ -26,7 +26,8 @@ export default class ViewPayslip extends React.Component{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
             .then(res => {
@@ -230,7 +231,8 @@ export default class ViewPayslip extends React.Component{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
             .then(res => {

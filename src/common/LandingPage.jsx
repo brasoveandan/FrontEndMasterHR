@@ -14,8 +14,8 @@ export default class LandingPage extends React.Component{
                         <h5>Bine ai revenit!</h5>
                     </Card.Title>
                     <span className="card-text">
-                    {text}
-                </span>
+                        {text}
+                    </span>
                 </Card.Body>
             </Card>
         )

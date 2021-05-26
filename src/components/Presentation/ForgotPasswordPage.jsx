@@ -22,7 +22,8 @@ export default class ForgotPasswordPage extends React.Component {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             },
             body: JSON.stringify(payload)
         })
@@ -47,8 +48,6 @@ export default class ForgotPasswordPage extends React.Component {
                             this.props.history.replace("/admindashboard");
                         }
                     });
-
-                    // LOGIN PERSISTENCE
                 }
                 else if (res.status === 404) {
                     alert("Utilizatorul nu exista!")
@@ -78,8 +77,8 @@ export default class ForgotPasswordPage extends React.Component {
             <React.Fragment>
                 <NavBar/>
                 <div className="align-content-center">
-                    <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "2%", marginBottom: "2%"}}>
-                        <Form className="d-flex flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
+                    <div className="d-flex justify-content-center align-items-center my-5">
+                        <Form className="d-flex flex-column my-border-form border rounded border-secondary w-50" onSubmit={this.doSubmit}>
                             <h3 className="align-self-center text-white text-uppercase">Schimbare Parola</h3>
                             <hr/>
                             <Form.Group controlId="formUser">

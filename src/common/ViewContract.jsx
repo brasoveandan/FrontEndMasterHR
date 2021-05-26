@@ -23,7 +23,8 @@ export default class ViewContract extends React.Component{
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json'
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
             .then(res => {
@@ -39,7 +40,7 @@ export default class ViewContract extends React.Component{
                 }
             })
             // eslint-disable-next-line no-unused-vars
-            .catch(error => { const mute = error} );
+            .catch(error => { console.log(error)} );
     }
 
     renderContract = (contract) => {

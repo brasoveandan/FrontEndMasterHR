@@ -80,20 +80,20 @@ export default class ResetPasswordPage extends Component{
             <React.Fragment>
                 <NavBar/>
                 <div className="align-content-center">
-                    <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "2%", marginBottom: "2%"}}>
-                        <Form className="d-flex flex-column my-border-form border rounded border-secondary" onSubmit={this.doSubmit} style={{width:"40%"}}>
-                            <h3 className="align-self-center text-white text-uppercase">Resetare Parola</h3>
+                    <div className="d-flex justify-content-center align-items-center my-5">
+                        <Form className="d-flex flex-column my-border-form border rounded border-secondary w-50" onSubmit={this.doSubmit}>
+                            <h3 className="align-self-center text-white text-uppercase">Resetare Parolă</h3>
                             <hr/>
-                            <Form.Group controlId="formPassword">
-                                <Form.Label className="my-label">Parola</Form.Label>
+                            <Form.Group>
+                                <Form.Label className="my-label">Parolă nouă</Form.Label>
                                 <Form.Control className="align-self-center bg-white" name="password" type="password" placeholder="Parola" onChange={this.handleChange}/>
                             </Form.Group>
-                            <Form.Group controlId="formPassword">
-                                <Form.Label className="my-label">Confirmare Parola</Form.Label>
+                            <Form.Group>
+                                <Form.Label className="my-label">Confirmare Parolă</Form.Label>
                                 <Form.Control className="align-self-center bg-white" name="password_confirm" type="password" placeholder="Confirmare Parola" onChange={this.handleChange}/>
                             </Form.Group>
                             <Button className="align-self-center my-btn" type="submit" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
-                                Trimite
+                                Resetare
                             </Button>
                             <br/>
                         </Form>
