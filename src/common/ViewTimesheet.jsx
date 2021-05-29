@@ -5,8 +5,6 @@ import {
     Col,
     Container,
     Form,
-    FormGroup,
-    FormLabel,
     Modal,
     ProgressBar,
     Row,
@@ -14,10 +12,13 @@ import {
 } from "react-bootstrap";
 import {FaTimes} from "react-icons/all";
 import { format } from "date-fns";
+import {clockingOptions} from "../components/utils/select";
+import MyForm from "../components/utils/MyForm";
+import * as Joi from "joi-browser";
 
-export default class ViewTimesheet extends React.Component{
-    constructor(){
-        super(undefined);
+export default class ViewTimesheet extends MyForm{
+    constructor(props){
+        super(props);
         this.state = {
             timesheet: [],
             showTimesheet: true,
@@ -26,34 +27,43 @@ export default class ViewTimesheet extends React.Component{
             workDate: localStorage.getItem("workDate") ? new Date(localStorage.getItem("workDate")) : "",
             workDateAfterClocking: localStorage.getItem("workDateAfterClocking") ? new Date(localStorage.getItem("workDateAfterClocking")) : "",
             show: false,
-            value: "",
-            ora_intrare: "",
-            ora_iesire: "",
-            motiv: "",
+            data: {
+                type: "",
+                fromHour: "",
+                toHour: "",
+                reason: ""
+            },
+            errors: {},
             message: ""
         };
 
-        this.openModal = this.openModal.bind(this)
-        this.closeModal = this.closeModal.bind(this)
-        this.handlePontaj = this.handlePontaj.bind(this)
-        this.handleDepontaj = this.handleDepontaj.bind(this)
         this.handleChange = this.handleChange.bind(this)
-        this.handlePontajManual = this.handlePontajManual.bind(this)
-
         this.loadData()
+    }
+
+    schema = {
+        type: Joi.string().required().error(() => {return {message: "Trebuie selectat tipul pontării."}}),
+        fromHour: Joi.date().iso().required().error(() => {return {message: "Ora de început este obligatorie."}}),
+        toHour: Joi.date().iso().required().error(() => {return {message: "Ora de sfârșit este obligatorie."}}),
+        reason: Joi.string().optional().allow(""),
     }
 
     loadData = () => {
         let newDate = new Date();
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
+        const payload = {
+            idTimesheet: localStorage.getItem("username") + year + month,
+            username: localStorage.getItem("username"),
+            token: localStorage.getItem("jwt")
+        }
 
-        fetch('http://localhost:8080/timesheet/' + localStorage.getItem('username') + year + month, {
+        fetch('http://localhost:8080/timesheet/' + payload.idTimesheet, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + payload.token
             }
         })
             .then(res => {
@@ -71,12 +81,12 @@ export default class ViewTimesheet extends React.Component{
             // eslint-disable-next-line no-unused-vars
             .catch(error => { const mute = error} );
 
-        fetch('http://localhost:8080/clocking/' + localStorage.getItem('username'), {
+        fetch('http://localhost:8080/clocking/' + payload.username, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + payload.token
             }
         })
             .then(res => {
@@ -95,7 +105,7 @@ export default class ViewTimesheet extends React.Component{
             .catch(error => { const mute = error} );
     }
 
-    openModal() {
+    openModal = () => {
         this.setState({
             show: true
         });
@@ -107,9 +117,10 @@ export default class ViewTimesheet extends React.Component{
         });
     };
 
-    handlePontaj() {
+    handlePontaj = () => {
         const payload = {
             usernameEmployee: localStorage.getItem("username"),
+            token: localStorage.getItem("jwt"),
             fromHour: new Date(),
             toHour: new Date(),
         }
@@ -118,7 +129,7 @@ export default class ViewTimesheet extends React.Component{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + payload.token
             },
             body: JSON.stringify(payload)
         })
@@ -149,14 +160,9 @@ export default class ViewTimesheet extends React.Component{
         })
     };
 
-    handlePontajManual() {
-        const payload = {
-            usernameEmployee: localStorage.getItem("username"),
-            type: this.state.value,
-            fromHour: this.state.ora_intrare,
-            toHour: this.state.ora_iesire,
-            reason: this.state.motiv
-        }
+    doSubmit = (action) => {
+        const payload = this.state.data
+        payload["usernameEmployee"] = localStorage.getItem("username")
         fetch('http://localhost:8080/clocking', {
             method: 'POST',
             headers: {
@@ -181,9 +187,9 @@ export default class ViewTimesheet extends React.Component{
         })
     }
 
-    handleDepontaj() {
+    handleDepontaj = () => {
         const payload = {
-            usernameEmployee: localStorage.getItem("username"),
+            token: localStorage.getItem("jwt"),
             toHour: new Date()
         }
         fetch('http://localhost:8080/clocking', {
@@ -278,32 +284,12 @@ export default class ViewTimesheet extends React.Component{
                                                             <Card.Header>
                                                                 <Card.Body>
                                                                     <Form>
-                                                                        <FormGroup>
-                                                                            <FormLabel>Tip<span className="text-danger">*</span></FormLabel>
-                                                                            <select className="form-control" name="value" value={this.state.value} onChange={this.handleChange}>
-                                                                                <option>Selectează Tip</option>
-                                                                                <option value="Telemuncă">Telemuncă</option>
-                                                                                <option value="Normal">Normal</option>
-                                                                            </select>
-                                                                        </FormGroup>
-                                                                        <FormGroup>
-                                                                            <label>Oră intrare <span className="text-danger">*</span></label>
-                                                                            <div className="cal-icon">
-                                                                                <input className="form-control" placeholder="Ora intrare" name="ora_intrare" type="datetime-local" onChange={this.handleChange}/>
-                                                                            </div>
-                                                                        </FormGroup>
-                                                                        <FormGroup>
-                                                                            <label>Oră ieșire <span className="text-danger">*</span></label>
-                                                                            <div className="cal-icon">
-                                                                                <input className="form-control" placeholder="Ora iesire" name="ora_iesire" type="datetime-local" onChange={this.handleChange}/>
-                                                                            </div>
-                                                                        </FormGroup>
-                                                                        <FormGroup>
-                                                                            <label>Motiv <span className="text-danger">*</span></label>
-                                                                            <textarea rows="3" className="form-control" name="motiv" onChange={this.handleChange}/>
-                                                                        </FormGroup>
-                                                                        <div className="submit-section text-center">
-                                                                            <button className="my-btn" type="button" onClick={this.handlePontajManual}>Pontare</button>
+                                                                        {this.renderSelect("form-control", "type", "Tip", clockingOptions)}
+                                                                        {this.renderInput("form-control", "fromHour", "Oră intrare", "Ora intrare", "datetime-local")}
+                                                                        {this.renderInput("form-control", "toHour", "Oră ieșire", "Ora iesire", "datetime-local")}
+                                                                        {this.renderTextarea("form-control", "reason", "Motiv", "Pe scurt...", "3")}
+                                                                        <div className="text-center" onClick={(e) => this.handleSubmit("", e)}>
+                                                                            {this.renderButton("my-btn", "Pontare", "button")}
                                                                         </div>
                                                                     </Form>
                                                                 </Card.Body>

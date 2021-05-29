@@ -17,11 +17,10 @@ class GroupLeaderDashboard extends React.Component {
             name: localStorage.getItem("username"),
             adminRole: localStorage.getItem("adminRole")
         };
-        this.show = this.show.bind(this);
         this.state = {render: <GroupLeaderLandingPage/>}
     }
 
-    show(type){
+    show = (type) =>{
         switch(type){
             case "detalii_contract": this.setState({render: <ViewContract/>}); break;
             case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;

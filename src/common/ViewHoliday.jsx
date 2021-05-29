@@ -1,31 +1,42 @@
 import React from "react";
 import {Button, Card, Col, Container, Form, FormGroup, Modal, Row, Table} from "react-bootstrap";
 import {FaBan, FaTimes, FiEdit} from "react-icons/all";
-import { Typeahead } from 'react-bootstrap-typeahead';
 import SearchBox from "../components/utils/searchBox";
+import * as Joi from "joi-browser";
+import MyForm from "../components/utils/MyForm";
+import {requestOptions} from "../components/utils/select";
+import {Typeahead} from "react-bootstrap-typeahead";
 
-export default class ViewHoliday extends React.Component{
-    constructor(){
-        super(undefined);
+export default class ViewHoliday extends MyForm{
+    constructor(props){
+        super(props);
         this.state = {
             holidays: [],
             summary:[],
             users: [],
             show: false,
             searchQuery: "",
-            reason: "",
-            fromDate: "",
-            toDate: "",
-            value: "",
             proxyUsername: "",
+            data: {
+                reason: "",
+                fromDate: "",
+                toDate: "",
+                type: ""
+            },
+            errors: {},
             showAlert: false,
             message: ""
         };
 
         this.handleChange = this.handleChange.bind(this)
-        this.handleAdaugaCerere = this.handleAdaugaCerere.bind(this)
-
         this.loadData()
+    }
+
+    schema = {
+        reason: Joi.string().optional().allow(""),
+        fromDate: Joi.date().iso().required().error(() => {return {message: "Data de început este obligatorie."}}),
+        toDate: Joi.date().iso().required().error(() => {return {message: "Data de sfârșit este obligatorie."}}),
+        type: Joi.string().required().error(() => {return {message: "Trebuie selectat tipul cererii."}})
     }
 
     loadData = () => {
@@ -111,18 +122,12 @@ export default class ViewHoliday extends React.Component{
         })
     }
 
-    handleAdaugaCerere() {
-        const payload = {
-            usernameEmployee: localStorage.getItem("username"),
-            description: this.state.reason,
-            status: "PENDING",
-            submittedDate: new Date(),
-            fromDate: this.state.fromDate,
-            toDate: this.state.toDate,
-            type: this.state.value,
-            proxyUsername: this.state.proxyUsername
-        }
-        console.log(payload)
+    doSubmit = () => {
+        const payload = this.state.data;
+        payload["usernameEmployee"] = localStorage.getItem("username")
+        payload["status"] = "PENDING"
+        payload["submittedDate"] = new Date()
+        payload["proxyUsername"] = this.state.proxyUsername
         fetch('http://localhost:8080/request', {
             method: 'POST',
             headers: {
@@ -132,18 +137,18 @@ export default class ViewHoliday extends React.Component{
             },
             body: JSON.stringify(payload)
         })
-            .then(res => {
-                if (res.status === 417) {
-                    res.json().then(json =>{
-                        console.log(json)
-                    });
-                }
-                else if (res.status === 200)
-                    console.log("SUCCES")
-                else {
-                    console.log("error")
-                }
-            })
+        .then(res => {
+            if (res.status === 417) {
+                res.json().then(json =>{
+                    console.log(json)
+                });
+            }
+            else if (res.status === 200)
+                console.log("SUCCES")
+            else {
+                console.log("error")
+            }
+        })
     }
 
     getPagedData = () => {
@@ -216,25 +221,9 @@ export default class ViewHoliday extends React.Component{
                                     <Card.Header>
                                         <Card.Body>
                                             <Form>
-                                                <FormGroup>
-                                                    <label>Tip cerere <span className="text-danger">*</span></label>
-                                                    <select className="form-control" aria-hidden="true" value={this.state.value} name="value" onChange={this.handleChange}>
-                                                        <option>Selectează tipul</option>
-                                                        <option value="Concediu normal anual">Concediu anual</option>
-                                                        <option value="Concediu pentru donare sange">Concediu pentru donare sange</option>
-                                                        <option value="Concediu pentru pariticipare la funerali">Concendiu pentru pariticipare la funerali</option>
-                                                        <option value="Concediu pentru pariticipare la nunta">Concendiu pentru pariticipare la nunta</option>
-                                                        <option value="Concediu din ore suplimentare">Concendiu din ore suplimentare</option>
-                                                    </select>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <Form.Label>Din data<span className="text-danger">*</span></Form.Label>
-                                                    <input className="form-control" type="date" name="fromDate" onChange={this.handleChange}/>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <Form.Label>Pâna la data<span className="text-danger">*</span></Form.Label>
-                                                    <input className="form-control" type="date" name="toDate" onChange={this.handleChange}/>
-                                                </FormGroup>
+                                                {this.renderSelect("form-control", "type", "Tip cerere", requestOptions)}
+                                                {this.renderInput("form-control", "fromDate", "Din data", "data", "date")}
+                                                {this.renderInput("form-control", "toDate", "Pâna la data", "data", "date")}
                                                 <FormGroup>
                                                     <Form.Label>Înlocuitor</Form.Label>
                                                     <Typeahead
@@ -249,12 +238,9 @@ export default class ViewHoliday extends React.Component{
                                                         placeholder="Nume de utilizator"
                                                     />
                                                 </FormGroup>
-                                                <FormGroup>
-                                                    <Form.Label>Motiv <span className="text-danger">*</span></Form.Label>
-                                                    <textarea rows="4" className="form-control" placeholder="Pe scurt..." name="reason" onChange={this.handleChange}/>
-                                                </FormGroup>
-                                                <div className="submit-section text-center">
-                                                    <button className="my-btn" type="button" onClick={this.handleAdaugaCerere}>Trimite</button>
+                                                {this.renderTextarea("form-control", "reason", "Motiv", "Pe scurt...", "4")}
+                                                <div className="text-center" onClick={(e) => this.handleSubmit("", e)}>
+                                                    {this.renderButton("my-btn", "Trimite", "button")}
                                                 </div>
                                             </Form>
                                         </Card.Body>

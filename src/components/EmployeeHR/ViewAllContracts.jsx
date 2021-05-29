@@ -76,26 +76,20 @@ export default class ViewAllContracts extends MyForm{
                 'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        const data = json;
-                        let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(json =>{
+                    const data = json;
+                    let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
 
-                        this.setState({
-                            pageCount: Math.ceil(data.length / this.state.perPage),
-                            originalData: json,
-                            contracts: slice
-                        })
-                    });
-                }
-                else {
                     this.setState({
-                        showAlert: true,
-                        message: "Nu există date"
+                        pageCount: Math.ceil(data.length / this.state.perPage),
+                        originalData: json,
+                        contracts: slice
                     })
-                }
-            })
+                });
+            }
+        })
 
         fetch('http://localhost:8080/employee', {
             method: 'GET',
@@ -105,21 +99,21 @@ export default class ViewAllContracts extends MyForm{
                 'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json => {
-                        this.setState({
-                            employees: json
-                        })
-                    });
-                }
-                else {
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(json => {
                     this.setState({
-                        showAlert: true,
-                        message: "Nu s-au găsit utilizatori"
+                        employees: json
                     })
-                }
-            })
+                });
+            }
+            else {
+                this.setState({
+                    showAlert: true,
+                    message: "Nu s-au găsit utilizatori"
+                })
+            }
+        })
     }
 
     schema = {
@@ -202,7 +196,7 @@ export default class ViewAllContracts extends MyForm{
             currency: contract.currency,
             hireDate: contract.hireDate,
             type: contract.type,
-            expirationDate: contract.expirationDate,
+            expirationDate: contract.expirationDate ? contract.expirationDate : "",
             department: contract.department,
             position: contract.position,
             birthday: contract.birthday,
@@ -278,7 +272,7 @@ export default class ViewAllContracts extends MyForm{
                     this.closeModal()
                     this.loadData()
                 }
-                else if(res.status === 417){
+                else if(res.status === 417) {
                     res.text().then(text =>{
                         this.setState({
                             showAlert: true,
@@ -286,6 +280,12 @@ export default class ViewAllContracts extends MyForm{
                         })
                     });
                 }
+                else
+                    this.setState({
+                        showAlert: true,
+                        message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                            "masterhr.contact@gmail.com. Mulțumim!"
+                    })
             })
         }
         if (action === "edit") {
@@ -315,6 +315,12 @@ export default class ViewAllContracts extends MyForm{
                         })
                     });
                 }
+                else
+                    this.setState({
+                        showAlert: true,
+                        message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                            "masterhr.contact@gmail.com. Mulțumim!"
+                    })
             })
         }
     }
@@ -359,12 +365,13 @@ export default class ViewAllContracts extends MyForm{
                 contract.personalNumber.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
+        const pageCount = Math.ceil(filtered.length / this.state.perPage)
         const result = paginate(filtered, currentPage, perPage);
-        return { contracts: result };
+        return { contracts: result, pageCount };
     }
 
     render(){
-        const { contracts } = this.getPagedData();
+        const { contracts, pageCount } = this.getPagedData();
         let {firstName, lastName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = this.state.contractDetails;
         const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
         let usernameWithoutContract = []
@@ -388,7 +395,7 @@ export default class ViewAllContracts extends MyForm{
                         <Button className="my-btn mb-3" type="button" onClick={this.openAddModal}>Adaugă contract nou</Button>
                     </div>
                 </Col>
-                {this.state.contracts.length > 0 ?
+                {contracts.length > 0 ?
                     <Table responsive hover striped borderless className="text-nowrap">
                         <thead className="bg-dark text-white">
                         <tr className="text-center">
@@ -422,18 +429,18 @@ export default class ViewAllContracts extends MyForm{
                 }
                 <ReactPaginate
                     previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
-                    nextClassName={this.state.pageCount === this.state.currentPage || this.state.contracts.length === 0 ? "invisible" : "visible"}
-                    containerClassName={this.state.pageCount > 0 ? "pagination invisible" : "visible"}
+                    nextClassName={pageCount === this.state.currentPage || contracts.length < this.state.perPage ? "invisible" : "visible"}
+                    containerClassName={contracts.length > 0 && pageCount > 1 ? "pagination visible" : "invisible"}
                     previousLabel={"← Înapoi"}
                     nextLabel={"Mai Departe →"}
-                    pageCount={this.state.pageCount}
+                    pageCount={pageCount}
                     onPageChange={this.handlePageClick}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     subContainerClassName={"pages pagination"}
                     activeClassName={"active"}
                 />
-                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
                     <Modal.Header>Notificare</Modal.Header>
                     <Modal.Body>
                         {this.state.message}
@@ -600,7 +607,7 @@ export default class ViewAllContracts extends MyForm{
                     </Modal.Header>
                     <Modal.Body>
                         <Container fluid className="mb-3 mt-3">
-                            <Card style={{backgroundColor: "#e1e5ea"}}>
+                            <Card>
                                 <Card.Body  className="rounded">
                                     <Form>
                                         {this.state.data.username ? this.handleUpdateData() : ""}

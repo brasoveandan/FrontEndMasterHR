@@ -4,7 +4,7 @@ import {NavLink} from "react-router-dom";
 import NavBar from "../utils/NavBar";
 import {FaLock, FaUser} from "react-icons/all";
 
-class LoginPage extends React.Component {
+export default class LoginPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -56,21 +56,23 @@ class LoginPage extends React.Component {
                         this.props.history.replace("/admindashboard");
                     }
                 });
-
-                // LOGIN PERSISTENCE
             }
-            else if (res.status === 403) {
+            else if (res.status === 403)
                 this.setState({
                     showAlert: true,
                     message: "Utilizatorul nu există!"
                 })
-            }
-            else if (res.status === 401) {
+            else if (res.status === 401)
                 this.setState({
                     showAlert: true,
                     message: "Numele de utilizator sau parola sunt incorecte! Reîncercați!"
                 })
-            }
+            else
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
         })
     }
 
@@ -132,7 +134,7 @@ class LoginPage extends React.Component {
                             <br/>
                             <Form.Group controlId="formForgotPassword" className="align-self-center">
                                 <Form.Text>
-                                    <NavLink className="nav-link my-label" to="/forgot">Ti-ai uitat parola?</NavLink>
+                                    <NavLink className="nav-link my-label" to="/forgot_password">Ti-ai uitat parola?</NavLink>
                                 </Form.Text>
                             </Form.Group>
                         </Form>
@@ -142,5 +144,3 @@ class LoginPage extends React.Component {
         )
     }
 }
-
-export default LoginPage;

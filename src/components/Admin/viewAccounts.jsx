@@ -7,7 +7,6 @@ import ReactPaginate from 'react-paginate';
 import MyForm from "../utils/MyForm";
 import * as Joi from "joi-browser";
 
-
 export default class ViewAccounts extends MyForm{
     constructor(){
         super(undefined);
@@ -31,6 +30,8 @@ export default class ViewAccounts extends MyForm{
                 mail: ""
             },
             errors: {},
+            showAlert: false,
+            message: ""
         };
 
         this.handlePageClick = this.handlePageClick.bind(this)
@@ -48,27 +49,24 @@ export default class ViewAccounts extends MyForm{
                 'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
             }
         })
-            .then(res => {
-                if (res.status === 200) {
-                    res.json().then(json =>{
-                        const data = json;
-                        let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+        .then(res => {
+            if (res.status === 200) {
+                res.json().then(json =>{
+                    const data = json;
+                    let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
 
-                        this.setState({
-                            pageCount: Math.ceil(data.length / this.state.perPage),
-                            originalData: json,
-                            accounts: slice
-                        })
-                    });
-                }
-                else {
-                    console.log("error")
-                }
-            })
+                    this.setState({
+                        pageCount: Math.ceil(data.length / this.state.perPage),
+                        originalData: json,
+                        accounts: slice
+                    })
+                });
+            }
+        })
     }
 
     schema = {
-        username: Joi.string().min(8).required().error(() => {return {message: "Numele de utilizator este obligatoriu."}}),
+        username: Joi.string().min(3).required().error(() => {return {message: "Numele de utilizator este prea scurt."}}),
         password: Joi.string().min(8).required().error(() => {return {message: "Parola trebuie să conțină cel puțin 8 caractere."}}),
         personalNumber: Joi.string().min(6).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 6 cifre."}}),
         adminRole: Joi.string().required().error(() => {return {message: "Trebuie setate permisiunile contului."}}),
@@ -103,22 +101,18 @@ export default class ViewAccounts extends MyForm{
         });
     }
 
-    closeDetailsModal = () => {
+    closeModal = () => {
         this.setState({
-            showDetailsModal: false
-        });
-    }
-
-    closeEditModal = () => {
-        this.setState({
-            showEditModal: false
-        });
-    }
-
-    closeDeleteModal = () => {
-        this.setState({
+            showDetailsModal: false,
+            showEditModal: false,
             showDeleteModal: false
         });
+    }
+
+    closeAlert = () => {
+        this.setState({
+            showAlert: false
+        })
     }
 
     handleSearch = query => {
@@ -146,8 +140,11 @@ export default class ViewAccounts extends MyForm{
         })
             .then(res => {
                 if (res.status === 200) {
-                    alert("Cont-ul a fost sters");
-                    this.closeDeleteModal()
+                    this.setState({
+                        showAlert: true,
+                        message: "Contul a fost șters!"
+                    })
+                    this.closeModal()
                     this.loadData()
                 }
                 else if(res.status === 417){
@@ -155,6 +152,12 @@ export default class ViewAccounts extends MyForm{
                         console.log(text);
                     });
                 }
+                else
+                    this.setState({
+                        showAlert: true,
+                        message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                            "masterhr.contact@gmail.com. Mulțumim!"
+                    })
             })
     }
 
@@ -170,8 +173,11 @@ export default class ViewAccounts extends MyForm{
         })
         .then(res => {
             if (res.status === 200) {
-                alert("Cont modificat cu succes!")
-                this.closeEditModal()
+                this.setState({
+                    showAlert: true,
+                    message: "Contul a fost modificat!"
+                })
+                this.closeModal()
                 this.loadData()
             }
             else if(res.status === 417){
@@ -179,6 +185,12 @@ export default class ViewAccounts extends MyForm{
                     console.log(text);
                 });
             }
+            else
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
         })
     }
 
@@ -222,12 +234,14 @@ export default class ViewAccounts extends MyForm{
                 account.personalNumber.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
-        const result = paginate(filtered, currentPage, perPage);
-        return { accounts: result };
+        const pageCount = Math.ceil(filtered.length / this.state.perPage)
+        const result = paginate(filtered, currentPage, perPage)
+
+        return { accounts: result, pageCount };
     }
 
     render(){
-        const { accounts} = this.getPagedData();
+        const { accounts, pageCount } = this.getPagedData();
         const {username, password, personalNumber, adminRole, firstName, lastName, mail, phoneNumber, socialSecurityNumber, birthday, gender} = this.state.accountDetails
         const birthdayDate = new Date(birthday)
         return (
@@ -241,7 +255,22 @@ export default class ViewAccounts extends MyForm{
                         <Button className="my-btn mb-3" type="button" onClick={this.handleClearSearch}>Golește căutarea</Button>
                     </div>
                 </Col>
-                <Modal show={this.state.showDetailsModal} onHide={this.closeDetailsModal}>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
+                    <Modal.Header className="font-weight-bold">
+                        <Modal.Title>
+                            Notificare
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.state.message}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.closeAlert}>
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showDetailsModal} onHide={this.closeModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Vizualizare detalii angajat</Modal.Title>
                     </Modal.Header>
@@ -356,18 +385,18 @@ export default class ViewAccounts extends MyForm{
                 }
                 <ReactPaginate
                     previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
-                    nextClassName={this.state.pageCount === this.state.currentPage || accounts.length === 0 ? "invisible" : "visible"}
-                    containerClassName={this.state.pageCount > 0 ? "pagination visible" : "invisible"}
+                    nextClassName={pageCount === this.state.currentPage || accounts.length < this.state.perPage ? "invisible" : "visible"}
+                    containerClassName={accounts.length > 0 && pageCount > 1 ? "pagination visible" : "invisible"}
                     previousLabel={"← Înapoi"}
                     nextLabel={"Mai Departe →"}
-                    pageCount={this.state.pageCount}
+                    pageCount={pageCount}
                     onPageChange={this.handlePageClick}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     subContainerClassName={"pages pagination"}
                     activeClassName={"active"}
                 />
-                <Modal backdrop="static" keyboard={false} show={this.state.showDeleteModal} onHide={this.closeDeleteModal} centered>
+                <Modal backdrop="static" keyboard={false} show={this.state.showDeleteModal} onHide={this.closeModal} centered>
                     <Modal.Header>
                         <Modal.Title>
                             Șterge cont - {username}
@@ -378,10 +407,10 @@ export default class ViewAccounts extends MyForm{
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className="btn-success" onClick={this.handleDeleteAccount}>Da</Button>
-                        <Button className="btn-danger" onClick={this.closeDeleteModal}>Nu</Button>
+                        <Button className="btn-danger" onClick={this.closeModal}>Nu</Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showEditModal} onHide={this.closeEditModal}>
+                <Modal show={this.state.showEditModal} onHide={this.closeModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Editare cont angajat - {this.state.data.username}</Modal.Title>
                     </Modal.Header>
@@ -392,7 +421,7 @@ export default class ViewAccounts extends MyForm{
                                 {this.renderInput("form-control", "password", "Parola:", "Parola", "password")}
                                 {this.renderSelect("form-control", "adminRole", "Permisiune cont:", Array.of("DEFAULT", "ADMIN", "GROUP_LEADER", "HR_EMPLOYEE", "HR_DEPARTMENT_RESPONSIVE"), "text")}
                                 {this.renderInput("form-control", "mail", "E-mail:", "E-mail", "mail")}
-                                <div className="text-center" onClick={this.handleSubmit}>
+                                <div className="text-center" onClick={(e) => this.handleSubmit("", e)}>
                                     {this.renderButton("my-btn", "SALVEAZĂ", "button")}
                                 </div>
                             </Form>

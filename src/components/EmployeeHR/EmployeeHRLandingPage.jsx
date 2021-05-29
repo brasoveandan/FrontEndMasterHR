@@ -7,18 +7,19 @@ export default class EmployeeHRLandingPage extends LandingPage{
         return (
             <div>
                 {this.renderPage(
-                    <p className="card-text">
-                        Navigând prin meniul din stânga vei putea efectua următoarele:
-                        <br/>- poți vizualiza detaliile contractuale
-                        <br/>- poți înregistra o cerere
-                        <br/>- poți vizualiza istoricul cererilor
-                        <br/>- poți vizualiza fluturașul de salariu
-                        <br/>- poți vizualiza pontajul
-                        <br/>- poți adăuga pontajul pentru o zi de muncă
-                        <br/>- poți vizualiza concediile
-                        <br/>- poți edita datele unui angajat
-                        <br/>- poți închide luna pentru un anumit angajat
-                        <br/>- poți calcula salariul pentru un anumit angajat
+                    <p>
+                        Aveți următoarele acțiuni la dispoziție:
+                        <br/>1. vizualizare detalii contractuale
+                        <br/>2. vizualizare fluturaș de salariu
+                        <br/>3. vizualizare pontaj
+                        <br/>4. adăugare pontaj manual/automat
+                        <br/>5. vizualizare cereri de concediu
+                        <br/>6. înregistrare cerere de concediu
+                        <br/>7. vizualizare contracte angajați
+                        <br/>8. adăugare contract pentru un anumit angajat
+                        <br/>9. editare contract pentru un anumit angajat
+                        <br/>10. vizualizare pontaje angajați
+                        <br/>11. confirmare pontaje angajați pentru o anumită lună
                     </p>
                 )}
             </div>

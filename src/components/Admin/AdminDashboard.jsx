@@ -2,7 +2,7 @@ import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
 import SidebarDashboard from "../../common/SidebarDashboard";
-import AdminLandingPage from "./AdminLandinPage";
+import AdminLandingPage from "./AdminLandingPage";
 import ViewAccounts from "./viewAccounts";
 import AddAccount from "./addAccount";
 
@@ -14,11 +14,10 @@ class AdminDashboard extends React.Component {
             name: localStorage.getItem("username"),
             adminRole: localStorage.getItem("adminRole")
         };
-        this.show = this.show.bind(this);
         this.state = {render: <AdminLandingPage/>}
     }
 
-    show(type){
+    show = (type) =>{
         switch(type){
             case "vizualizare_conturi": this.setState({render : <ViewAccounts/>}); break;
             case "adauga_cont": this.setState({render: <AddAccount/>}); break;

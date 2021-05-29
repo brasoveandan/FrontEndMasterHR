@@ -3,6 +3,7 @@ import Joi from 'joi-browser';
 import MySelect from "./select";
 import MyInput from "./input";
 import {Button} from "react-bootstrap";
+import MyTextarea from "./textarea";
 
 export default class MyForm extends React.Component{
     state = {
@@ -34,7 +35,6 @@ export default class MyForm extends React.Component{
 
     handleSubmit = (action, e) => {
         e.preventDefault();
-
         const errors = this.validate();
         this.setState({errors: errors || {} });
         if (errors) return;
@@ -92,4 +92,25 @@ export default class MyForm extends React.Component{
             />
         )
     }
+
+    renderTextarea(className, name, label, placeholder, rows, readOnly = false) {
+        const {data, errors} = this.state;
+        return (
+            <MyTextarea
+                className={className}
+                rows={rows}
+                name={name}
+                value={data[name]}
+                label={label}
+                placeholder = {placeholder}
+                readOnly={readOnly}
+                onChange={this.handleChange}
+                error={errors[name]}
+            />
+        )
+    }
+
+
+
+
 }

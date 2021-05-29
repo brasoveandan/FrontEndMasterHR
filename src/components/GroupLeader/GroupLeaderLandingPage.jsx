@@ -9,15 +9,15 @@ export default class GroupLeaderLandingPage extends LandingPage{
             <div>
                 {this.renderPage(
                     <p>
-                        Ca Group Leader vei putea efectua următoarele:
-                        <br/>- poți vizualiza detaliile contractuale
-                        <br/>- poți vizualiza cererile echipei tale
-                        <br/>- poți înregistra o cerere
-                        <br/>- poți vizualiza istoricul cererilor
-                        <br/>- poți vizualiza fluturașul de salariu
-                        <br/>- poți vizualiza pontajul
-                        <br/>- poți adăuga pontajul pentru o zi de muncă
-                        <br/>- poți vizualiza concediile
+                        Aveți următoarele acțiuni la dispoziție:
+                        <br/>1. vizualizare detalii contractuale
+                        <br/>2. vizualizare fluturaș de salariu
+                        <br/>3. vizualizare pontaj
+                        <br/>4. adăugare pontaj manual/automat
+                        <br/>5. vizualizare cereri de concediu
+                        <br/>6. înregistrare cerere de concediu
+                        <br/>7. vizualizare cereri angajați
+                        <br/>8. revizuire cereri angajați
                     </p>
                 )}
             </div>

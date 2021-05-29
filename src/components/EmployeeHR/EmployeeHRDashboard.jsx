@@ -9,6 +9,7 @@ import ViewTimesheet from "../../common/ViewTimesheet";
 import ViewHoliday from "../../common/ViewHoliday";
 import ViewAllContracts from "./ViewAllContracts";
 import ViewAllTimesheet from "./ViewAllTimesheet";
+import {Label} from "semantic-ui-react";
 
 class EmployeeHRDashboard extends React.Component {
 
@@ -16,22 +17,24 @@ class EmployeeHRDashboard extends React.Component {
         super(props);
         this.state = {
             name: localStorage.getItem("username"),
-            adminRole: localStorage.getItem("adminRole")
+            adminRole: localStorage.getItem("adminRole"),
         };
-        this.show = this.show.bind(this);
-        this.state = {render: <EmployeeHRLandingPage/>}
+        switch (localStorage.getItem("page")) {
+            case "detalii_contract": this.state = {render: <ViewContract/>}; break;
+            default: this.state = {render: <EmployeeHRLandingPage/>};
+        }
     }
 
-    show(type){
+    show = (type) =>{
         switch(type){
-            case "detalii_contract": this.setState({render: <ViewContract/>}); break;
+            case "detalii_contract": this.setState({render: <ViewContract/>}); localStorage.setItem("page", "detalii_contract"); break;
             case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
             case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
             case "contracte_angajati" : this.setState({render: <ViewAllContracts/>}); break;
             case "pontaje_angajati" : this.setState({render: <ViewAllTimesheet/>}); break;
             case "logout": this.logout(); break;
-            default: this.setState({render: <EmployeeHRLandingPage/>})
+            default: this.setState({render: <EmployeeHRLandingPage/>}); localStorage.setItem("page", "")
         }
     }
 

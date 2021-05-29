@@ -8,10 +8,12 @@ export default class AdminLandingPage extends LandingPage{
         return (
             <div>
                 {this.renderPage(
-                    <p className="card-text">
-                        Ca administrator vei putea efectua urmatoarele:
-                        <br/>- poți vizualiza toate conturile
-                        <br/>- poți adăuga un cont nou
+                    <p>
+                        Aveți următoarele acțiuni la dispoziție:
+                        <br/>1. vizualizare conturi
+                        <br/>2. adăugare cont nou
+                        <br/>3. editare cont
+                        <br/>4. ștergere cont
                     </p>
                 )}
             </div>

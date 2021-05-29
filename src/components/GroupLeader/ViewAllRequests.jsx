@@ -26,7 +26,7 @@ export default class ViewAllRequests extends React.Component {
         this.loadData()
     }
 
-    loadData() {
+    loadData = () => {
         fetch('http://localhost:8080/holidayRequest/' + localStorage.getItem("username"), {
             method: 'GET',
             headers: {
@@ -48,6 +48,12 @@ export default class ViewAllRequests extends React.Component {
                     })
                 });
             }
+            else
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
         })
     }
 
@@ -77,7 +83,7 @@ export default class ViewAllRequests extends React.Component {
         });
     };
 
-    loadMoreData() {
+    loadMoreData = () => {
         const data = this.state.originalData;
         const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
         this.setState({
@@ -100,8 +106,9 @@ export default class ViewAllRequests extends React.Component {
                 request.user.toLowerCase().startsWith(searchQuery.toLowerCase())
             );
 
+        const pageCount = Math.ceil(filtered.length / this.state.perPage)
         const result = paginate(filtered, currentPage, perPage);
-        return { requests: result };
+        return { requests: result, pageCount };
     }
 
     handleModifyRequest = payload => {
@@ -114,28 +121,34 @@ export default class ViewAllRequests extends React.Component {
             },
             body: JSON.stringify(payload)
         })
-            .then(res => {
-                if (res.status === 200) {
+        .then(res => {
+            if (res.status === 200) {
+                this.setState({
+                    showAlert: true,
+                    message: "Statusul cererii a fost modificat cu succes."
+                })
+                this.loadData()
+            }
+            else if(res.status === 417){
+                res.text().then(text =>{
                     this.setState({
                         showAlert: true,
-                        message: "Statusul cererii a fost modificat cu succes."
+                        message: text + " Statusul cererii rămâne nemodificat."
                     })
-                    this.loadData()
-                }
-                else if(res.status === 417){
-                    res.text().then(text =>{
-                        this.setState({
-                            showAlert: true,
-                            message: text
-                        })
-                    });
-                }
-                else if (res.status === 409)
-                    this.setState({
-                        showAlert: true,
-                        message: "Cererea este deja revizuită"
-                    })
-            })
+                });
+            }
+            else if (res.status === 409)
+                this.setState({
+                    showAlert: true,
+                    message: "Cererea a fost deja revizuită."
+                })
+            else
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
+        })
     }
 
     handleAccept = request => {
@@ -155,14 +168,14 @@ export default class ViewAllRequests extends React.Component {
     }
 
     render(){
-        const { requests } = this.getPagedData();
+        const { requests, pageCount } = this.getPagedData();
         return (
             <Card className="mt-4 mb-4 ml-md-5 ml-xl-0 justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
                     <h4>Vizualizare Cereri Angajați</h4>
                 </Card.Header>
                 <Card.Body>
-                    <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
+                    <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
                         <Modal.Header>Notificare</Modal.Header>
                         <Modal.Body>
                             {this.state.message}
@@ -189,7 +202,7 @@ export default class ViewAllRequests extends React.Component {
                             </thead>
                             <tbody>
                             {requests.map((elem, index) => (
-                                <tr>
+                                <tr key={index}>
                                     <td>{(this.state.currentPage - 1) * this.state.perPage + index + 1}</td>
                                     <td>{elem.user}</td>
                                     <td>{elem.type}</td>
@@ -209,11 +222,11 @@ export default class ViewAllRequests extends React.Component {
                     }
                     <ReactPaginate
                         previousClassName={this.state.currentPage === 1 ? "invisible" : "visible"}
-                        nextClassName={this.state.pageCount === this.state.currentPage || requests.length === 0 ? "invisible" : "visible"}
-                        containerClassName={this.state.pageCount > 0 ? "pagination invisible" : "visible"}
+                        nextClassName={pageCount === this.state.currentPage || requests.length < this.state.perPage ? "invisible" : "visible"}
+                        containerClassName={requests.length > 0 && pageCount > 1 ? "pagination visible" : "invisible"}
                         previousLabel={"← Înapoi"}
                         nextLabel={"Mai Departe →"}
-                        pageCount={this.state.pageCount}
+                        pageCount={pageCount}
                         onPageChange={this.handlePageClick}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={5}

@@ -5,6 +5,9 @@ export const contractTypeOptions = ["Norma 8 ore / zi", "Norma 6 ore / zi", "Nor
 export const departmentOptions = ["Resurse Umane", "Controlling", "Productie", "IT"]
 export const positionOptions = ["Head of Department", "Group Leader", "Employee", "Student"]
 export const taxExemptOptions = ["Da", "Nu"]
+export const clockingOptions = ["Telemuncă", "Normal"]
+export const requestOptions = ["Concediu anual", "Concediu pentru donare sange", "Concediu pentru pariticipare la funerali",
+    "Concediu pentru pariticipare la nunta", "Concediu din ore suplimentare"]
 
 
 const MySelect = ({className, name, label, options, error, ...rest }) => {

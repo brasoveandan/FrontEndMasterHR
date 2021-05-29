@@ -23,13 +23,17 @@ import PrivateRouteEmployeeHR from "./components/utils/PrivateRouteEmployeeHR";
 import EmployeeHRDashboard from "./components/EmployeeHR/EmployeeHRDashboard";
 
 function App() {
+    window.onclose = () => {
+        // Clear the local storage when close the window app
+        window.localStorage.clear()
+    }
   return (
       <React.Fragment>
             <Switch>
               <Route path="/" exact component={HomePage} />
               <Route path="/login" component={LoginPage}/>
-              <Route path="/forgot" component={ForgotPasswordPage}/>
-              <Route path="/reset/:id" component={ResetPasswordPage}/>
+              <Route path="/forgot_password" component={ForgotPasswordPage}/>
+              <Route path="/reset_password" component={ResetPasswordPage}/>
 
               <PrivateRouteAdmin path="/admindashboard" component={AdminDashboard}/>
               <PrivateRouteEmployeeHR path="/employeehrdashboard" component={EmployeeHRDashboard}/>

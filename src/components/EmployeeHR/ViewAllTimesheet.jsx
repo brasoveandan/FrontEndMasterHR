@@ -28,8 +28,6 @@ export default class ViewAllTimesheet extends React.Component{
             showAlert: false,
             showDataTable: false,
             message: "",
-            data: {},
-            errors: {},
         };
 
         this.handlePageClick = this.handlePageClick.bind(this)
@@ -85,9 +83,14 @@ export default class ViewAllTimesheet extends React.Component{
 
     closeModal = () => {
         this.setState({
-            showDetailsModal: false,
-            showAlert: false
+            showDetailsModal: false
         });
+    }
+
+    closeAlert = () => {
+        this.setState({
+            showAlert: false
+        })
     }
 
     handleSearch = query => {
@@ -96,7 +99,8 @@ export default class ViewAllTimesheet extends React.Component{
 
     handleChange(event) {
         this.setState({
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
+            showDataTable: false
         })
     };
 
@@ -176,55 +180,45 @@ export default class ViewAllTimesheet extends React.Component{
 
     handleConfirmTimesheet = (timesheet) => {
         const payload = timesheet
-        console.log(payload)
-        let {workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours} = payload
-        if (workedHours + homeOfficeHours + overtimeHours + totalOvertimeHours < requiredHours) {
-            this.setState({
-                showAlert: true,
-                message: "Angajatul nu are destule ore."
-            })
-        }
-        else {
-            payload["status"] = "CLOSED"
-            fetch('http://localhost:8080/timesheet', {
-                method: 'PUT',
-                headers: {
-                    'Accept' : 'application/json',
-                    'Content-type':'application/json',
-                    'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
-                },
-                body: JSON.stringify(payload)
-            })
-                .then(res => {
-                    if (res.status === 200) {
+        payload["status"] = "CLOSED"
+        fetch('http://localhost:8080/timesheet', {
+            method: 'PUT',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    this.setState({
+                        showAlert: true,
+                        message: "Pontajul a fost confirmat."
+                    })
+                    this.loadData()
+                }
+                else if (res.status === 417)
+                {
+                    res.text().then(text => {
+                        payload["status"] = "OPENED"
                         this.setState({
                             showAlert: true,
-                            message: "Pontajul a fost confirmat."
+                            message: text
                         })
-                        this.loadData()
-                    }
-                    else if (res.status === 417)
-                    {
-                        res.text().then(text => {
-                            payload["status"] = "OPENED"
-                            this.setState({
-                                showAlert: true,
-                                message: text
-                            })
-                        });
-                    }
-                    else if (res.status === 409) {
-                        this.setState({
-                            showAlert: true,
-                            message: "Pontajul este deja confirmat."
-                        })
-                    }
-                }).catch( err => {
-                err.text().then( errorMessage => {
-                    console.log(errorMessage)
-                })
+                    });
+                }
+                else if (res.status === 409) {
+                    this.setState({
+                        showAlert: true,
+                        message: "Pontajul este deja confirmat."
+                    })
+                }
+            }).catch( err => {
+            err.text().then( errorMessage => {
+                console.log(errorMessage)
             })
-        }
+        })
     }
 
     render(){
@@ -310,7 +304,7 @@ export default class ViewAllTimesheet extends React.Component{
                             </thead>
                             <tbody>
                             {timesheets.map((timesheet, index) => (
-                                <tr className="text-center">
+                                <tr key={index} className="text-center">
                                     <td onClick={(e) => this.openDetailsModal(timesheet, e)}>
                                         {(this.state.currentPage - 1) * this.state.perPage + index + 1}
                                     </td>
@@ -342,13 +336,13 @@ export default class ViewAllTimesheet extends React.Component{
                     </React.Fragment>
                     : ""
                 }
-                <Modal show={this.state.showAlert} onHide={this.closeModal} centered close>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
                     <Modal.Header>Notificare</Modal.Header>
                     <Modal.Body>
                         {this.state.message}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={this.closeModal}>
+                        <Button variant="primary" onClick={this.closeAlert}>
                             Ok
                         </Button>
                     </Modal.Footer>

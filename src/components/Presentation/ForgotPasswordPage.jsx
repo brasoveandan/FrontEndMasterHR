@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Form, InputGroup} from "react-bootstrap";
+import {Button, Form, InputGroup, Modal} from "react-bootstrap";
 import NavBar from "../utils/NavBar";
 import {FaEnvelope} from "react-icons/all";
 
@@ -8,54 +8,52 @@ export default class ForgotPasswordPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: ""
+            email: "",
+            showAlert: false,
+            message: ""
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
-    doSubmit = (e) => {
-        e.preventDefault()
-        const payload = {
-            email: this.state.email
-        }
-        fetch('http://localhost:8080/forgot', {
+    closeAlert = () => {
+        this.setState({
+            showAlert: false
+        })
+    }
+
+    doSubmit = () => {
+        fetch('http://localhost:8080/sendEmail', {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
-                'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Content-type':'application/json'
             },
-            body: JSON.stringify(payload)
+            body: this.state.email
+
         })
-            .then(res => {
-                if (res.status === 200) {
-                    localStorage.setItem('username', this.state.username)
-                    res.json().then(json =>{
-                        const { adminRole, name } = json
-                        localStorage.setItem('adminRole', adminRole)
-                        localStorage.setItem('name', name)
-                        console.log(adminRole)
-                        if (adminRole === "null")
-                            this.props.history.replace("/employeedashboard");
-                        else if (adminRole === "GROUP_LEADER")
-                            this.props.history.replace("/groupleaderdashboard");
-                        else if (adminRole === "HR_EMPLOYEE")
-                            this.props.history.replace("/hremployeedashboard");
-                        else if (adminRole === "HR_DEPARTMENT_RESPONSIVE")
-                            this.props.history.replace("/hrresponsivedashboard");
-                        else if (adminRole === "ADMIN") {
-                            console.log("Da")
-                            this.props.history.replace("/admindashboard");
-                        }
-                    });
-                }
-                else if (res.status === 404) {
-                    alert("Utilizatorul nu exista!")
-                }
-                else if (res.status === 401) {
-                    alert("Parola gresita!")
-                }
-            })
+        .then(res => {
+            if (res.status === 200) {
+                this.setState({
+                    email: "",
+                    showAlert: true,
+                    message: "Vei primi un email la adresa introdusă cu link-ul pentru resetarea parolei! " +
+                        "În caz ca nu primiți niciun email contactați-ne la adresa masterhr.contact@gmail.com"
+                })
+            }
+            else if (res.status === 404) {
+                this.setState({
+                    showAlert: true,
+                    message: "Nu există niciun utilizator cu email-ul introdus!"
+                })
+            }
+            else {
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
+            }
+        })
     }
 
     handleChange(event) {
@@ -78,17 +76,32 @@ export default class ForgotPasswordPage extends React.Component {
                 <NavBar/>
                 <div className="align-content-center">
                     <div className="d-flex justify-content-center align-items-center my-5">
+                        <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
+                            <Modal.Header className="font-weight-bold">
+                                <Modal.Title>
+                                    Schimbare parolă
+                                </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {this.state.message}
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="primary" onClick={this.closeAlert}>
+                                    Ok
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                         <Form className="d-flex flex-column my-border-form border rounded border-secondary w-50" onSubmit={this.doSubmit}>
-                            <h3 className="align-self-center text-white text-uppercase">Schimbare Parola</h3>
+                            <h3 className="align-self-center text-white text-uppercase">Schimbare Parolă</h3>
                             <hr/>
-                            <Form.Group controlId="formUser">
-                                <Form.Label className="my-label">Email</Form.Label>
+                            <Form.Group>
+                                <Form.Label className="my-label">E-mail</Form.Label>
                                 <InputGroup className="mb-2" >
                                     <InputGroup.Text className="bg-white"><FaEnvelope/></InputGroup.Text>
-                                    <Form.Control className="align-self-center bg-white" name="email" type="email" placeholder="Email" onChange={this.handleChange}/>
+                                    <Form.Control className="align-self-center bg-white" name="email" type="email" placeholder="E-mail" onChange={this.handleChange}/>
                                 </InputGroup>
                             </Form.Group>
-                            <Button className="align-self-center my-btn" type="submit" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
+                            <Button className="align-self-center my-btn" type="button" onClick={this.doSubmit} onKeyPress={this.handleEnter}>
                                 Trimite
                             </Button>
                             <br/>

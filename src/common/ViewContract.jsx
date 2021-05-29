@@ -11,20 +11,20 @@ export default class ViewContract extends React.Component{
         };
 
         this.renderContract = this.renderContract.bind(this);
-
         this.loadData()
     }
 
     loadData = () => {
         const payload = {
-            username: localStorage.getItem('username')
+            username: localStorage.getItem('username'),
+            jwt: localStorage.getItem('jwt')
         }
         fetch('http://localhost:8080/contract/' + payload.username, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + payload.jwt
             }
         })
             .then(res => {
