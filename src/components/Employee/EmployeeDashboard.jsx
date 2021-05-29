@@ -7,6 +7,7 @@ import SidebarDashboard from "../../common/SidebarDashboard";
 import ViewPayslip from "../../common/ViewPayslip";
 import ViewTimesheet from "../../common/ViewTimesheet";
 import ViewHoliday from "../../common/ViewHoliday";
+import EmployeeLandingPage from "./EmployeeLandingPage";
 
 class EmployeeDashboard extends React.Component {
 
@@ -17,22 +18,28 @@ class EmployeeDashboard extends React.Component {
             adminRole: localStorage.getItem("adminRole")
         };
         this.show = this.show.bind(this);
-        this.state = {render: <LandingPage/>}
+        switch (sessionStorage.getItem("page")) {
+            case "detalii_contract": this.state = {render: <ViewContract/>}; break;
+            case "fluturas_salariu": this.state({render: <ViewPayslip/>});break;
+            case "vizualizare_pontaj": this.state({render : <ViewTimesheet/>});break;
+            case "vizualizare_concedii" : this.state({render: <ViewHoliday/>});break;
+            default: this.state = {render: <EmployeeLandingPage/>};
+        }
     }
 
     show(type){
         switch(type){
-            case "detalii_contract": this.setState({render: <ViewContract/>}); break;
-            case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
-            case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
-            case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
+            case "detalii_contract": this.setState({render: <ViewContract/>}); sessionStorage.setItem("page", "detalii_contract"); break;
+            case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); sessionStorage.setItem("page", "fluturas_salariu");break;
+            case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); sessionStorage.setItem("page", "vizualizare_pontaj");break;
+            case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); sessionStorage.setItem("page", "vizualizare_concedii");break;
             case "logout": this.logout(); break;
             default: this.setState({render: <LandingPage/>})
         }
     }
 
     logout(){
-        localStorage.clear();
+        sessionStorage.clear();
         this.props.history.replace('/login');
     }
 

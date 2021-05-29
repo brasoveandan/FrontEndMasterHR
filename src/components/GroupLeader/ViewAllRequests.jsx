@@ -27,12 +27,12 @@ export default class ViewAllRequests extends React.Component {
     }
 
     loadData = () => {
-        fetch('http://localhost:8080/holidayRequest/' + localStorage.getItem("username"), {
+        fetch('http://localhost:8080/holidayRequest/' + sessionStorage.getItem("username"), {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
                 'Content-type': 'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -117,7 +117,7 @@ export default class ViewAllRequests extends React.Component {
             headers: {
                 'Accept' : 'application/json',
                 'Content-type': 'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             },
             body: JSON.stringify(payload)
         })

@@ -27,7 +27,7 @@ export default class ViewPayslip extends React.Component{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
             .then(res => {
@@ -37,7 +37,7 @@ export default class ViewPayslip extends React.Component{
                         let yearOptions = [];
                         let monthOptions = [];
                         data.forEach(payslip => {
-                            if (payslip.usernameEmployee === localStorage.getItem("username")) {
+                            if (payslip.usernameEmployee === sessionStorage.getItem("username")) {
                                 yearOptions.push(payslip.year)
                                 monthOptions.push(payslip.month)
                             }
@@ -222,7 +222,7 @@ export default class ViewPayslip extends React.Component{
 
     handleFilter = () => {
         const payload = {
-            username: localStorage.getItem('username'),
+            username: sessionStorage.getItem('username'),
             year : this.state.year,
             month: this.state.month
         }
@@ -232,7 +232,7 @@ export default class ViewPayslip extends React.Component{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
             .then(res => {

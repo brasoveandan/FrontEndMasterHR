@@ -14,20 +14,24 @@ class AdminDashboard extends React.Component {
             name: localStorage.getItem("username"),
             adminRole: localStorage.getItem("adminRole")
         };
-        this.state = {render: <AdminLandingPage/>}
+        switch (sessionStorage.getItem("page")) {
+            case "vizualizare_conturi": this.state = {render: <ViewAccounts/>}; break;
+            case "adauga_cont": this.state({render: <AddAccount/>});break;
+            default: this.state = {render: <AdminLandingPage/>};
+        }
     }
 
     show = (type) =>{
         switch(type){
-            case "vizualizare_conturi": this.setState({render : <ViewAccounts/>}); break;
-            case "adauga_cont": this.setState({render: <AddAccount/>}); break;
+            case "vizualizare_conturi": this.setState({render : <ViewAccounts/>}); sessionStorage.setItem("page", "vizualizare_conturi"); break;
+            case "adauga_cont": this.setState({render: <AddAccount/>}); sessionStorage.setItem("page", "adauga_cont"); break;
             case "logout": this.logout(); break;
-            default: this.setState({render: <AdminLandingPage/>})
+            default: this.setState({render: <AdminLandingPage/>}); sessionStorage.setItem("page", "")
         }
     }
 
     logout(){
-        localStorage.clear();
+        sessionStorage.clear();
         this.props.history.replace('/login');
     }
 

@@ -23,10 +23,6 @@ import PrivateRouteEmployeeHR from "./components/utils/PrivateRouteEmployeeHR";
 import EmployeeHRDashboard from "./components/EmployeeHR/EmployeeHRDashboard";
 
 function App() {
-    window.onclose = () => {
-        // Clear the local storage when close the window app
-        window.localStorage.clear()
-    }
   return (
       <React.Fragment>
             <Switch>

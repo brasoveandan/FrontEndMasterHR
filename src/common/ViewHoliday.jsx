@@ -41,7 +41,7 @@ export default class ViewHoliday extends MyForm{
 
     loadData = () => {
         const payload = {
-            username: localStorage.getItem('username')
+            username: sessionStorage.getItem('username')
         }
 
         fetch('http://localhost:8080/holiday/' + payload.username, {
@@ -49,7 +49,7 @@ export default class ViewHoliday extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -67,7 +67,7 @@ export default class ViewHoliday extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -85,7 +85,7 @@ export default class ViewHoliday extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -124,7 +124,7 @@ export default class ViewHoliday extends MyForm{
 
     doSubmit = () => {
         const payload = this.state.data;
-        payload["usernameEmployee"] = localStorage.getItem("username")
+        payload["usernameEmployee"] = sessionStorage.getItem("username")
         payload["status"] = "PENDING"
         payload["submittedDate"] = new Date()
         payload["proxyUsername"] = this.state.proxyUsername
@@ -133,7 +133,7 @@ export default class ViewHoliday extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             },
             body: JSON.stringify(payload)
         })

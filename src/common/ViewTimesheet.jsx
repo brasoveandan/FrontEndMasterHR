@@ -23,9 +23,9 @@ export default class ViewTimesheet extends MyForm{
             timesheet: [],
             showTimesheet: true,
             clocking: [],
-            status: localStorage.getItem("status") ? localStorage.getItem("status") : "depontat",
-            workDate: localStorage.getItem("workDate") ? new Date(localStorage.getItem("workDate")) : "",
-            workDateAfterClocking: localStorage.getItem("workDateAfterClocking") ? new Date(localStorage.getItem("workDateAfterClocking")) : "",
+            status: sessionStorage.getItem("status") ? sessionStorage.getItem("status") : "depontat",
+            workDate: sessionStorage.getItem("workDate") ? new Date(sessionStorage.getItem("workDate")) : "",
+            workDateAfterClocking: sessionStorage.getItem("workDateAfterClocking") ? new Date(sessionStorage.getItem("workDateAfterClocking")) : "",
             show: false,
             data: {
                 type: "",
@@ -53,9 +53,9 @@ export default class ViewTimesheet extends MyForm{
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
         const payload = {
-            idTimesheet: localStorage.getItem("username") + year + month,
-            username: localStorage.getItem("username"),
-            token: localStorage.getItem("jwt")
+            idTimesheet: sessionStorage.getItem("username") + year + month,
+            username: sessionStorage.getItem("username"),
+            token: sessionStorage.getItem("jwt")
         }
 
         fetch('http://localhost:8080/timesheet/' + payload.idTimesheet, {
@@ -119,8 +119,8 @@ export default class ViewTimesheet extends MyForm{
 
     handlePontaj = () => {
         const payload = {
-            usernameEmployee: localStorage.getItem("username"),
-            token: localStorage.getItem("jwt"),
+            usernameEmployee: sessionStorage.getItem("username"),
+            token: sessionStorage.getItem("jwt"),
             fromHour: new Date(),
             toHour: new Date(),
         }
@@ -140,8 +140,8 @@ export default class ViewTimesheet extends MyForm{
                         status: "pontat",
                         workDate: payload.fromHour,
                     })
-                    localStorage.setItem("status", "pontat")
-                    localStorage.setItem("workDate", payload.fromHour)
+                    sessionStorage.setItem("status", "pontat")
+                    sessionStorage.setItem("workDate", payload.fromHour)
                     alert("Succes")
                 }
                 else if (res.status === 409)
@@ -162,13 +162,13 @@ export default class ViewTimesheet extends MyForm{
 
     doSubmit = (action) => {
         const payload = this.state.data
-        payload["usernameEmployee"] = localStorage.getItem("username")
+        payload["usernameEmployee"] = sessionStorage.getItem("username")
         fetch('http://localhost:8080/clocking', {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             },
             body: JSON.stringify(payload)
         })
@@ -189,7 +189,7 @@ export default class ViewTimesheet extends MyForm{
 
     handleDepontaj = () => {
         const payload = {
-            token: localStorage.getItem("jwt"),
+            token: sessionStorage.getItem("jwt"),
             toHour: new Date()
         }
         fetch('http://localhost:8080/clocking', {
@@ -197,7 +197,7 @@ export default class ViewTimesheet extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             },
             body: JSON.stringify(payload)
         })
@@ -207,8 +207,8 @@ export default class ViewTimesheet extends MyForm{
                     status: "endOfDay",
                     workDateAfterClocking: payload.toHour,
                 })
-                localStorage.setItem("status", "endOfDay")
-                localStorage.setItem("workDateAfterClocking", payload.toHour)
+                sessionStorage.setItem("status", "endOfDay")
+                sessionStorage.setItem("workDateAfterClocking", payload.toHour)
                 alert("Succes")
             }
             else if (res.status === 409)

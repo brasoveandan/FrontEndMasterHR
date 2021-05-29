@@ -2,13 +2,13 @@
 
 const authentication = () => {
 
-    if (localStorage.getItem('adminRole') === 'DEFAULT')
+    if (sessionStorage.getItem('adminRole') === 'DEFAULT')
         return 'employee';
-    else if (localStorage.getItem('adminRole') === 'GROUP_LEADER')
+    else if (sessionStorage.getItem('adminRole') === 'GROUP_LEADER')
         return 'group_leader';
-    else if (localStorage.getItem('adminRole') === 'HR_EMPLOYEE')
+    else if (sessionStorage.getItem('adminRole') === 'HR_EMPLOYEE')
         return 'hr_employee';
-    else if (localStorage.getItem('adminRole') === 'ADMIN')
+    else if (sessionStorage.getItem('adminRole') === 'ADMIN')
         return 'admin';
 
     return 'NOT_AUTHENTICATED';

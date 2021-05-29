@@ -46,7 +46,7 @@ export default class AddAccount extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             },
             body: JSON.stringify(this.state.data)
         })

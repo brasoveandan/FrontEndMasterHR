@@ -73,7 +73,7 @@ export default class ViewAllContracts extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -96,7 +96,7 @@ export default class ViewAllContracts extends MyForm{
             headers: {
                 'Accept' : 'application/json',
                 'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
             }
         })
         .then(res => {
@@ -259,7 +259,7 @@ export default class ViewAllContracts extends MyForm{
                 headers: {
                     'Accept' : 'application/json',
                     'Content-type':'application/json',
-                    'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                    'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
                 },
                 body: JSON.stringify(payload)
             })
@@ -294,7 +294,7 @@ export default class ViewAllContracts extends MyForm{
                 headers: {
                     'Accept' : 'application/json',
                     'Content-type':'application/json',
-                    'Authorization' : 'Bearer ' + localStorage.getItem("jwt")
+                    'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
                 },
                 body: JSON.stringify(payload)
             })
@@ -381,7 +381,7 @@ export default class ViewAllContracts extends MyForm{
                 if (contract.username === employee.username)
                     ok = 0
             })
-            if (ok === 1 && employee.username !== localStorage.getItem("username"))
+            if (ok === 1 && employee.username !== sessionStorage.getItem("username"))
                 usernameWithoutContract.push(employee.username)
         })
         return (

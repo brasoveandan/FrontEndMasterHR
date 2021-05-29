@@ -11,7 +11,7 @@ export default class SidebarDashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            adminRole: localStorage.getItem("adminRole"),
+            adminRole: sessionStorage.getItem("adminRole"),
             isCollapsed: false,
             windowWidth: window.innerWidth
         };

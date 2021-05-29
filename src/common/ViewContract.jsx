@@ -16,8 +16,8 @@ export default class ViewContract extends React.Component{
 
     loadData = () => {
         const payload = {
-            username: localStorage.getItem('username'),
-            jwt: localStorage.getItem('jwt')
+            username: sessionStorage.getItem('username'),
+            jwt: sessionStorage.getItem('jwt')
         }
         fetch('http://localhost:8080/contract/' + payload.username, {
             method: 'GET',

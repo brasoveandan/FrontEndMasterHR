@@ -40,12 +40,13 @@ export default class LoginPage extends React.Component {
         })
         .then(res => {
             if (res.status === 200) {
-                localStorage.setItem('username', this.state.username)
+                sessionStorage.setItem('username', this.state.username)
                 res.json().then(json =>{
                     const { adminRole, name, jwt } = json
-                    localStorage.setItem('adminRole', adminRole)
-                    localStorage.setItem('name', name)
-                    localStorage.setItem('jwt', jwt)
+                    sessionStorage.setItem('adminRole', adminRole)
+                    sessionStorage.setItem('name', name)
+                    sessionStorage.setItem('jwt', jwt)
+                    sessionStorage.setItem("page", "")
                     if (adminRole === "DEFAULT")
                         this.props.history.replace("/employeedashboard");
                     else if (adminRole === "GROUP_LEADER")

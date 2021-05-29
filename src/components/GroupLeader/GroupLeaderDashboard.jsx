@@ -17,23 +17,30 @@ class GroupLeaderDashboard extends React.Component {
             name: localStorage.getItem("username"),
             adminRole: localStorage.getItem("adminRole")
         };
-        this.state = {render: <GroupLeaderLandingPage/>}
+        switch (sessionStorage.getItem("page")) {
+            case "detalii_contract": this.state = {render: <ViewContract/>}; break;
+            case "fluturas_salariu": this.state({render: <ViewPayslip/>});break;
+            case "vizualizare_pontaj": this.state({render : <ViewTimesheet/>});break;
+            case "vizualizare_concedii" : this.state({render: <ViewHoliday/>});break;
+            case "cereri_angajati" : this.state({render: <ViewAllRequests/>});break;
+            default: this.state = {render: <GroupLeaderLandingPage/>};
+        }
     }
 
     show = (type) =>{
         switch(type){
-            case "detalii_contract": this.setState({render: <ViewContract/>}); break;
-            case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); break;
-            case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); break;
-            case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); break;
-            case "cereri_angajati" : this.setState({render: <ViewAllRequests/>}); break;
+            case "detalii_contract": this.setState({render: <ViewContract/>}); sessionStorage.setItem("page", "detalii_contract"); break;
+            case "fluturas_salariu": this.setState({render: <ViewPayslip/>}); sessionStorage.setItem("page", "fluturas_salariu");break;
+            case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); sessionStorage.setItem("page", "vizualizare_pontaj");break;
+            case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); sessionStorage.setItem("page", "vizualizare_concedii");break;
+            case "cereri_angajati" : this.setState({render: <ViewAllRequests/>}); sessionStorage.setItem("page", "cereri_angajati"); break;
             case "logout": this.logout(); break;
             default: this.setState({render: <GroupLeaderLandingPage/>})
         }
     }
 
     logout(){
-        localStorage.clear();
+        sessionStorage.clear();
         this.props.history.replace('/login');
     }
 
