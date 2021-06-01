@@ -6,8 +6,8 @@ export const departmentOptions = ["Resurse Umane", "Controlling", "Productie", "
 export const positionOptions = ["Head of Department", "Group Leader", "Employee", "Student"]
 export const taxExemptOptions = ["Da", "Nu"]
 export const clockingOptions = ["Telemuncă", "Normal"]
-export const requestOptions = ["Concediu anual", "Concediu pentru donare sange", "Concediu pentru pariticipare la funerali",
-    "Concediu pentru pariticipare la nunta", "Concediu din ore suplimentare"]
+export const requestOptions = ["Concediu anual", "Concediu pentru donare sange", "Concediu pentru participare la funerali",
+    "Concediu pentru participare la nunta", "Concediu din ore suplimentare"]
 
 
 const MySelect = ({className, name, label, options, error, ...rest }) => {

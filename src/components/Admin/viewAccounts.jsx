@@ -149,7 +149,10 @@ export default class ViewAccounts extends MyForm{
                 }
                 else if(res.status === 417){
                     res.text().then(text =>{
-                        console.log(text);
+                        this.setState({
+                            showAlert: true,
+                            message: text + " Contul nu a fost șters!"
+                        })
                     });
                 }
                 else

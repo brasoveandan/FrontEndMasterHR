@@ -51,7 +51,7 @@ export default class ViewPayslip extends React.Component{
                 else {
                     this.setState({
                         showAlert: true,
-                        message: "Nu există date"
+                        message: "Nu există date."
                     })
                 }
             })
@@ -292,10 +292,10 @@ export default class ViewPayslip extends React.Component{
                         <Button className="my-btn my-2 col-sm-8" onClick={this.handleFilter}>Vizualizare</Button>
                     </Col>
                 </Row>
-                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered close>
+                <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
                     <Modal.Header>Notificare</Modal.Header>
                     <Modal.Body>
-                        {this.state.msg}
+                        {this.state.message}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" onClick={this.closeAlert}>

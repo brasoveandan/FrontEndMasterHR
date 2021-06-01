@@ -75,6 +75,11 @@ export default class LoginPage extends React.Component {
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
         })
+            .catch(error =>
+                this.setState({
+                showAlert: true,
+                message: "A apărut o eroare."
+            }))
     }
 
     handleChange(event) {

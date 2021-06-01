@@ -19,10 +19,10 @@ class GroupLeaderDashboard extends React.Component {
         };
         switch (sessionStorage.getItem("page")) {
             case "detalii_contract": this.state = {render: <ViewContract/>}; break;
-            case "fluturas_salariu": this.state({render: <ViewPayslip/>});break;
-            case "vizualizare_pontaj": this.state({render : <ViewTimesheet/>});break;
-            case "vizualizare_concedii" : this.state({render: <ViewHoliday/>});break;
-            case "cereri_angajati" : this.state({render: <ViewAllRequests/>});break;
+            case "fluturas_salariu": this.state = ({render: <ViewPayslip/>});break;
+            case "vizualizare_pontaj": this.state = ({render : <ViewTimesheet/>});break;
+            case "vizualizare_concedii" : this.state = ({render: <ViewHoliday/>});break;
+            case "cereri_angajati" : this.state = ({render: <ViewAllRequests/>});break;
             default: this.state = {render: <GroupLeaderLandingPage/>};
         }
     }

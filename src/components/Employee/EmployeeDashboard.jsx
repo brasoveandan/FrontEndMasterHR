@@ -20,9 +20,9 @@ class EmployeeDashboard extends React.Component {
         this.show = this.show.bind(this);
         switch (sessionStorage.getItem("page")) {
             case "detalii_contract": this.state = {render: <ViewContract/>}; break;
-            case "fluturas_salariu": this.state({render: <ViewPayslip/>});break;
-            case "vizualizare_pontaj": this.state({render : <ViewTimesheet/>});break;
-            case "vizualizare_concedii" : this.state({render: <ViewHoliday/>});break;
+            case "fluturas_salariu": this.state = ({render: <ViewPayslip/>});break;
+            case "vizualizare_pontaj": this.state = ({render : <ViewTimesheet/>});break;
+            case "vizualizare_concedii" : this.state = ({render: <ViewHoliday/>});break;
             default: this.state = {render: <EmployeeLandingPage/>};
         }
     }

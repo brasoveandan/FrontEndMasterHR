@@ -19,13 +19,15 @@ import * as Joi from "joi-browser";
 export default class ViewTimesheet extends MyForm{
     constructor(props){
         super(props);
+        const dict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {}
+        const username = sessionStorage.getItem("username")
         this.state = {
             timesheet: [],
             showTimesheet: true,
             clocking: [],
-            status: sessionStorage.getItem("status") ? sessionStorage.getItem("status") : "depontat",
-            workDate: sessionStorage.getItem("workDate") ? new Date(sessionStorage.getItem("workDate")) : "",
-            workDateAfterClocking: sessionStorage.getItem("workDateAfterClocking") ? new Date(sessionStorage.getItem("workDateAfterClocking")) : "",
+            status: dict[username] && dict[username]["status"] ? dict[username]["status"] : "depontat",
+            workTime:  dict[username] && dict[username]["workTime"] ? new Date(dict[username]["workTime"]) : "",
+            workTimeEndOfDay: dict[username] && dict[username]["workTimeEndOfDay"] ? new Date(dict[username]["workTimeEndOfDay"]) : "",
             show: false,
             data: {
                 type: "",
@@ -34,6 +36,7 @@ export default class ViewTimesheet extends MyForm{
                 reason: ""
             },
             errors: {},
+            showAlert: false,
             message: ""
         };
 
@@ -117,41 +120,10 @@ export default class ViewTimesheet extends MyForm{
         });
     };
 
-    handlePontaj = () => {
-        const payload = {
-            usernameEmployee: sessionStorage.getItem("username"),
-            token: sessionStorage.getItem("jwt"),
-            fromHour: new Date(),
-            toHour: new Date(),
-        }
-        fetch('http://localhost:8080/clocking', {
-            method: 'POST',
-            headers: {
-                'Accept' : 'application/json',
-                'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + payload.token
-            },
-            body: JSON.stringify(payload)
+    closeAlert = () => {
+        this.setState({
+            showAlert:false
         })
-            .then(res => {
-                if (res.status === 200)
-                {
-                    this.setState({
-                        status: "pontat",
-                        workDate: payload.fromHour,
-                    })
-                    sessionStorage.setItem("status", "pontat")
-                    sessionStorage.setItem("workDate", payload.fromHour)
-                    alert("Succes")
-                }
-                else if (res.status === 409)
-                    alert("Conflict")
-                else
-                    alert("Exception")
-            })
-            // eslint-disable-next-line no-unused-vars
-            .catch(error => { const mute = error} );
-
     }
 
     handleChange(event) {
@@ -160,7 +132,124 @@ export default class ViewTimesheet extends MyForm{
         })
     };
 
-    doSubmit = (action) => {
+    addHours= (hours, date) =>{
+        const newDate = new Date(date)
+        newDate.setHours(newDate.getHours() + hours)
+        return newDate
+    }
+
+    handlePontaj = () => {
+        const payload = {
+            usernameEmployee: sessionStorage.getItem("username"),
+            fromHour: new Date(),
+            toHour: new Date(),
+        }
+        fetch('http://localhost:8080/clocking', {
+            method: 'POST',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
+            },
+            body: JSON.stringify({
+                usernameEmployee: payload.usernameEmployee,
+                fromHour: this.addHours(3, payload.fromHour),
+                toHour: this.addHours(3, payload.toHour),
+            })
+        })
+        .then(res => {
+            if (res.status === 200)
+            {
+                this.setState({
+                    status: "pontat",
+                    workTime: payload.fromHour,
+                    showAlert: true,
+                    message: "Te-ai pontat la ora " + format(payload.fromHour, "HH:mm")
+                })
+                let localDict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {}
+                localDict[payload.usernameEmployee] = {status: "pontat", workTime: payload.fromHour, workTimeEndOfDay: ""}
+                localStorage.setItem("clockingDict", JSON.stringify(localDict))
+                this.loadData()
+            }
+            else if (res.status === 417)
+                res.text().then(text =>{
+                    this.setState({
+                        showAlert: true,
+                        message: text + " Pontarea nu a fost realizată."
+                    })
+                });
+            else if (res.status === 409)
+                this.setState({
+                    showAlert: true,
+                    message: "Eroare. Contactați echipa tehnică."
+                })
+            else
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch(error => { const mute = error} );
+    }
+
+    handleDepontaj = () => {
+        const payload = {
+            usernameEmployee: sessionStorage.getItem("username"),
+            fromHour:  this.state.workTime,
+            toHour: new Date(),
+        }
+        fetch('http://localhost:8080/clocking', {
+            method: 'PUT',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
+            },
+            body: JSON.stringify({
+                usernameEmployee: payload.usernameEmployee,
+                fromHour:  payload.fromHour,
+                toHour: this.addHours(3, payload.toHour),
+            })
+        })
+        .then(res => {
+            if (res.status === 200) {
+                this.setState({
+                    status: "endOfDay",
+                    workTimeEndOfDay: payload.toHour,
+                    showAlert: true,
+                    message: "Te-ai depontat la ora " + format(payload.toHour, "HH:mm")
+                })
+                let localDict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {}
+                localDict[payload.usernameEmployee] = {status: "endOfDay", workTime: payload.fromHour, workTimeEndOfDay: payload.toHour}
+                localStorage.setItem("clockingDict", JSON.stringify(localDict))
+                this.loadData()
+            }
+            else if (res.status === 417)
+                res.text().then(text =>{
+                    this.setState({
+                        showAlert: true,
+                        message: text + " Depontarea nu a fost realizată."
+                    })
+                });
+            else if (res.status === 409)
+                this.setState({
+                    showAlert: true,
+                    message: "Eroare. Contactați echipa tehnică."
+                })
+            else
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch(error => { const mute = error} );
+    }
+
+    doSubmit = () => {
         const payload = this.state.data
         payload["usernameEmployee"] = sessionStorage.getItem("username")
         fetch('http://localhost:8080/clocking', {
@@ -173,60 +262,59 @@ export default class ViewTimesheet extends MyForm{
             body: JSON.stringify(payload)
         })
         .then(res => {
-            if (res.status === 200)
-                alert("Succes")
-            else if (res.status === 409)
-                alert("Conflict")
-            else
-                alert("Exception")
-        })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
-        this.setState({
-            show: false
-        })
-    }
-
-    handleDepontaj = () => {
-        const payload = {
-            token: sessionStorage.getItem("jwt"),
-            toHour: new Date()
-        }
-        fetch('http://localhost:8080/clocking', {
-            method: 'PUT',
-            headers: {
-                'Accept' : 'application/json',
-                'Content-type':'application/json',
-                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(res => {
             if (res.status === 200) {
                 this.setState({
-                    status: "endOfDay",
-                    workDateAfterClocking: payload.toHour,
+                    show: false,
+                    showAlert: true,
+                    message: "Pontajul a fost salvat cu succes."
                 })
-                sessionStorage.setItem("status", "endOfDay")
-                sessionStorage.setItem("workDateAfterClocking", payload.toHour)
-                alert("Succes")
+                this.loadData()
             }
             else if (res.status === 409)
-                alert("Conflict")
+                this.setState({
+                    showAlert: true,
+                    message: "Există deja pontaj pentru datele introduse."
+                })
+            else if (res.status === 417)
+                res.text().then(text =>{
+                    this.setState({
+                        showAlert: true,
+                        message: text + " Pontajul nu a fost salvat."
+                    })
+                });
             else
-                alert("Exception")
+                this.setState({
+                    showAlert: true,
+                    message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                        "masterhr.contact@gmail.com. Mulțumim!"
+                })
         })
         // eslint-disable-next-line no-unused-vars
         .catch(error => { const mute = error} );
     }
 
     render(){
-        let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeLeave} = this.state.timesheet;
+        let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours} = this.state.timesheet;
         const clockingLength = this.state.clocking.length;
         return (
             <Container fluid>
                 <Row className="mt-4 mb-4 ml-sm-5 ml-md-0" style={{opacity: ".85"}}>
                     <Col sm={12}>
+                        <Modal show={this.state.showAlert} onHide={this.closeAlert} centered>
+                            <Modal.Header className="font-weight-bold">
+                                <Modal.Title>
+                                    Notificare
+                                </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {this.state.message}
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="primary" onClick={this.closeAlert}>
+                                    Ok
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                         <Card className="bg-dark">
                             <Card.Body>
                                 <Row>
@@ -241,14 +329,14 @@ export default class ViewTimesheet extends MyForm{
                                                 {this.state.status === "depontat" ?
                                                     <div className="punch-det text-white bg-dark">
                                                         <h6>Status: NEPONTAT</h6>
-                                                        <p>Adăugare pontaj manual - pontare pentru o altă zi sau ziua de telemuncă.</p>
+                                                        <p>Adăugare pontaj manual - pontare pentru o altă zi sau pentru ziua de telemuncă.</p>
                                                         <p>Pontare - adaugă pontaj pentru ziua în curs.</p>
                                                     </div>
                                                     :
                                                     this.state.status === "pontat" ?
                                                         <div className="punch-det text-white bg-dark">
                                                             <h6>Status: PONTAT</h6>
-                                                            <p>{this.state.workDate.toLocaleDateString("ro-RO", {hour: "numeric", minute: "numeric", weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
+                                                            <p>{this.state.workTime.toLocaleDateString("ro-RO", {hour: "numeric", minute: "numeric", weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
                                                         </div>
                                                         : ""
                                                 }
@@ -263,10 +351,10 @@ export default class ViewTimesheet extends MyForm{
                                                 </div>
                                                 {this.state.status === "endOfDay" ?
                                                     <div className="punch-det text-white bg-dark text-center">
-                                                        <div><h6 className="font-weight-bold mb-3">- Sumarul zilei -</h6></div>
-                                                        <p>Pontat:  {format(this.state.workDate, "HH:mm")}</p>
-                                                        <p>Depontat: {format(this.state.workDateAfterClocking, "HH:mm")}</p>
-                                                        <p>Ore lucrate: {this.state.workDateAfterClocking.getHours() - this.state.workDate.getHours()}</p>
+                                                        <div><h6 className="font-weight-bold mb-3">-- Sumarul zilei --</h6></div>
+                                                        <p>Pontat:  {format(this.state.workTime, "HH:mm")}</p>
+                                                        <p>Depontat: {format(this.state.workTimeEndOfDay, "HH:mm")}</p>
+                                                        <p>Ore lucrate: {this.state.workTimeEndOfDay.getHours() - this.state.workTime.getHours()}</p>
                                                     </div>
                                                     : ""
                                                 }
@@ -324,7 +412,7 @@ export default class ViewTimesheet extends MyForm{
                                                             <span>Ore suplimentare lună curentă <strong>{overtimeHours}</strong></span>
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
-                                                            <span>Total ore suplimentare <strong>{totalOvertimeLeave}</strong></span>
+                                                            <span>Total ore suplimentare <strong>{totalOvertimeHours}</strong></span>
                                                         </div>
                                                     </div>
                                                 :

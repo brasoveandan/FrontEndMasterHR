@@ -16,7 +16,7 @@ class AdminDashboard extends React.Component {
         };
         switch (sessionStorage.getItem("page")) {
             case "vizualizare_conturi": this.state = {render: <ViewAccounts/>}; break;
-            case "adauga_cont": this.state({render: <AddAccount/>});break;
+            case "adauga_cont": this.state = ({render: <AddAccount/>});break;
             default: this.state = {render: <AdminLandingPage/>};
         }
     }

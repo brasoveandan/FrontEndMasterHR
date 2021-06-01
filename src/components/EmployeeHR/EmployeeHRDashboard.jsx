@@ -20,11 +20,11 @@ class EmployeeHRDashboard extends React.Component {
         };
         switch (sessionStorage.getItem("page")) {
             case "detalii_contract": this.state = {render: <ViewContract/>}; break;
-            case "fluturas_salariu": this.state({render: <ViewPayslip/>});break;
-            case "vizualizare_pontaj": this.state({render : <ViewTimesheet/>});break;
-            case "vizualizare_concedii" : this.state({render: <ViewHoliday/>});break;
-            case "contracte_angajati" : this.state({render: <ViewAllContracts/>});break;
-            case "pontaje_angajati" : this.state({render: <ViewAllTimesheet/>});break;
+            case "fluturas_salariu": this.state = ({render: <ViewPayslip/>});break;
+            case "vizualizare_pontaj": this.state = ({render : <ViewTimesheet/>});break;
+            case "vizualizare_concedii" : this.state =({render: <ViewHoliday/>});break;
+            case "contracte_angajati" : this.state = ({render: <ViewAllContracts/>});break;
+            case "pontaje_angajati" : this.state = ({render: <ViewAllTimesheet/>});break;
             default: this.state = {render: <EmployeeHRLandingPage/>};
         }
     }
