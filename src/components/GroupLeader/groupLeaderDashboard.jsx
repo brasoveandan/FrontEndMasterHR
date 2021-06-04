@@ -1,13 +1,13 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import GroupLeaderLandingPage from "./GroupLeaderLandingPage";
-import ViewContract from "../../common/ViewContract";
-import SidebarDashboard from "../../common/SidebarDashboard";
-import ViewPayslip from "../../common/ViewPayslip";
-import ViewTimesheet from "../../common/ViewTimesheet";
-import ViewHoliday from "../../common/ViewHoliday";
-import ViewAllRequests from "./ViewAllRequests";
+import GroupLeaderLandingPage from "./groupLeaderLandingPage";
+import ViewContract from "../../common/viewContract";
+import SidebarDashboard from "../../common/sidebarDashboard";
+import ViewPayslip from "../../common/viewPayslip";
+import ViewTimesheet from "../../common/viewTimesheet";
+import ViewHoliday from "../../common/viewHoliday";
+import ViewAllRequests from "./viewAllRequests";
 
 class GroupLeaderDashboard extends React.Component {
 

@@ -6,21 +6,21 @@ import './css/timesheetView.css'
 import 'bootstrap/dist/css/bootstrap-grid.css'
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import React from "react";
-import HomePage from "./components/Presentation/HomePage";
+import HomePage from "./components/Presentation/homePage";
 import Switch from "react-bootstrap/Switch";
 import {Route} from 'react-router-dom';
-import LoginPage from "./components/Presentation/LoginPage";
+import LoginPage from "./components/Presentation/loginPage";
 import NotFoundPage from "./components/utils/NotFoundPage";
-import EmployeeDashboard from "./components/Employee/EmployeeDashboard";
+import EmployeeDashboard from "./components/Employee/employeeDashboard";
 import PrivateRouteEmployee from "./components/utils/PrivateRouteEmployee"
-import AdminDashboard from "./components/Admin/AdminDashboard";
-import GroupLeaderDashboard from "./components/GroupLeader/GroupLeaderDashboard";
+import AdminDashboard from "./components/Admin/adminDashboard";
+import GroupLeaderDashboard from "./components/GroupLeader/groupLeaderDashboard";
 import PrivateRouteGroupLeader from "./components/utils/PrivateRouteGroupLeader";
 import PrivateRouteAdmin from "./components/utils/PrivateRouteAdmin";
-import ForgotPasswordPage from "./components/Presentation/ForgotPasswordPage";
-import ResetPasswordPage from "./components/Presentation/ResetPasswordPage";
+import ForgotPasswordPage from "./components/Presentation/forgotPasswordPage";
+import ResetPasswordPage from "./components/Presentation/resetPasswordPage";
 import PrivateRouteEmployeeHR from "./components/utils/PrivateRouteEmployeeHR";
-import EmployeeHRDashboard from "./components/EmployeeHR/EmployeeHRDashboard";
+import EmployeeHRDashboard from "./components/EmployeeHR/employeeHRDashboard";
 
 function App() {
   return (

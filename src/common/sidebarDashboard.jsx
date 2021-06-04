@@ -2,7 +2,7 @@ import React from 'react';
 
 import logo from "../../src/img/logo/MasterHR.png";
 import {Logo} from "react-sidebar-ui";
-import SidebarButton from "./SidebarButton";
+import SidebarButton from "./sidebarButton";
 import {Container, Row} from "react-bootstrap";
 
 

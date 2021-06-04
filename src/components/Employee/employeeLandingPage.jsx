@@ -1,9 +1,7 @@
 import React from "react"
-import LandingPage from "../../common/LandingPage";
+import LandingPage from "../../common/landingPage";
 
-
-export default class GroupLeaderLandingPage extends LandingPage{
-
+export default class EmployeeLandingPage extends LandingPage{
     render(){
         return (
             <div>
@@ -16,12 +14,9 @@ export default class GroupLeaderLandingPage extends LandingPage{
                         <br/>4. adăugare pontaj manual/automat
                         <br/>5. vizualizare cereri de concediu
                         <br/>6. înregistrare cerere de concediu
-                        <br/>7. vizualizare cereri angajați
-                        <br/>8. revizuire cereri angajați
                     </p>
                 )}
             </div>
         )
     }
-
 }

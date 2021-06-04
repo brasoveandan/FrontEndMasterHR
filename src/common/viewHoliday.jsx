@@ -22,6 +22,7 @@ export default class ViewHoliday extends MyForm{
             offset: 0,
             perPage: 5,
             pageCount: 0,
+
             searchQuery: "",
             proxyUsername: "",
             data: {
@@ -31,6 +32,7 @@ export default class ViewHoliday extends MyForm{
                 type: ""
             },
             errors: {},
+
             show: false,
             showDetailsModal: false,
             showDeleteModal: false,
@@ -76,9 +78,11 @@ export default class ViewHoliday extends MyForm{
                     })
                 });
             }
+            else
+                this.setState({
+                    holidays: []
+                })
         })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { console.log(error)} );
 
         fetch('http://localhost:8080/summaryHoliday/' + payload.username, {
             method: 'GET',
@@ -94,9 +98,10 @@ export default class ViewHoliday extends MyForm{
                     this.setState({summary: json});
                 });
             }
+            this.setState({
+                summary: []
+            })
         })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { console.log(error)} );
 
         fetch('http://localhost:8080/employee', {
             method: 'GET',
@@ -109,12 +114,15 @@ export default class ViewHoliday extends MyForm{
         .then(res => {
             if (res.status === 200) {
                 res.json().then(json =>{
-                    this.setState({users: json});
+                    let arrayUser = []
+                    json.forEach(elem => {
+                        if (elem.username !== payload.username)
+                            arrayUser.push(elem)
+                    })
+                    this.setState({users: arrayUser});
                 });
             }
         })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { console.log(error)} );
     }
 
     handleSearch = query => {
@@ -137,7 +145,8 @@ export default class ViewHoliday extends MyForm{
         }
         this.setState({
             show: true,
-            data: payload
+            data: payload,
+            proxyUsername: ""
         });
     }
 
@@ -169,11 +178,18 @@ export default class ViewHoliday extends MyForm{
     }
 
     doSubmit = () => {
-        const payload = this.state.data;
-        payload["usernameEmployee"] = sessionStorage.getItem("username")
-        payload["status"] = "PENDING"
-        payload["submittedDate"] = new Date()
-        payload["proxyUsername"] = this.state.proxyUsername
+        const payload = {
+            usernameEmployee : sessionStorage.getItem("username"),
+            status : "PENDING",
+            submittedDate : new Date(),
+            proxyUsername : this.state.proxyUsername,
+            reason: this.state.data.reason,
+            fromDate: this.state.data.fromDate,
+            toDate: this.state.data.toDate,
+            type: this.state.data.type
+        }
+
+        console.log(payload)
         fetch('http://localhost:8080/request', {
             method: 'POST',
             headers: {
@@ -207,11 +223,15 @@ export default class ViewHoliday extends MyForm{
                     message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
-        })
+        }).catch(error => console.log(error))
     }
 
     handleDeleteRequest = () => {
-        fetch('http://localhost:8080/request/' + this.state.holidayDetails.requestId, {
+        const {user, fromDate, toDate} = this.state.holidayDetails
+        const payload = {
+            idHoliday: user + fromDate + toDate
+        }
+        fetch('http://localhost:8080/holiday/' + payload.idHoliday, {
             method: 'DELETE',
             headers: {
                 'Accept' : 'application/json',
@@ -298,7 +318,7 @@ export default class ViewHoliday extends MyForm{
                     <Col sm={3}>
                         <div className="stats-info m-2 rounded h-100 bg-dark text-white">
                             <h6>Concediu Anual disponibil</h6>
-                            {({daysAvailable} - {daysTaken} > 0) ? <h4><strong>{daysAvailable - daysTaken} <small>/ {daysAvailable} zile</small></strong></h4> : <h4><FaTimes/></h4>}
+                            <h4><strong>{daysAvailable - daysTaken} <small>/ {daysAvailable} zile</small></strong></h4>
                         </div>
                     </Col>
                     <Col sm={3}>
@@ -465,6 +485,4 @@ export default class ViewHoliday extends MyForm{
             </Card>
         );
     }
-
-
 }

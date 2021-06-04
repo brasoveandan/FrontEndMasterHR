@@ -57,14 +57,10 @@ export default class ViewContract extends React.Component{
                             <Col sm={6} className="m-b-20">
                                 <ul className="list-unstyled">
                                     <li><h5 className="mb-2"><strong>{lastName} {firstName}</strong></h5></li>
+                                    <li><h6 className="mb-2">Companie: <strong>{companyName}</strong></h6></li>
                                     <li><h6>Număr personal: {personalNumber}</h6></li>
                                     <li><h6>Departament: {department}</h6></li>
                                     <li><h6>Poziție: {position}</h6></li>
-                                </ul>
-                            </Col>
-                            <Col sm={6} className="m-b-20">
-                                <ul className="list-unstyled">
-                                    <li><h5 className="mb-2"><strong>{companyName}</strong></h5></li>
                                 </ul>
                             </Col>
                         </Row>
@@ -89,7 +85,7 @@ export default class ViewContract extends React.Component{
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Zi de naștere: </strong>
+                                        <td><strong>Data nașterii: </strong>
                                             <span className="float-right">{birthdayDate}</span>
                                         </td>
                                     </tr>
@@ -124,7 +120,7 @@ export default class ViewContract extends React.Component{
                                     </tr>
                                     <tr>
                                         <td><strong>Valoare tichet de masă: </strong>
-                                            <span className="float-right">{ticketValue}</span>
+                                            <span className="float-right">{ticketValue} {currency}</span>
                                         </td>
                                     </tr>
                                     <tr>

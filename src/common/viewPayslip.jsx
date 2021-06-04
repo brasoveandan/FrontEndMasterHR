@@ -12,7 +12,8 @@ export default class ViewPayslip extends React.Component{
             year: "",
             month: "",
             bool: true,
-            showAlert: false
+            showAlert: false,
+            message: ""
         };
 
         this.renderPayslip = this.renderPayslip.bind(this);
@@ -72,7 +73,9 @@ export default class ViewPayslip extends React.Component{
     };
 
     renderPayslip = (payslip) => {
-        let {year, month, idPayslip, firstName, lastName, companyName, personalNumber, department, position, baseSalary, currency, grossSalary, overtimeIncreases, increases, ticketsValue, workedHours, homeOfficeHours, requiredHours, overtimeHours, cas, cass, iv, taxExempt, netSalary} = payslip;
+        let {year, month, idPayslip, firstName, lastName, companyName, personalNumber, department, position, baseSalary, currency,
+            grossSalary, overtimeIncreases, increases, ticketsValue, workedHours, homeOfficeHours, requiredHours, overtimeHours,
+            cas, cass, iv, taxExempt, netSalary} = payslip;
         return (
             <Col xs={12} md={10} className="ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
                 <Card className="text-left mb-4 ml-xl-0" style={{opacity: ".85"}} >
@@ -85,7 +88,7 @@ export default class ViewPayslip extends React.Component{
                             <Col sm={6} className="col-sm-6 m-b-20">
                                 <ul className="list-unstyled">
                                     <li><h5 className="mb-0"><strong>{lastName} {firstName}</strong></h5></li>
-                                    <li><span>{department}</span></li>
+                                    <li><span>Departament: {department}</span></li>
                                     <li>Număr personal: {personalNumber}</li>
                                     <li>Poziție: {position}</li>
                                 </ul>
@@ -128,7 +131,7 @@ export default class ViewPayslip extends React.Component{
                                         </tr>
                                         <tr>
                                             <td><strong>Total Venituri</strong>
-                                                <span className="float-right"><strong>{baseSalary + ticketsValue + overtimeIncreases + increases} {currency}</strong></span>
+                                                <span className="float-right"><strong>{grossSalary + ticketsValue + overtimeIncreases + increases} {currency}</strong></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -246,7 +249,7 @@ export default class ViewPayslip extends React.Component{
                 }
                 else {
                     this.setState({
-                        msg: "Nu există fluturaș de salariu pentru datele introduse. Reîncercați!",
+                        message: "Nu există fluturaș de salariu pentru datele introduse. Reîncercați!",
                         showAlert: true
                     });
                 }

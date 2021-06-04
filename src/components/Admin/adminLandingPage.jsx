@@ -1,5 +1,5 @@
 import React from "react"
-import LandingPage from "../../common/LandingPage";
+import LandingPage from "../../common/landingPage";
 
 
 export default class AdminLandingPage extends LandingPage{

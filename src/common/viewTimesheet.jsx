@@ -19,7 +19,11 @@ import * as Joi from "joi-browser";
 export default class ViewTimesheet extends MyForm{
     constructor(props){
         super(props);
-        const dict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {}
+        let dict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {"today" : new Date()}
+        if (new Date(dict["today"]).getDate() !== new Date().getDate()) {
+            dict = {}
+            dict["today"] = new Date()
+        }
         const username = sessionStorage.getItem("username")
         this.state = {
             timesheet: [],
@@ -28,6 +32,9 @@ export default class ViewTimesheet extends MyForm{
             status: dict[username] && dict[username]["status"] ? dict[username]["status"] : "depontat",
             workTime:  dict[username] && dict[username]["workTime"] ? new Date(dict[username]["workTime"]) : "",
             workTimeEndOfDay: dict[username] && dict[username]["workTimeEndOfDay"] ? new Date(dict[username]["workTimeEndOfDay"]) : "",
+            dict: dict,
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
             show: false,
             data: {
                 type: "",
@@ -41,7 +48,8 @@ export default class ViewTimesheet extends MyForm{
         };
 
         this.handleChange = this.handleChange.bind(this)
-        this.loadData()
+        this.handleChangeInput = this.handleChangeInput.bind(this)
+        this.loadData(this.state.year, this.state.month)
     }
 
     schema = {
@@ -51,10 +59,7 @@ export default class ViewTimesheet extends MyForm{
         reason: Joi.string().optional().allow(""),
     }
 
-    loadData = () => {
-        let newDate = new Date();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
+    loadData = (year, month) => {
         const payload = {
             idTimesheet: sessionStorage.getItem("username") + year + month,
             username: sessionStorage.getItem("username"),
@@ -72,7 +77,10 @@ export default class ViewTimesheet extends MyForm{
             .then(res => {
                 if (res.status === 200) {
                     res.json().then(json =>{
-                        this.setState({timesheet: json});
+                        this.setState({
+                            showTimesheet: true,
+                            timesheet: json
+                        });
                     });
                 }
                 else {
@@ -81,10 +89,8 @@ export default class ViewTimesheet extends MyForm{
                     })
                 }
             })
-            // eslint-disable-next-line no-unused-vars
-            .catch(error => { const mute = error} );
 
-        fetch('http://localhost:8080/clocking/' + payload.username, {
+        fetch('http://localhost:8080/clocking/' + payload.username + "/" + year + "/" + month, {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
@@ -94,29 +100,31 @@ export default class ViewTimesheet extends MyForm{
         })
             .then(res => {
                 if (res.status === 200) {
-                    res.json().then(json =>{
+                    res.json().then(json => {
                         this.setState({clocking: json});
                     });
                 }
-                else {
-                    this.setState({
-                        message: "Nu au fost înregistrate pontări."
-                    })
-                }
+                else
+                    if (res.status === 404)
+                        this.setState({clocking: []});
             })
-            // eslint-disable-next-line no-unused-vars
-            .catch(error => { const mute = error} );
     }
 
     openModal = () => {
         this.setState({
-            show: true
+            show: true,
+            data: {
+                type: "",
+                fromHour: "",
+                toHour: "",
+                reason: ""
+            }
         });
     }
 
     closeModal = () => {
         this.setState({
-            show: false
+            show: false,
         });
     };
 
@@ -126,7 +134,7 @@ export default class ViewTimesheet extends MyForm{
         })
     }
 
-    handleChange(event) {
+    handleChangeInput(event) {
         this.setState({
             [event.target.name]: event.target.value
         })
@@ -166,10 +174,10 @@ export default class ViewTimesheet extends MyForm{
                     showAlert: true,
                     message: "Te-ai pontat la ora " + format(payload.fromHour, "HH:mm")
                 })
-                let localDict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {}
-                localDict[payload.usernameEmployee] = {status: "pontat", workTime: payload.fromHour, workTimeEndOfDay: ""}
-                localStorage.setItem("clockingDict", JSON.stringify(localDict))
-                this.loadData()
+                let {dict, year, month} = this.state
+                dict[payload.usernameEmployee] = {status: "pontat", workTime: payload.fromHour, workTimeEndOfDay: ""}
+                localStorage.setItem("clockingDict", JSON.stringify(dict))
+                this.loadData(year, month)
             }
             else if (res.status === 417)
                 res.text().then(text =>{
@@ -181,7 +189,7 @@ export default class ViewTimesheet extends MyForm{
             else if (res.status === 409)
                 this.setState({
                     showAlert: true,
-                    message: "Eroare. Contactați echipa tehnică."
+                    message: "Există deja pontare pentru ziua de astăzi. Contactați echipa tehnică."
                 })
             else
                 this.setState({
@@ -190,8 +198,6 @@ export default class ViewTimesheet extends MyForm{
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
         })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
     }
 
     handleDepontaj = () => {
@@ -221,10 +227,10 @@ export default class ViewTimesheet extends MyForm{
                     showAlert: true,
                     message: "Te-ai depontat la ora " + format(payload.toHour, "HH:mm")
                 })
-                let localDict = JSON.parse(localStorage.getItem("clockingDict")) ? JSON.parse(localStorage.getItem("clockingDict")): {}
-                localDict[payload.usernameEmployee] = {status: "endOfDay", workTime: payload.fromHour, workTimeEndOfDay: payload.toHour}
-                localStorage.setItem("clockingDict", JSON.stringify(localDict))
-                this.loadData()
+                let {dict, year, month} = this.state
+                dict[payload.usernameEmployee] = {status: "endOfDay", workTime: payload.fromHour, workTimeEndOfDay: payload.toHour}
+                localStorage.setItem("clockingDict", JSON.stringify(dict))
+                this.loadData(year, month)
             }
             else if (res.status === 417)
                 res.text().then(text =>{
@@ -245,13 +251,16 @@ export default class ViewTimesheet extends MyForm{
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
         })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
     }
 
     doSubmit = () => {
-        const payload = this.state.data
-        payload["usernameEmployee"] = sessionStorage.getItem("username")
+        const payload = {
+            usernameEmployee: sessionStorage.getItem("username"),
+            type: this.state.data.type,
+            fromHour: this.state.data.fromHour,
+            toHour: this.state.data.toHour,
+            reason: this.state.data.reason
+        }
         fetch('http://localhost:8080/clocking', {
             method: 'POST',
             headers: {
@@ -268,7 +277,9 @@ export default class ViewTimesheet extends MyForm{
                     showAlert: true,
                     message: "Pontajul a fost salvat cu succes."
                 })
-                this.loadData()
+                this.closeModal()
+                const {year, month} = this.state
+                this.loadData(year, month)
             }
             else if (res.status === 409)
                 this.setState({
@@ -289,8 +300,23 @@ export default class ViewTimesheet extends MyForm{
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
         })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => { const mute = error} );
+    }
+
+    handleFilter = () => {
+        const payload = {
+            year : this.state.year,
+            month: this.state.month
+        }
+        if (payload.year === "" || payload.month === "")
+            this.setState({
+                timesheet: [],
+                clocking: [],
+                showTimesheet: false,
+                showAlert: true,
+                message: "Nu există date."
+            })
+        else
+            this.loadData(payload.year, payload.month)
     }
 
     render(){
@@ -319,7 +345,7 @@ export default class ViewTimesheet extends MyForm{
                             <Card.Body>
                                 <Row>
                                     <Col sm={6} className="mb-3">
-                                        <Card className="punch-status"  style={{height: "407px"}}>
+                                        <Card className="punch-status">
                                             <Card.Body>
                                                 <h5 className="card-title">Pontaj
                                                     <span className="text-muted ml-2">
@@ -345,7 +371,12 @@ export default class ViewTimesheet extends MyForm{
                                                         <Button className="my-btn punch-btn" type="button" onClick={this.handlePontaj}>{"Pontare"}</Button>
                                                         :
                                                         this.state.status === "pontat" ?
-                                                            <Button className="my-btn punch-btn" type="button" onClick={this.handleDepontaj}>{"Depontare"}</Button>
+                                                            <React.Fragment>
+                                                                <Button className="my-btn punch-btn" type="button" onClick={this.handleDepontaj}>{"Depontare"}</Button>
+                                                                <div className="punch-det text-white bg-dark my-3">
+                                                                    <p>Adăugare pontaj manual - pontare pentru o altă zi sau pentru ziua de telemuncă.</p>
+                                                                </div>
+                                                            </React.Fragment>
                                                             : ""
                                                     }
                                                 </div>
@@ -405,11 +436,11 @@ export default class ViewTimesheet extends MyForm{
                                                             <ProgressBar now={homeOfficeHours / requiredHours * 100}/>
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
-                                                            <span>Luna curentă <strong>{workedHours + homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
-                                                            <ProgressBar now={(workedHours + homeOfficeHours) / requiredHours * 100}/>
+                                                            <span>Ore suplimentare lună curentă <strong>{overtimeHours}</strong></span>
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
-                                                            <span>Ore suplimentare lună curentă <strong>{overtimeHours}</strong></span>
+                                                            <span>Luna curentă <strong>{workedHours + homeOfficeHours + overtimeHours} <small>/ {requiredHours}</small></strong></span>
+                                                            <ProgressBar now={(workedHours + homeOfficeHours + overtimeHours) / requiredHours * 100}/>
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
                                                             <span>Total ore suplimentare <strong>{totalOvertimeHours}</strong></span>
@@ -423,10 +454,10 @@ export default class ViewTimesheet extends MyForm{
                                     </Col>
                                     <Col sm={12} className="text-center mb-3">
                                         <label className="text-white font-weight-bold">An:</label>
-                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" disabled={!(clockingLength> 0)} name="an" type="text" placeholder="ex: 2021" defaultValue={year} onChange={this.handleChange}/>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="year" type="text" placeholder="ex: 2021" defaultValue={year} onChange={this.handleChangeInput}/>
                                         <label className="text-white font-weight-bold">Luna:</label>
-                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" disabled={!(clockingLength> 0)} name="luna" type="text" placeholder="ex: 2" defaultValue={month} onChange={this.handleChange}/>
-                                        <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="button" disabled={!(clockingLength> 0)} onClick={this.handleFilter}>Caută</Button>
+                                        <input className="col-sm-3 ml-md-3 mt-md-4 mb-2 rounded mr-4" name="month" type="text" placeholder="ex: 2" defaultValue={month} onChange={this.handleChangeInput}/>
+                                        <Button className="col-sm-3 ml-md-3 btn-success btn text-uppercase font-weight-bold" type="button" onClick={this.handleFilter}>Caută</Button>
                                     </Col>
                                     <Col sm={12}>
                                         {clockingLength > 0 ?
@@ -453,7 +484,7 @@ export default class ViewTimesheet extends MyForm{
                                                 </tbody>
                                             </Table>
                                             :
-                                            <Modal.Header className="bg-white font-weight-bold">{this.state.message}</Modal.Header>
+                                            <Modal.Header className="bg-white font-weight-bold">Nu au fost înregistrate pontări.</Modal.Header>
                                         }
                                     </Col>
                                 </Row>

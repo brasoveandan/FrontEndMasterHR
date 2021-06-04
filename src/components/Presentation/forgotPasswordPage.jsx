@@ -4,7 +4,6 @@ import NavBar from "../utils/NavBar";
 import {FaEnvelope} from "react-icons/all";
 
 export default class ForgotPasswordPage extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -22,6 +21,7 @@ export default class ForgotPasswordPage extends React.Component {
     }
 
     doSubmit = () => {
+        console.log(this.state.email)
         fetch('http://localhost:8080/sendEmail', {
             method: 'POST',
             headers: {
@@ -29,16 +29,15 @@ export default class ForgotPasswordPage extends React.Component {
                 'Content-type':'application/json'
             },
             body: this.state.email
-
         })
         .then(res => {
             if (res.status === 200) {
                 this.setState({
-                    email: "",
                     showAlert: true,
                     message: "Vei primi un email la adresa introdusă cu link-ul pentru resetarea parolei! " +
                         "În caz ca nu primiți niciun email contactați-ne la adresa masterhr.contact@gmail.com"
                 })
+                console.log(this.state.email)
             }
             else if (res.status === 404) {
                 this.setState({

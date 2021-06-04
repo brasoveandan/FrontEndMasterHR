@@ -5,7 +5,6 @@ import NavBar from "../utils/NavBar";
 import {FaLock, FaUser} from "react-icons/all";
 
 export default class LoginPage extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -140,7 +139,7 @@ export default class LoginPage extends React.Component {
                             <br/>
                             <Form.Group controlId="formForgotPassword" className="align-self-center">
                                 <Form.Text>
-                                    <NavLink className="nav-link my-label" to="/forgot_password">Ti-ai uitat parola?</NavLink>
+                                    <NavLink className="nav-link my-label" to="/forgot_password">Recuperare Parola</NavLink>
                                 </Form.Text>
                             </Form.Group>
                         </Form>

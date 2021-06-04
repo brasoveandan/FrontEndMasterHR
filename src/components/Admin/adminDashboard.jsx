@@ -1,8 +1,8 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import SidebarDashboard from "../../common/SidebarDashboard";
-import AdminLandingPage from "./AdminLandingPage";
+import SidebarDashboard from "../../common/sidebarDashboard";
+import AdminLandingPage from "./adminLandingPage";
 import ViewAccounts from "./viewAccounts";
 import AddAccount from "./addAccount";
 

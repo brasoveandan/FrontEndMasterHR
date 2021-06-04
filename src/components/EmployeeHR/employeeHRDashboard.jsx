@@ -1,14 +1,14 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import ViewContract from "../../common/ViewContract";
-import SidebarDashboard from "../../common/SidebarDashboard";
-import EmployeeHRLandingPage from "./EmployeeHRLandingPage";
-import ViewPayslip from "../../common/ViewPayslip";
-import ViewTimesheet from "../../common/ViewTimesheet";
-import ViewHoliday from "../../common/ViewHoliday";
-import ViewAllContracts from "./ViewAllContracts";
-import ViewAllTimesheet from "./ViewAllTimesheet";
+import ViewContract from "../../common/viewContract";
+import SidebarDashboard from "../../common/sidebarDashboard";
+import EmployeeHRLandingPage from "./employeeHRLandingPage";
+import ViewPayslip from "../../common/viewPayslip";
+import ViewTimesheet from "../../common/viewTimesheet";
+import ViewHoliday from "../../common/viewHoliday";
+import ViewAllContracts from "./viewAllContracts";
+import ViewAllTimesheet from "./viewAllTimesheet";
 
 class EmployeeHRDashboard extends React.Component {
 

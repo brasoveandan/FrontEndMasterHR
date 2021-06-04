@@ -17,6 +17,7 @@ export default class ViewAllTimesheet extends React.Component{
             offset: 0,
             perPage: 10,
             pageCount: 0,
+            holidayPerMonth: [],
 
             timesheetDetails: [],
             year: "",
@@ -25,6 +26,7 @@ export default class ViewAllTimesheet extends React.Component{
 
             searchQuery: "",
             showDetailsModal: false,
+            showConfirmModal: false,
             showAlert: false,
             showDataTable: false,
             message: "",
@@ -57,6 +59,8 @@ export default class ViewAllTimesheet extends React.Component{
                         yearOptions.push(payslip.year)
                         monthOptions.push(payslip.month)
                     })
+                    yearOptions = yearOptions.filter((value, index) => yearOptions.indexOf(value) === index)
+                    monthOptions = monthOptions.filter((value, index) => monthOptions.indexOf(value) === index)
 
                     this.setState({
                         pageCount: Math.ceil(data.length / this.state.perPage),
@@ -67,11 +71,36 @@ export default class ViewAllTimesheet extends React.Component{
                     })
                 });
             }
-        }).catch( err => {
-            err.text().then( errorMessage => {
-                console.log(errorMessage)
-            })
         })
+    }
+
+    loadHolidayUser = timesheet => {
+        const payload = {
+            username: timesheet.usernameEmployee,
+            year: this.state.year,
+            month: this.state.month
+        }
+        fetch('http://localhost:8080/holiday/' + payload.username + "/" + payload.year + "/" + payload.month, {
+            method: 'GET',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(json =>{
+                      this.setState({
+                          holidayPerMonth: json
+                      })
+                    });
+                }
+                else
+                    this.setState({
+                        holidayPerMonth: []
+                    })
+            })
     }
 
     openDetailsModal = timesheet => {
@@ -81,9 +110,18 @@ export default class ViewAllTimesheet extends React.Component{
         });
     }
 
+    openConfirmModal = timesheet => {
+        this.setState({
+            timesheetDetails: timesheet,
+            showConfirmModal: true
+        });
+        this.loadHolidayUser(timesheet)
+    }
+
     closeModal = () => {
         this.setState({
-            showDetailsModal: false
+            showDetailsModal: false,
+            showConfirmModal: false
         });
     }
 
@@ -178,8 +216,8 @@ export default class ViewAllTimesheet extends React.Component{
         )
     }
 
-    handleConfirmTimesheet = (timesheet) => {
-        const payload = timesheet
+    handleConfirmTimesheet = () => {
+        const payload = this.state.timesheetDetails
         payload["status"] = "CLOSED"
         fetch('http://localhost:8080/timesheet', {
             method: 'PUT',
@@ -194,8 +232,9 @@ export default class ViewAllTimesheet extends React.Component{
                 if (res.status === 200) {
                     this.setState({
                         showAlert: true,
-                        message: "Pontajul a fost confirmat."
+                        message: "Pontajul a fost confirmat. Luna este închisă!"
                     })
+                    this.closeModal()
                     this.loadData()
                 }
                 else if (res.status === 417)
@@ -204,21 +243,23 @@ export default class ViewAllTimesheet extends React.Component{
                         payload["status"] = "OPENED"
                         this.setState({
                             showAlert: true,
-                            message: text
+                            message: text + "Pontajul nu a fost confirmat. Luna rămâne deschisă."
                         })
                     });
                 }
                 else if (res.status === 409) {
                     this.setState({
                         showAlert: true,
-                        message: "Pontajul este deja confirmat."
+                        message: "Luna este deja închisă."
                     })
                 }
-            }).catch( err => {
-            err.text().then( errorMessage => {
-                console.log(errorMessage)
+                else
+                    this.setState({
+                        showAlert: true,
+                        message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
+                            "masterhr.contact@gmail.com. Mulțumim!"
+                    })
             })
-        })
     }
 
     render(){
@@ -226,6 +267,7 @@ export default class ViewAllTimesheet extends React.Component{
         const {yearOptions, monthOptions} = this.state
         let {usernameEmployee, personalNumber, year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours, status} = this.state.timesheetDetails;
         const date = new Date(year + "-" + month).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long'})
+        const totalWorkedHours = homeOfficeHours + workedHours
         return (
             <Card className="my-md-4 my-2 ml-md-5 ml-xl-0 d-flex justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
@@ -310,11 +352,13 @@ export default class ViewAllTimesheet extends React.Component{
                                     </td>
                                     <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.usernameEmployee}</td>
                                     <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.personalNumber}</td>
-                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.workedHours}</td>
+                                    <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.workedHours + timesheet.homeOfficeHours}</td>
                                     <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.requiredHours}</td>
                                     <td onClick={(e) => this.openDetailsModal(timesheet, e)}>{timesheet.status === "CLOSED" ? <FaLock/> : <FaLockOpen/>}</td>
                                     <td>
-                                        <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Confirmă pontaj" disabled={timesheet.status === "CLOSED"} onClick={(e) => this.handleConfirmTimesheet(timesheet, e)}><FaRegCalendarCheck/></Button>
+                                        <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark"
+                                                title="Confirmă pontaj" disabled={timesheet.status === "CLOSED"}
+                                                onClick={(e) => this.openConfirmModal(timesheet, e)}><FaRegCalendarCheck/></Button>
                                     </td>
                                 </tr>
                             ))}
@@ -406,6 +450,72 @@ export default class ViewAllTimesheet extends React.Component{
                             </Row>
                         </Card.Body>
                     </Modal.Body>
+                </Modal>
+                <Modal show={this.state.showConfirmModal} onHide={this.closeModal} centered>
+                    <Modal.Header>
+                        <Modal.Title>
+                            Confirmare pontaj - {usernameEmployee}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.state.holidayPerMonth.length <= 0 ?
+                            <React.Fragment>
+                                <Row>
+                                    <Col sm={12}>
+                                        <Table hover className="list-group-item-dark">
+                                            <tbody>
+                                            <tr>
+                                                <td>Luna:
+                                                    <strong><span className="float-right">{date}</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ore lucrate:
+                                                    <strong><span className="float-right">{workedHours}</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ore telemuncă:
+                                                    <strong><span className="float-right">{homeOfficeHours}</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total ore lucrate:
+                                                    <strong><span className={totalWorkedHours >= requiredHours ? "float-right text-success" : "float-right text-danger"}>{totalWorkedHours}</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ore necesare:
+                                                    <strong><span className="float-right">{requiredHours}</span></strong>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </Table>
+                                    </Col>
+                                </Row>
+                                {totalWorkedHours >= requiredHours ?
+                                    "" :
+                                    <div>
+                                        <strong><span className="text-danger">Angajatul nu a îndeplinit numărul de ore necesare.</span></strong>
+                                        <br/>
+                                    </div>
+                                }
+                                Doriți să confirmați pontajul și să închideți luna?
+                            </React.Fragment>
+                            :
+                            <strong><span>Pontajul nu poate fi confirmat deoarece angajatul are cereri de concediu pentru {date} în așteptare. Contactați superiorul!</span></strong>
+                        }
+                    </Modal.Body>
+                    <Modal.Footer>
+                        {this.state.holidayPerMonth.length <= 0 ?
+                            <React.Fragment>
+                                <Button className="btn-success" onClick={this.handleConfirmTimesheet}>Da</Button>
+                                <Button className="btn-danger" onClick={this.closeModal}>Nu</Button>
+                            </React.Fragment>
+                            :
+                            <Button variant="primary" onClick={this.closeModal}>Ok</Button>
+                        }
+                    </Modal.Footer>
                 </Modal>
             </Card>
         );
