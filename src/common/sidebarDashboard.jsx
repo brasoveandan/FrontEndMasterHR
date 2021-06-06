@@ -1,6 +1,6 @@
 import React from 'react';
 
-import logo from "../../src/img/logo/MasterHR.png";
+import logo from "../img/logo/MasterHR.png";
 import {Logo} from "react-sidebar-ui";
 import SidebarButton from "./sidebarButton";
 import {Container, Row} from "react-bootstrap";
@@ -36,7 +36,7 @@ export default class SidebarDashboard extends React.Component {
         }
     }
 
-    handleResize = (e) => {
+    handleResize = () => {
         this.setState({ windowWidth: window.innerWidth });
     };
 
@@ -182,5 +182,5 @@ export default class SidebarDashboard extends React.Component {
                 this.renderEmployeeHRSidebar()
             )
         }
-    };
+    }
 }

@@ -1,12 +1,12 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import ViewContract from "../../common/viewContract";
+import ViewContract from "../viewContract";
 import SidebarDashboard from "../../common/sidebarDashboard";
 import EmployeeHRLandingPage from "./employeeHRLandingPage";
-import ViewPayslip from "../../common/viewPayslip";
-import ViewTimesheet from "../../common/viewTimesheet";
-import ViewHoliday from "../../common/viewHoliday";
+import ViewPayslip from "../viewPayslip";
+import ViewTimesheet from "../viewTimesheet";
+import ViewHoliday from "../viewHoliday";
 import ViewAllContracts from "./viewAllContracts";
 import ViewAllTimesheet from "./viewAllTimesheet";
 

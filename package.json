@@ -13,6 +13,7 @@
     "date-fns": "^2.21.1",
     "joi-browser": "^13.4.0",
     "lodash": "^4.17.21",
+    "mkcert": "^1.4.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",

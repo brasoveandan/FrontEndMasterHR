@@ -1,10 +1,10 @@
 import React from "react"
 import {FaLock, FaLockOpen, FaRegCalendarCheck} from "react-icons/all"
 import {Button, Card, Col, Form, Modal, Row, Table} from "react-bootstrap"
-import SearchBox from "../utils/searchBox"
-import {paginate} from "../utils/pagination";
+import SearchBox from "../../common/SearchBox"
+import {paginate} from "../../utils/pagination";
 import ReactPaginate from 'react-paginate';
-import { departmentOptions } from "../utils/select";
+import { departmentOptions } from "../../common/MySelect";
 
 
 export default class ViewAllTimesheet extends React.Component{
@@ -140,7 +140,7 @@ export default class ViewAllTimesheet extends React.Component{
             [event.target.name]: event.target.value,
             showDataTable: false
         })
-    };
+    }
 
     handlePageClick = (e) => {
         const selectedPage = e.selected + 1;
@@ -280,9 +280,9 @@ export default class ViewAllTimesheet extends React.Component{
                                <Form.Label>An</Form.Label>
                                <Form.Control as="select" custom name="year" onChange={this.handleChange}>
                                    <option value="">Selectează anul...</option>
-                                   {yearOptions ? yearOptions.map((year, index) => (
-                                       <option key={index} value={year}>
-                                           {year}
+                                   {yearOptions ? yearOptions.map((elem, index) => (
+                                       <option key={index} value={elem}>
+                                           {elem}
                                        </option>
                                    ))
                                    : ""}
@@ -295,9 +295,9 @@ export default class ViewAllTimesheet extends React.Component{
                             <Form.Label>Lună</Form.Label>
                             <Form.Control as="select" custom name="month" onChange={this.handleChange}>
                                 <option value="">Selectează luna...</option>
-                                {monthOptions ? monthOptions.map((month, index) => (
-                                    <option key={index} value={month}>
-                                        {month}
+                                {monthOptions ? monthOptions.map((elem, index) => (
+                                    <option key={index} value={elem}>
+                                        {elem}
                                     </option>
                                 ))
                                 : ""}

@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Form, InputGroup, Modal} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
-import NavBar from "../utils/NavBar";
+import NavBar from "../../common/NavBar";
 import {FaLock, FaUser} from "react-icons/all";
 
 export default class LoginPage extends React.Component {
@@ -77,7 +77,7 @@ export default class LoginPage extends React.Component {
             .catch(error =>
                 this.setState({
                 showAlert: true,
-                message: "A apărut o eroare."
+                message: "A apărut o eroare." + error
             }))
     }
 
@@ -85,7 +85,7 @@ export default class LoginPage extends React.Component {
         this.setState({
             [event.target.name]: event.target.value
         })
-    };
+    }
 
     handleEnter = e => {
         if (e.keyCode === 13) {

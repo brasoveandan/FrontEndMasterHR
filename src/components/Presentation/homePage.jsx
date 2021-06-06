@@ -1,6 +1,6 @@
 import React from "react";
 import backImage from "../../img/logo/MasterHR-logos_transparent.png"
-import NavBar from "../utils/NavBar";
+import NavBar from "../../common/NavBar";
 import {Card, CardImg} from "react-bootstrap";
 import {Link} from "react-router-dom";
 

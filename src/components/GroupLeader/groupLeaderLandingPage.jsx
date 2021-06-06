@@ -1,5 +1,5 @@
 import React from "react"
-import LandingPage from "../../common/landingPage";
+import LandingPage from "../landingPage";
 
 
 export default class GroupLeaderLandingPage extends LandingPage{

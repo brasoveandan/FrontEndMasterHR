@@ -1,8 +1,8 @@
 import './App.css';
-import './css/navbar.css'
-import './css/sidebar.css'
-import './css/utils.css'
-import './css/timesheetView.css'
+import './style/navbar.css'
+import './style/sidebar.css'
+import './style/utils.css'
+import './style/timesheetView.css'
 import 'bootstrap/dist/css/bootstrap-grid.css'
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import React from "react";
@@ -10,16 +10,16 @@ import HomePage from "./components/Presentation/homePage";
 import Switch from "react-bootstrap/Switch";
 import {Route} from 'react-router-dom';
 import LoginPage from "./components/Presentation/loginPage";
-import NotFoundPage from "./components/utils/NotFoundPage";
+import NotFoundPage from "./components/NotFoundPage";
 import EmployeeDashboard from "./components/Employee/employeeDashboard";
-import PrivateRouteEmployee from "./components/utils/PrivateRouteEmployee"
+import PrivateRouteEmployee from "./routes/PrivateRouteEmployee"
 import AdminDashboard from "./components/Admin/adminDashboard";
-import GroupLeaderDashboard from "./components/GroupLeader/groupLeaderDashboard";
-import PrivateRouteGroupLeader from "./components/utils/PrivateRouteGroupLeader";
-import PrivateRouteAdmin from "./components/utils/PrivateRouteAdmin";
+import GroupLeaderDashboard from "./components/GroupLeader/GroupLeaderDashboard";
+import PrivateRouteGroupLeader from "./routes/PrivateRouteGroupLeader";
+import PrivateRouteAdmin from "./routes/PrivateRouteAdmin";
 import ForgotPasswordPage from "./components/Presentation/forgotPasswordPage";
 import ResetPasswordPage from "./components/Presentation/resetPasswordPage";
-import PrivateRouteEmployeeHR from "./components/utils/PrivateRouteEmployeeHR";
+import PrivateRouteEmployeeHR from "./routes/PrivateRouteEmployeeHR";
 import EmployeeHRDashboard from "./components/EmployeeHR/employeeHRDashboard";
 
 function App() {

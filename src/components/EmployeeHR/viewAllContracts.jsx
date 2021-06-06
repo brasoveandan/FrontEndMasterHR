@@ -1,10 +1,10 @@
 import React from "react"
 import {FaCheck, FaTimes, FiEdit} from "react-icons/all"
 import {Button, Card, Col, Container, Form, Modal, Row, Table} from "react-bootstrap"
-import SearchBox from "../utils/searchBox"
-import {paginate} from "../utils/pagination";
+import SearchBox from "../../common/SearchBox"
+import {paginate} from "../../utils/pagination";
 import ReactPaginate from 'react-paginate';
-import MyForm from "../utils/MyForm";
+import MyForm from "../../common/MyForm";
 import * as Joi from "joi-browser";
 import {
     contractTypeOptions,
@@ -12,7 +12,7 @@ import {
     departmentOptions,
     positionOptions,
     taxExemptOptions
-} from "../utils/select";
+} from "../../common/MySelect";
 
 
 export default class ViewAllContracts extends MyForm{
@@ -236,7 +236,7 @@ export default class ViewAllContracts extends MyForm{
         this.setState({
             [event.target.name]: event.target.value
         })
-    };
+    }
 
     handleUpdateData = () => {
         this.state.employees.forEach(employee => {
@@ -273,7 +273,7 @@ export default class ViewAllContracts extends MyForm{
                     this.loadData()
                 }
                 else if(res.status === 417) {
-                    res.text().then(text =>{
+                    res.text().then(text => {
                         this.setState({
                             showAlert: true,
                             message: text
@@ -308,7 +308,7 @@ export default class ViewAllContracts extends MyForm{
                     this.loadData()
                 }
                 else if(res.status === 417){
-                    res.text().then(text =>{
+                    res.text().then(text => {
                         this.setState({
                             showAlert: true,
                             message: text

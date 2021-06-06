@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import NavBar from "../utils/NavBar";
+import NavBar from "../../common/NavBar";
 import {Button, Form, Modal} from "react-bootstrap";
 import Joi from "joi-browser";
 
@@ -87,9 +87,9 @@ export default class ResetPasswordPage extends Component{
 
         if (!error) {
             if (this.state.data["password"] !== this.state.data["password_confirm"]) {
-                const error = {}
-                error["password_confirm"] = "Cele două parole nu coincid."
-                return error
+                const errorV2 = {}
+                errorV2["password_confirm"] = "Cele două parole nu coincid."
+                return errorV2
             }
             return null;
         }
@@ -118,7 +118,7 @@ export default class ResetPasswordPage extends Component{
         const data = {...this.state.data};
         data[event.target.name] = event.target.value;
         this.setState({data, errors});
-    };
+    }
 
     handleEnter = e => {
         if (e.keyCode === 13) {

@@ -1,10 +1,10 @@
 import React from "react"
 import {FaBan, FaTimes, FiEdit} from "react-icons/all"
 import {Button, Card, Col, Form, Modal, Row, Table} from "react-bootstrap"
-import SearchBox from "../utils/searchBox"
-import {paginate} from "../utils/pagination";
+import SearchBox from "../../common/SearchBox"
+import {paginate} from "../../utils/pagination";
 import ReactPaginate from 'react-paginate';
-import MyForm from "../utils/MyForm";
+import MyForm from "../../common/MyForm";
 import * as Joi from "joi-browser";
 
 export default class ViewAccounts extends MyForm{
@@ -127,7 +127,7 @@ export default class ViewAccounts extends MyForm{
         this.setState({
             [event.target.name]: event.target.value
         })
-    };
+    }
 
     handleDeleteAccount = () => {
         fetch('http://localhost:8080/employee/' + this.state.accountDetails.username, {

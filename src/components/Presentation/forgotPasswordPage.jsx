@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Form, InputGroup, Modal} from "react-bootstrap";
-import NavBar from "../utils/NavBar";
+import NavBar from "../../common/NavBar";
 import {FaEnvelope} from "react-icons/all";
 
 export default class ForgotPasswordPage extends React.Component {
@@ -59,7 +59,7 @@ export default class ForgotPasswordPage extends React.Component {
         this.setState({
             [event.target.name]: event.target.value
         })
-    };
+    }
 
     handleEnter = e => {
         if (e.keyCode === 13) {

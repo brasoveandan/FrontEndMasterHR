@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Card, Container, Form, Modal} from "react-bootstrap";
-import MyForm from "../utils/MyForm";
+import MyForm from "../../common/MyForm";
 import * as Joi from "joi-browser";
 
 export default class AddAccount extends MyForm{
@@ -92,7 +92,7 @@ export default class AddAccount extends MyForm{
         this.setState({
             [event.target.name]: event.target.value
         })
-    };
+    }
 
     render() {
         return (
@@ -136,4 +136,4 @@ export default class AddAccount extends MyForm{
             </Container>
         )
     }
-};
+}

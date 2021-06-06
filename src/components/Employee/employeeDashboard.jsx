@@ -1,12 +1,11 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import LandingPage from "./employeeLandingPage";
-import ViewContract from "../../common/viewContract";
+import ViewContract from "../viewContract";
 import SidebarDashboard from "../../common/sidebarDashboard";
-import ViewPayslip from "../../common/viewPayslip";
-import ViewTimesheet from "../../common/viewTimesheet";
-import ViewHoliday from "../../common/viewHoliday";
+import ViewPayslip from "../viewPayslip";
+import ViewTimesheet from "../viewTimesheet";
+import ViewHoliday from "../viewHoliday";
 import EmployeeLandingPage from "./employeeLandingPage";
 
 class EmployeeDashboard extends React.Component {
@@ -33,7 +32,7 @@ class EmployeeDashboard extends React.Component {
             case "vizualizare_pontaj": this.setState({render : <ViewTimesheet/>}); sessionStorage.setItem("page", "vizualizare_pontaj");break;
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); sessionStorage.setItem("page", "vizualizare_concedii");break;
             case "logout": this.logout(); break;
-            default: this.setState({render: <LandingPage/>})
+            default: this.setState({render: <EmployeeLandingPage/>})
         }
     }
 

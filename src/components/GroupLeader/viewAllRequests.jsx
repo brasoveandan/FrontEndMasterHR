@@ -1,9 +1,9 @@
 import React from "react";
-import { Button, Card, Modal, Table} from "react-bootstrap";
-import {FaCheck, FaTimes} from "react-icons/all";
+import {Button, Card, Col, Modal, Row, Table} from "react-bootstrap";
+import {FaBan, FaCheck, FaHourglassStart, FaTimes} from "react-icons/all";
 import ReactPaginate from "react-paginate";
-import {paginate} from "../utils/pagination";
-import SearchBox from "../utils/searchBox";
+import {paginate} from "../../utils/pagination";
+import SearchBox from "../../common/SearchBox";
 
 export default class ViewAllRequests extends React.Component {
     constructor(){
@@ -15,9 +15,15 @@ export default class ViewAllRequests extends React.Component {
             offset: 0,
             perPage: 10,
             pageCount: 0,
+            requestDetails: "",
             searchQuery: "",
-            message: "",
-            showAlert: false
+            showAlert: false,
+            showDetailsModal: false,
+            showModifyRequestModal: false,
+            modifyRequestModalTitle: "",
+            modifyRequestModalContent: "",
+            modifyRequestPayload: {},
+            message: ""
         };
 
         this.handlePageClick = this.handlePageClick.bind(this)
@@ -57,6 +63,20 @@ export default class ViewAllRequests extends React.Component {
         })
     }
 
+    openDetailsModal = request => {
+        this.setState({
+            showDetailsModal: true,
+            requestDetails: request
+        })
+    }
+
+    closeModal = () => {
+        this.setState({
+            showModifyRequestModal: false,
+            showDetailsModal: false
+        })
+    }
+
     closeAlert = () => {
         this.setState({showAlert: false})
     }
@@ -69,7 +89,7 @@ export default class ViewAllRequests extends React.Component {
         this.setState({
             [event.target.name]: event.target.value
         })
-    };
+    }
 
     handlePageClick = (e) => {
         const selectedPage = e.selected + 1;
@@ -127,9 +147,10 @@ export default class ViewAllRequests extends React.Component {
                     showAlert: true,
                     message: "Statusul cererii a fost modificat cu succes."
                 })
+                this.closeModal()
                 this.loadData()
             }
-            else if(res.status === 417){
+            else if(res.status === 417) {
                 res.text().then(text =>{
                     this.setState({
                         showAlert: true,
@@ -137,38 +158,55 @@ export default class ViewAllRequests extends React.Component {
                     })
                 });
             }
-            else if (res.status === 409)
+            else if (res.status === 409) {
                 this.setState({
                     showAlert: true,
                     message: "Cererea a fost deja revizuită."
                 })
-            else
+                this.closeModal()
+            }
+            else {
                 this.setState({
                     showAlert: true,
                     message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
+                this.closeModal()
+            }
         })
     }
 
     handleAccept = request => {
         const payload = {
             idRequest: request.idRequest,
-            status: "ACCEPTED"
+            status: "ACCEPTED",
+
         }
-        this.handleModifyRequest(payload)
+        this.setState({
+            showModifyRequestModal: true,
+            modifyRequestModalTitle: "Confirmare cerere",
+            modifyRequestModalContent: "Doriți să acceptați cererea de concediu?",
+            modifyRequestPayload: payload
+        })
     }
 
     handleDecline = request => {
         const payload = {
             idRequest: request.idRequest,
-            status: "DECLINED"
+            status: "DECLINED",
+
         }
-        this.handleModifyRequest(payload)
+        this.setState({
+            showModifyRequestModal: true,
+            modifyRequestModalTitle: "Respinge cerere",
+            modifyRequestModalContent: "Doriți să respingeți cererea de concediu?",
+            modifyRequestPayload: payload
+        })
     }
 
     render(){
         const { requests, pageCount } = this.getPagedData();
+        let {user, idRequest, fromDate, toDate, numberOfDays, proxyUsername, type, status, reason} = this.state.requestDetails;
         return (
             <Card className="mt-4 mb-4 ml-md-5 ml-xl-0 justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
@@ -201,17 +239,19 @@ export default class ViewAllRequests extends React.Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {requests.map((elem, index) => (
+                            {requests.map((request, index) => (
                                 <tr key={index}>
-                                    <td>{(this.state.currentPage - 1) * this.state.perPage + index + 1}</td>
-                                    <td>{elem.user}</td>
-                                    <td>{elem.type}</td>
-                                    <td>{elem.fromDate}</td>
-                                    <td>{elem.toDate}</td>
-                                    <td className="font-weight-bold">{elem.status}</td>
+                                    <td onClick={(e) => this.openDetailsModal(request, e)}>{(this.state.currentPage - 1) * this.state.perPage + index + 1}</td>
+                                    <td onClick={(e) => this.openDetailsModal(request, e)}>{request.user}</td>
+                                    <td onClick={(e) => this.openDetailsModal(request, e)}>{request.type}</td>
+                                    <td onClick={(e) => this.openDetailsModal(request, e)}>{request.fromDate}</td>
+                                    <td onClick={(e) => this.openDetailsModal(request, e)}>{request.toDate}</td>
+                                    <td className="font-weight-bold" onClick={(e) => this.openDetailsModal(request, e)}>{request.status}</td>
                                     <td>
-                                        <Button type="button" size={"sm"} className=" mr-2 btn-success" title="Confirmă" disabled={elem.status !== "IN ASTEPTARE"} onClick={(e) => this.handleAccept(elem, e)}><FaCheck/></Button>
-                                        <Button type="button" size={"sm"} className="mr-2 btn-danger" title="Respinge" disabled={elem.status !== "IN ASTEPTARE"} onClick={(e) => this.handleDecline(elem, e)}><FaTimes/></Button>
+                                        <Button type="button" size={"sm"} className=" mr-2 btn-success" title="Confirmă" disabled={request.status !== "IN ASTEPTARE"}
+                                                onClick={(e) => this.handleAccept(request, e)}><FaCheck/></Button>
+                                        <Button type="button" size={"sm"} className="mr-2 btn-danger" title="Respinge" disabled={request.status !== "IN ASTEPTARE"}
+                                                onClick={(e) => this.handleDecline(request, e)}><FaTimes/></Button>
                                     </td>
                                 </tr>
                             ))}
@@ -234,6 +274,87 @@ export default class ViewAllRequests extends React.Component {
                         activeClassName={"active"}
                     />
                 </Card.Body>
+                <Modal show={this.state.showDetailsModal} onHide={this.closeModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Vizualizare Detalii Cerere Concediu</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Card.Body className="bg-light rounded">
+                            <Row>
+                                <Col sm={12}>
+                                    <h4 className="m-b-10 mb-3 text-center text-dark">Cerere Concediu
+                                        <span className="text-muted ml-2">
+                                            #{idRequest}
+                                        </span>
+                                    </h4>
+                                    <h5 className="m-b-10 mb-3 text-center text-dark">
+                                        Status:
+                                        {status === "RESPINS" ? <FaTimes className="align-middle"/> : ""}
+                                        {status === "ACCEPTAT" ? <FaCheck className="align-middle"/> : ""}
+                                        {status === "IN ASTEPTARE" ? <FaHourglassStart className="align-middle"/> : ""}
+                                    </h5>
+                                    <Table hover className="list-group-flush text-dark">
+                                        <tbody>
+                                        <tr>
+                                            <td><strong>Nume de utilizator: </strong>
+                                                <span className="float-right">{user}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tip: </strong>
+                                                <span className="float-right">{type}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>De la: </strong>
+                                                <span className="float-right">{fromDate}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Până la: </strong>
+                                                <span className="float-right">{toDate}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Număr zile: </strong>
+                                                <span className="float-right">{numberOfDays}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Înlocuitor: </strong>
+                                                <span className="float-right">{proxyUsername}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Motiv: </strong>
+                                                {reason ?
+                                                    <span className="float-right">{reason}</span>
+                                                :
+                                                    <span className="float-right"><FaBan/></span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </Table>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Modal.Body>
+                </Modal>
+                <Modal show={this.state.showModifyRequestModal} onHide={this.closeModal} centered>
+                    <Modal.Header>
+                        <Modal.Title>
+                            {this.state.modifyRequestModalTitle}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.state.modifyRequestModalContent}
+                    </Modal.Body>
+                    <Modal.Footer>
+                            <Button className="btn-success" onClick={() => this.handleModifyRequest(this.state.modifyRequestPayload)}>Da</Button>
+                            <Button className="btn-danger" onClick={this.closeModal}>Nu</Button>
+                    </Modal.Footer>
+                </Modal>
             </Card>
         );
     }
