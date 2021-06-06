@@ -17,7 +17,7 @@ export default class ViewAllTimesheet extends React.Component{
             offset: 0,
             perPage: 10,
             pageCount: 0,
-            holidayPerMonth: [],
+            holidayPerMonth: 0,
 
             timesheetDetails: [],
             year: "",
@@ -98,7 +98,7 @@ export default class ViewAllTimesheet extends React.Component{
                 }
                 else
                     this.setState({
-                        holidayPerMonth: []
+                        holidayPerMonth: 0
                     })
             })
     }
@@ -458,7 +458,7 @@ export default class ViewAllTimesheet extends React.Component{
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.state.holidayPerMonth.length <= 0 ?
+                        {this.state.holidayPerMonth <= 0 ?
                             <React.Fragment>
                                 <Row>
                                     <Col sm={12}>
@@ -507,7 +507,7 @@ export default class ViewAllTimesheet extends React.Component{
                         }
                     </Modal.Body>
                     <Modal.Footer>
-                        {this.state.holidayPerMonth.length <= 0 ?
+                        {this.state.holidayPerMonth <= 0 ?
                             <React.Fragment>
                                 <Button className="btn-success" onClick={this.handleConfirmTimesheet}>Da</Button>
                                 <Button className="btn-danger" onClick={this.closeModal}>Nu</Button>
