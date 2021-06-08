@@ -46,6 +46,8 @@ export default class ViewContract extends React.Component{
     renderContract = (contract) => {
         let {firstName, lastName, companyName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = contract;
         const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
+        const hireDateFormat = new Date(hireDate).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
+        const expirationDateFormat = new Date(expirationDate).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
         return(
             <Col xs={12} sm={12} className="col-xs-12 col-sm-12 d-flex justify-content-md-center">
                 <Card className="text-left mb-md-4 mt-md-4 ml-xl-0" style={{opacity: ".85"}} >
@@ -105,7 +107,7 @@ export default class ViewContract extends React.Component{
                                     <tbody>
                                     <tr>
                                         <td><strong>Dată angajare: </strong>
-                                            <span className="float-right">{hireDate}</span>
+                                            <span className="float-right">{hireDateFormat}</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -145,7 +147,7 @@ export default class ViewContract extends React.Component{
                                     </tr>
                                     <tr>
                                         <td><strong>Dată expirare contract: </strong>
-                                            <span className="float-right">{expirationDate ? expirationDate : <FaTimes/>}</span>
+                                            <span className="float-right">{expirationDate ? expirationDateFormat : <FaTimes/>}</span>
                                         </td>
                                     </tr>
                                     </tbody>

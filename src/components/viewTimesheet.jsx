@@ -175,7 +175,7 @@ export default class ViewTimesheet extends MyForm{
                     message: "Te-ai pontat la ora " + format(payload.fromHour, "HH:mm")
                 })
                 let {dict, year, month} = this.state
-                dict[payload.usernameEmployee] = {status: "pontat", workTime: payload.fromHour, workTimeEndOfDay: ""}
+                dict[payload.usernameEmployee] = {status: "pontat", workTime: this.addHours(3, payload.fromHour), workTimeEndOfDay: ""}
                 localStorage.setItem("clockingDict", JSON.stringify(dict))
                 this.loadData(year, month)
             }
@@ -206,6 +206,11 @@ export default class ViewTimesheet extends MyForm{
             fromHour:  this.state.workTime,
             toHour: new Date(),
         }
+        console.log(JSON.stringify({
+            usernameEmployee: payload.usernameEmployee,
+            fromHour:  payload.fromHour,
+            toHour: this.addHours(3, payload.toHour),
+        }))
         fetch('http://localhost:8080/clocking', {
             method: 'PUT',
             headers: {

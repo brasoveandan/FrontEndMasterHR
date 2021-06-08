@@ -15,7 +15,7 @@ export default class ViewAccounts extends MyForm{
             originalData: [],
             currentPage: 1,
             offset: 0,
-            perPage: 5,
+            perPage: 10,
             pageCount: 0,
             accountDetails: [],
             searchQuery: "",
@@ -67,7 +67,7 @@ export default class ViewAccounts extends MyForm{
 
     schema = {
         username: Joi.string().min(3).required().error(() => {return {message: "Numele de utilizator este prea scurt."}}),
-        password: Joi.string().min(8).required().error(() => {return {message: "Parola trebuie să conțină cel puțin 8 caractere."}}),
+        password: Joi.string().min(6).required().error(() => {return {message: "Parola trebuie să conțină cel puțin 6 caractere."}}),
         personalNumber: Joi.string().min(6).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 6 cifre."}}),
         adminRole: Joi.string().required().error(() => {return {message: "Trebuie setate permisiunile contului."}}),
         mail: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['ro', 'com', 'net'] } }).min(13).required().error(() => {return {message: "E-mail invalid."}}),
@@ -185,7 +185,10 @@ export default class ViewAccounts extends MyForm{
             }
             else if(res.status === 417){
                 res.text().then(text =>{
-                    console.log(text);
+                    this.setState({
+                        showAlert: true,
+                        message: text + " Contul nu a fost modificat!"
+                    })
                 });
             }
             else
@@ -415,7 +418,7 @@ export default class ViewAccounts extends MyForm{
                 </Modal>
                 <Modal show={this.state.showEditModal} onHide={this.closeModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Editare cont angajat - {this.state.data.username}</Modal.Title>
+                        <Modal.Title>Editare cont angajat - {this.state.data.lastName}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Card.Body className="bg-light rounded">

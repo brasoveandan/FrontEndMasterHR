@@ -110,7 +110,7 @@ export default class ViewAllContracts extends MyForm{
             else {
                 this.setState({
                     showAlert: true,
-                    message: "Nu s-au găsit utilizatori"
+                    message: "Nu s-au găsit date."
                 })
             }
         })
@@ -120,7 +120,7 @@ export default class ViewAllContracts extends MyForm{
         username: Joi.string().min(3).required().error(() => {return {message: "Numele de utilizator este obligatoriu."}}),
         lastName: Joi.string().required().error(() => {return {message: "Numele este obligatoriu."}}),
         firstName: Joi.string().required().error(() => {return {message: "Prenumele este obligatoriu."}}),
-        personalNumber: Joi.string().min(6).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 6 cifre."}}),
+        personalNumber: Joi.string().min(10).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 10 cifre."}}),
         mail: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['ro', 'com', 'net'] } }).min(13).required().error(() => {return {message: "E-mail invalid."}}),
         phoneNumber: Joi.string().length(10).regex(/^[0-9]+$/).required().error(() => {return {message: "Numărul de telefon este obligatoriu și trebuie să conțină 10 cifre."}}),
         socialSecurityNumber: Joi.string().length(13).regex(/^[0-9]+$/).error(() => {return {message: "Codul numeric personal este obligatoriu și trebuie să conțină 13 cifre."}}),
@@ -276,7 +276,7 @@ export default class ViewAllContracts extends MyForm{
                     res.text().then(text => {
                         this.setState({
                             showAlert: true,
-                            message: text
+                            message: text + " Contractul nu a fost adăugat!"
                         })
                     });
                 }
@@ -311,7 +311,7 @@ export default class ViewAllContracts extends MyForm{
                     res.text().then(text => {
                         this.setState({
                             showAlert: true,
-                            message: text
+                            message: text + " Contractul nu a fost modificat!"
                         })
                     });
                 }
@@ -374,14 +374,16 @@ export default class ViewAllContracts extends MyForm{
         const { contracts, pageCount } = this.getPagedData();
         let {firstName, lastName, personalNumber, socialSecurityNumber, phoneNumber , mail, birthday, gender, bankName, bankAccountNumber, department, position, baseSalary, currency, type, hireDate, expirationDate, overtimeIncreasePercent, taxExempt, ticketValue, daysOff} = this.state.contractDetails;
         const birthdayDate = new Date(birthday).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
+        const hireDateFormat = new Date(hireDate).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
+        const expirationDateFormat = new Date(expirationDate).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})
         let usernameWithoutContract = []
         this.state.employees.forEach(employee => {
-            let ok = 1;
-            this.state.contracts.forEach(contract => {
+            let ok = false;
+            this.state.originalData.forEach(contract => {
                 if (contract.username === employee.username)
-                    ok = 0
+                    ok = true
             })
-            if (ok === 1 && employee.username !== sessionStorage.getItem("username"))
+            if (!ok && sessionStorage.getItem("username") !== employee.username)
                 usernameWithoutContract.push(employee.username)
         })
         return (
@@ -396,7 +398,7 @@ export default class ViewAllContracts extends MyForm{
                     </div>
                 </Col>
                 {contracts.length > 0 ?
-                    <Table responsive hover striped borderless className="text-nowrap">
+                    <Table responsive hover striped borderless>
                         <thead className="bg-dark text-white">
                         <tr className="text-center">
                             <th>#</th>
@@ -532,7 +534,7 @@ export default class ViewAllContracts extends MyForm{
                                         <tbody>
                                         <tr>
                                             <td><strong>Dată angajare: </strong>
-                                                <span className="float-right">{hireDate}</span>
+                                                <span className="float-right">{hireDateFormat}</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -547,7 +549,7 @@ export default class ViewAllContracts extends MyForm{
                                         </tr>
                                         <tr>
                                             <td><strong>Valoare tichet de masă: </strong>
-                                                <span className="float-right">{ticketValue}</span>
+                                                <span className="float-right">{ticketValue} {currency}</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -572,7 +574,7 @@ export default class ViewAllContracts extends MyForm{
                                         </tr>
                                         <tr>
                                             <td><strong>Dată expirare contract: </strong>
-                                                <span className="float-right">{expirationDate ? expirationDate : <FaTimes/>}</span>
+                                                <span className="float-right">{expirationDate ? expirationDateFormat : <FaTimes/>}</span>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -610,7 +612,7 @@ export default class ViewAllContracts extends MyForm{
                             <Card>
                                 <Card.Body  className="rounded">
                                     <Form>
-                                        {this.state.data.username ? this.handleUpdateData() : ""}
+                                        {this.state.data.username && this.state.showAddModal ? this.handleUpdateData() : ""}
                                         {this.renderSelect("form-control", "username", "Utilizator:", usernameWithoutContract)}
                                         {this.renderInput("form-control", "lastName", "Nume:", "Nume", "text")}
                                         {this.renderInput("form-control", "firstName", "Prenume:", "Prenume", "text")}
@@ -645,7 +647,7 @@ export default class ViewAllContracts extends MyForm{
                 </Modal>
                 <Modal backdrop="static" keyboard={false} show={this.state.showEditModal} onHide={this.closeModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Editare contract - {this.state.data.username}</Modal.Title>
+                        <Modal.Title>Editare contract - {this.state.data.lastName}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Card.Body className="bg-light rounded">

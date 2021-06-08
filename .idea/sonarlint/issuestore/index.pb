@@ -1,69 +1,19 @@
 
-X
-(src/components/Presentation/homePage.jsx,d\a\dad156dd9e60a064d0640b5c7234e5bccbdc65f4
-S
-#src/components/Admin/addAccount.jsx,e\3\e3a8d6c080b5eaea473b09e647271ae09189c342
-W
-'src/components/Admin/adminDashboard.jsx,c\b\cb241be0787444bd1509d90813632d0ec030eb3c
-Y
-)src/components/Admin/adminLandingPage.jsx,c\d\cd117ba6c9cc8d85d381c4a63701c0d096a26593
-]
--src/components/Employee/employeeDashboard.jsx,c\1\c15492cbf95869c0cc240d00bbe1bb493d6afb75
-_
-/src/components/Employee/employeeLandingPage.jsx,7\d\7dd2999bed010f4fc8405a802b922a2e0046cb47
-a
-1src/components/EmployeeHR/employeeHRDashboard.jsx,4\f\4f3b476b797a35273a95aa33dde59762aa3a03c4
-c
-3src/components/EmployeeHR/employeeHRLandingPage.jsx,e\3\e3887cadbb56c52f49f31555097703c5404b4895
-^
-.src/components/EmployeeHR/viewAllContracts.jsx,d\4\d4b033b0c3cbaf66daa61fb37cbfa2db942aa614
-c
-3src/components/GroupLeader/GroupLeaderDashboard.jsx,1\1\11dd88ed5ddf3a6d1194b3c96d6d31e6817af5b2
-e
-5src/components/GroupLeader/groupLeaderLandingPage.jsx,1\d\1d6fd97c3782f66f2134fc73d7b521ed40084dc5
-Y
-)src/components/Presentation/loginPage.jsx,e\6\e6df698ad0b3b418e9c34eb8d8548502a291c43b
-a
-1src/components/Presentation/resetPasswordPage.jsx,7\2\72b4c790ef080dd568fcb685a1105a9a7ad83a97
-b
-2src/components/Presentation/forgotPasswordPage.jsx,d\b\db520984f315ccf4648e540e791b90c72482a64c
-H
-src/utils/pagination.jsx,4\9\495678b0afdfd8600ecf2d2caa81b5bf7929ee2d
-P
- src/routes/PrivateRouteAdmin.jsx,1\0\101d0fd8024784f4815917d2e43b4ce21e0edc16
-S
-#src/routes/PrivateRouteEmployee.jsx,5\2\524d1826545757dc69ef34ce6b896f51674a72a5
-U
-%src/routes/PrivateRouteEmployeeHR.jsx,5\3\53844cb5e4f4873199903fb49fb5f7e8699a1f94
-V
-&src/routes/PrivateRouteGroupLeader.jsx,4\3\439cabb9668f065b5105853e31b075006dd840ab
-M
-src/routes/authentication.jsx,4\f\4fa6ccd680531442db7d7289894de482afc17730
-O
-src/components/NotFoundPage.jsx,8\e\8e14cc30b3dbbddf73b8d6edc0821c1b3b199ad9
 N
-src/components/landingPage.jsx,f\8\f85144b513b22b62cfe387ad9fbe33d010eac1a5
-O
-src/components/viewContract.jsx,3\e\3ef029347fac160c56b1e058991af4688f4a08ef
-N
-src/components/viewPayslip.jsx,6\2\62cb093c09149b4239de68a3e4ef8aba93c2d482
-P
- src/components/viewTimesheet.jsx,2\1\216815b2559a3f70ec9a1d4a668efaf0ae428004
-H
-src/common/SearchBox.jsx,e\5\e5045216a2ed8c304b7657a32a6adccae7d64783
-E
-src/common/NavBar.jsx,4\6\4681a7fc8b4124b8a74d9a6f51919b271073193a
-I
-src/common/MyTextarea.jsx,e\1\e1a318b3b4362afc48ca1cad2dc388cc533ad870
-F
-src/common/MyInput.jsx,e\6\e65672c728f7e41d35e1f5fa053174b6e9c8bef0
-G
-src/common/MySelect.jsx,f\b\fbdd84289e9b5cc90b3739845f05f0bf38cabc51
+src/components/viewHoliday.jsx,7\0\7074e330fc3f9f455173214244efa9a582868cb6
 E
 src/common/MyForm.jsx,3\3\33963a1975346076596559b769ad06112687055e
-O
-src/common/sidebarDashboard.jsx,5\6\56247deb7cc4d933bf55da362f3b0edebc657d1e
-L
-src/common/sidebarButton.jsx,3\4\344382b0edec200a4fa94f83df087499e17b924f
+S
+#src/components/Admin/addAccount.jsx,e\3\e3a8d6c080b5eaea473b09e647271ae09189c342
 U
 %src/components/Admin/viewAccounts.jsx,0\3\03f079941675c4cede8b77317786b941665fa219
+O
+src/components/viewContract.jsx,3\e\3ef029347fac160c56b1e058991af4688f4a08ef
+P
+ src/components/viewTimesheet.jsx,2\1\216815b2559a3f70ec9a1d4a668efaf0ae428004
+^
+.src/components/EmployeeHR/viewAllContracts.jsx,d\4\d4b033b0c3cbaf66daa61fb37cbfa2db942aa614
+^
+.src/components/EmployeeHR/viewAllTimesheet.jsx,5\b\5bdf07af8c16b15f38eec24c9221d62a139974ca
+N
+src/components/viewPayslip.jsx,6\2\62cb093c09149b4239de68a3e4ef8aba93c2d482

@@ -43,6 +43,8 @@ export default class ViewPayslip extends React.Component{
                                 monthOptions.push(payslip.month)
                             }
                         })
+                        yearOptions = yearOptions.filter((value, index) => yearOptions.indexOf(value) === index)
+                        monthOptions = monthOptions.filter((value, index) => monthOptions.indexOf(value) === index)
                         this.setState({
                             yearOptions: yearOptions,
                             monthOptions: monthOptions

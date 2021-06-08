@@ -26,8 +26,8 @@ export default class AddAccount extends MyForm{
 
     schema = {
         username: Joi.string().min(3).required().error(() => {return {message: "Numele de utilizator este prea scurt."}}),
-        password: Joi.string().min(8).required().error(() => {return {message: "Parola trebuie să conțină cel puțin 8 caractere."}}),
-        personalNumber: Joi.string().min(6).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 6 cifre."}}),
+        password: Joi.string().min(6).required().error(() => {return {message: "Parola trebuie să conțină cel puțin 6 caractere."}}),
+        personalNumber: Joi.string().min(10).required().error(() => {return {message: "Numărul personal nu poate fi vid și trebuie să conțină cel puțin 10 cifre."}}),
         firstName: Joi.string().required().error(() => {return {message: "Prenumele este obligatoriu."}}),
         lastName: Joi.string().required().error(() => {return {message: "Numele este obligatoriu."}}),
         adminRole: Joi.string().required().error(() => {return {message: "Trebuie setate permisiunile contului."}}),
