@@ -28,6 +28,7 @@ export default class ViewTimesheet extends MyForm{
         this.state = {
             timesheet: [],
             showTimesheet: true,
+            timesheetStatus: true,
             clocking: [],
             status: dict[username] && dict[username]["status"] ? dict[username]["status"] : "depontat",
             workTime:  dict[username] && dict[username]["workTime"] ? new Date(dict[username]["workTime"]) : "",
@@ -77,15 +78,35 @@ export default class ViewTimesheet extends MyForm{
             .then(res => {
                 if (res.status === 200) {
                     res.json().then(json =>{
+                        let timesheetStatus
+                        timesheetStatus = json.status === "OPENED" || json.month === new Date().getMonth() + 1;
                         this.setState({
                             showTimesheet: true,
-                            timesheet: json
+                            timesheet: json,
+                            timesheetStatus: timesheetStatus
                         });
                     });
                 }
+                else if (res.status === 404) {
+                    const today = new Date()
+                    if (Number(this.state.year) === today.getFullYear() && Number(this.state.month) === today.getMonth() + 1)
+                        this.setState({
+                            showTimesheet: false,
+                            timesheet: [],
+                            timesheetStatus: true
+                        })
+                    else
+                        this.setState({
+                            showTimesheet: false,
+                            timesheet: [],
+                            timesheetStatus: false
+                        })
+                }
                 else {
                     this.setState({
-                        showTimesheet: false
+                        showTimesheet: false,
+                        timesheet: [],
+                        timesheetStatus: false
                     })
                 }
             })
@@ -101,7 +122,34 @@ export default class ViewTimesheet extends MyForm{
             .then(res => {
                 if (res.status === 200) {
                     res.json().then(json => {
-                        this.setState({clocking: json});
+                        if (month < 10 && month > 1)
+                            month = "0" + month
+                        let workTime = new Date()
+                        let workTimeEndOfDay = new Date()
+                        let ok = false
+                        const today = new Date()
+                        json.forEach(clocking => {
+                            const buildFromHour = year + "-" + month + "-" + clocking.day + "T" + clocking.fromHour + ":00Z"
+                            const buildToHour = year + "-" + month + "-" + clocking.day + "T" + clocking.toHour + ":00Z"
+                            const fromHour = new Date(buildFromHour)
+                            const toHour = new Date(buildToHour)
+                            if (fromHour.getDate() === today.getDate()) {
+                                ok = true
+                                workTime = fromHour
+                                workTimeEndOfDay = toHour
+                            }
+                        })
+                        ok ?
+                            this.setState({
+                                clocking: json,
+                                workTime: workTime,
+                                workTimeEndOfDay: workTimeEndOfDay,
+                                status: "endOfDay"
+                            })
+                            :
+                            this.setState({
+                                clocking: json
+                            })
                     });
                 }
                 else
@@ -312,7 +360,7 @@ export default class ViewTimesheet extends MyForm{
             year : this.state.year,
             month: this.state.month
         }
-        if (payload.year === "" || payload.month === "")
+        if (payload.year.toString() === "" || payload.month === "")
             this.setState({
                 timesheet: [],
                 clocking: [],
@@ -325,7 +373,7 @@ export default class ViewTimesheet extends MyForm{
     }
 
     render(){
-        let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours} = this.state.timesheet;
+        let {year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours, status} = this.state.timesheet;
         const clockingLength = this.state.clocking.length;
         return (
             <Container fluid>
@@ -352,51 +400,74 @@ export default class ViewTimesheet extends MyForm{
                                     <Col sm={6} className="mb-3">
                                         <Card className="punch-status">
                                             <Card.Body>
-                                                <h5 className="card-title">Pontaj
-                                                    <span className="text-muted ml-2">
-                                                         {new Date().toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})}
-                                                    </span>
-                                                </h5>
-                                                {this.state.status === "depontat" ?
-                                                    <div className="punch-det text-white bg-dark">
-                                                        <h6>Status: NEPONTAT</h6>
-                                                        <p>Adăugare pontaj manual - pontare pentru o altă zi sau pentru ziua de telemuncă.</p>
-                                                        <p>Pontare - adaugă pontaj pentru ziua în curs.</p>
-                                                    </div>
-                                                    :
-                                                    this.state.status === "pontat" ?
-                                                        <div className="punch-det text-white bg-dark">
-                                                            <h6>Status: PONTAT</h6>
-                                                            <p>{this.state.workTime.toLocaleDateString("ro-RO", {hour: "numeric", minute: "numeric", weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
-                                                        </div>
-                                                        : ""
-                                                }
-                                                <div className="text-center">
-                                                    {this.state.status === "depontat" ?
-                                                        <Button className="my-btn punch-btn" type="button" onClick={this.handlePontaj}>{"Pontare"}</Button>
-                                                        :
-                                                        this.state.status === "pontat" ?
-                                                            <React.Fragment>
-                                                                <Button className="my-btn punch-btn" type="button" onClick={this.handleDepontaj}>{"Depontare"}</Button>
-                                                                <div className="punch-det text-white bg-dark my-3">
-                                                                    <p>Adăugare pontaj manual - pontare pentru o altă zi sau pentru ziua de telemuncă.</p>
+                                                {this.state.timesheetStatus ?
+                                                    <React.Fragment>
+                                                        <h5 className="card-title">Pontaj
+                                                            <span className="text-muted ml-2">
+                                                                {new Date().toLocaleDateString("ro-RO", {year: 'numeric', month: 'long', day: 'numeric'})}
+                                                             </span>
+                                                        </h5>
+                                                        {this.state.status === "depontat" ?
+                                                            <div className="punch-det text-white bg-dark">
+                                                                <h6>Status: NEPONTAT</h6>
+                                                                <p>Adăugare pontaj manual - pontare pentru o altă zi din lună sau pentru ziua de telemuncă.</p>
+                                                                <p>Pontare - adaugă pontaj pentru ziua în curs.</p>
+                                                            </div>
+                                                            :
+                                                            this.state.status === "pontat" ?
+                                                                <div className="punch-det text-white bg-dark">
+                                                                    <h6>Status: PONTAT</h6>
+                                                                    <p>{this.state.workTime.toLocaleDateString("ro-RO", {hour: "numeric", minute: "numeric", weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</p>
                                                                 </div>
-                                                            </React.Fragment>
+                                                                : ""
+                                                        }
+                                                        <div className="text-center">
+                                                            {this.state.status === "depontat" ?
+                                                                <Button className="my-btn punch-btn" type="button" onClick={this.handlePontaj}>{"Pontare"}</Button>
+                                                                :
+                                                                this.state.status === "pontat" ?
+                                                                    <React.Fragment>
+                                                                        <Button className="my-btn punch-btn" type="button" onClick={this.handleDepontaj}>{"Depontare"}</Button>
+                                                                        <div className="punch-det text-white bg-dark my-3">
+                                                                            <p>Adăugare pontaj manual - pontare pentru o altă zi din lună sau pentru ziua de telemuncă.</p>
+                                                                        </div>
+                                                                    </React.Fragment>
+                                                                    : ""
+                                                            }
+                                                        </div>
+                                                        {this.state.status === "endOfDay" ?
+                                                            <div className="punch-det text-white bg-dark text-center">
+                                                                <div><h6 className="font-weight-bold mb-3">-- Sumarul zilei --</h6></div>
+                                                                <p>Pontat:  {format(this.state.workTime, "HH:mm")}</p>
+                                                                <p>Depontat: {format(this.state.workTimeEndOfDay, "HH:mm")}</p>
+                                                                <p>Ore lucrate: {this.state.workTimeEndOfDay.getHours() - this.state.workTime.getHours()}</p>
+                                                            </div>
                                                             : ""
-                                                    }
-                                                </div>
-                                                {this.state.status === "endOfDay" ?
-                                                    <div className="punch-det text-white bg-dark text-center">
-                                                        <div><h6 className="font-weight-bold mb-3">-- Sumarul zilei --</h6></div>
-                                                        <p>Pontat:  {format(this.state.workTime, "HH:mm")}</p>
-                                                        <p>Depontat: {format(this.state.workTimeEndOfDay, "HH:mm")}</p>
-                                                        <p>Ore lucrate: {this.state.workTimeEndOfDay.getHours() - this.state.workTime.getHours()}</p>
-                                                    </div>
-                                                    : ""
+                                                        }
+                                                    </React.Fragment>
+                                                    :
+                                                    <React.Fragment>
+                                                        <h5 className="card-title">Pontaj
+                                                            <span className="text-muted ml-2">
+                                                                {new Date(this.state.year, Number(this.state.month) - 1).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long'})}
+                                                            </span>
+                                                        </h5>
+                                                        {status === "CLOSED" ?
+                                                            <div className="punch-det text-white bg-dark">
+                                                                <h5>Pontajul a fost <strong>CONFIRMAT</strong>.</h5>
+                                                                <p>Nu se mai pot efectua modificări.</p>
+                                                            </div>
+                                                            :
+                                                            <div className="punch-det text-white bg-dark">
+                                                                <h5>Nu se pot efectua modificări pentru luna
+                                                                    selectată.</h5>
+                                                            </div>
+                                                        }
+                                                    </React.Fragment>
                                                 }
                                             </Card.Body>
                                             <div className="card-footer bg-white border-top border-dark text-center">
-                                                <Button className="my-btn" type="button" onClick={this.openModal}>Adaugă pontaj manual</Button>
+                                                <Button className="my-btn" disabled={!this.state.timesheetStatus} type="button" onClick={this.openModal}>Adaugă pontaj manual</Button>
                                             </div>
                                             <Modal backdrop="static" keyboard={false} show={this.state.show} onHide={this.closeModal}>
                                                 <Modal.Header closeButton>
@@ -433,19 +504,19 @@ export default class ViewTimesheet extends MyForm{
                                                 {this.state.showTimesheet ?
                                                     <div className="stats-list">
                                                         <div className="stats-info bg-dark text-white">
-                                                            <span>Ore lucrate <strong>{workedHours} <small>/ {requiredHours} ore</small></strong></span>
-                                                            <ProgressBar now={workedHours / requiredHours * 100}/>
+                                                            <span>Luna curentă <strong>{workedHours + homeOfficeHours + overtimeHours}<small>/ {requiredHours}</small></strong></span>
+                                                            <ProgressBar now={(workedHours + homeOfficeHours + overtimeHours) / requiredHours * 100}/>
+                                                        </div>
+                                                        <div className="stats-info bg-dark text-white">
+                                                            <span>Ore la birou <strong>{workedHours} <small>/ {requiredHours}</small></strong></span>
+                                                            {/*<ProgressBar now={workedHours / requiredHours * 100}/>*/}
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
                                                             <span>Ore telemuncă <strong>{homeOfficeHours} <small>/ {requiredHours}</small></strong></span>
-                                                            <ProgressBar now={homeOfficeHours / requiredHours * 100}/>
+                                                            {/*<ProgressBar now={homeOfficeHours / requiredHours * 100}/>*/}
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
                                                             <span>Ore suplimentare lună curentă <strong>{overtimeHours}</strong></span>
-                                                        </div>
-                                                        <div className="stats-info bg-dark text-white">
-                                                            <span>Luna curentă <strong>{workedHours + homeOfficeHours + overtimeHours} <small>/ {requiredHours}</small></strong></span>
-                                                            <ProgressBar now={(workedHours + homeOfficeHours + overtimeHours) / requiredHours * 100}/>
                                                         </div>
                                                         <div className="stats-info bg-dark text-white">
                                                             <span>Total ore suplimentare <strong>{totalOvertimeHours}</strong></span>

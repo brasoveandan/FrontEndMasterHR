@@ -3,7 +3,7 @@ import {
     FaAddressCard,
     FaBars,
     FaFileInvoiceDollar, FaHistory,
-    FaIdCard, FaInbox,
+    FaIdCard, FaInbox, FaNotesMedical,
     FaPlaneDeparture, FaSignOutAlt,
     FaUserClock, FaUserCog, FaUserPlus
 } from "react-icons/all";
@@ -22,6 +22,7 @@ export default class SidebarButton extends Component {
             case 'Cereri angajați': return <FaInbox className="mr-2"/>;
             case 'Contracte Angajați': return <FaUserCog className="mr-2"/>;
             case 'Pontaje Angajați': return <FaHistory className="mr-2"/>;
+            case 'Concediu medical': return <FaNotesMedical className="mr-2"/>;
             case 'Deconectare': return <FaSignOutAlt className="mr-2"/>;
             default: return <FaBars className="mr-2"/>;
         }
@@ -38,6 +39,7 @@ export default class SidebarButton extends Component {
             case 'Cereri angajați' : this.props.show("cereri_angajati"); break;
             case 'Contracte Angajați':this.props.show("contracte_angajati"); break;
             case 'Pontaje Angajați':this.props.show("pontaje_angajati"); break;
+            case 'Concediu medical':this.props.show("adaugare_concediu_medical"); break;
             case 'Deconectare': this.props.show("logout"); break;
             case '': break;
             default: this.props.show();

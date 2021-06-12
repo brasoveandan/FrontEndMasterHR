@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Card, Col, Container, Form, FormGroup, Modal, Row, Table} from "react-bootstrap";
-import {FaTimes, FaTrash} from "react-icons/all";
+import {FaBan, FaCheck, FaHourglassStart, FaTimes, FaTrash} from "react-icons/all";
 import SearchBox from "../common/SearchBox";
 import * as Joi from "joi-browser";
 import MyForm from "../common/MyForm";
@@ -15,6 +15,7 @@ export default class ViewHoliday extends MyForm{
         this.state = {
             holidays: [],
             holidayDetails: [],
+            requestDetails: [],
             summary:[],
             users: [],
             originalData: [],
@@ -98,12 +99,13 @@ export default class ViewHoliday extends MyForm{
                     this.setState({summary: json});
                 });
             }
-            this.setState({
-                summary: []
-            })
+            else
+                this.setState({
+                    summary: []
+                })
         })
 
-        fetch('http://localhost:8080/employee', {
+        fetch('http://localhost:8080/contract', {
             method: 'GET',
             headers: {
                 'Accept' : 'application/json',
@@ -115,8 +117,15 @@ export default class ViewHoliday extends MyForm{
             if (res.status === 200) {
                 res.json().then(json =>{
                     let arrayUser = []
+                    let yourData = [];
+                    for (const element of json) {
+                        if (element.username === payload.username) {
+                            yourData = element
+                            break
+                        }
+                    }
                     json.forEach(elem => {
-                        if (elem.username !== payload.username)
+                        if (elem.username !== yourData.username && elem.department === yourData.department)
                             arrayUser.push(elem)
                     })
                     this.setState({users: arrayUser});
@@ -130,10 +139,31 @@ export default class ViewHoliday extends MyForm{
     };
 
     openDetailsModal = holiday => {
-        this.setState({
-            holidayDetails: holiday,
-            showDetailsModal: true
+        fetch('http://localhost:8080/getRequest/' + holiday.idRequest, {
+            method: 'GET',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
+            }
         })
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(json =>{
+                        this.setState({
+                            holidayDetails: holiday,
+                            requestDetails: json,
+                            showDetailsModal: true
+                        })
+                    });
+                }
+                else
+                    this.setState({
+                        holidayDetails: holiday,
+                        requestDetails: [],
+                        showDetailsModal: true
+                    })
+            })
     }
 
     openModal = () => {
@@ -189,7 +219,6 @@ export default class ViewHoliday extends MyForm{
             type: this.state.data.type
         }
 
-        console.log(payload)
         fetch('http://localhost:8080/request', {
             method: 'POST',
             headers: {
@@ -218,12 +247,21 @@ export default class ViewHoliday extends MyForm{
                 });
             }
             else
+                if (res.status === 409) {
+                    res.text().then(text =>{
+                        this.setState({
+                            showAlert: true,
+                            message: "Există deja o cerere de concediu pentru datele introduse."
+                        })
+                    });
+                }
+            else
                 this.setState({
                     showAlert: true,
                     message: "A apărut o eroare. Dacă persistă, vă rugăm să ne semnalați eroarea la adresa de email " +
                         "masterhr.contact@gmail.com. Mulțumim!"
                 })
-        }).catch(error => console.log(error))
+        })
     }
 
     handleDeleteRequest = () => {
@@ -309,6 +347,7 @@ export default class ViewHoliday extends MyForm{
     render(){
         const { holidays, pageCount } = this.getPagedData();
         let {daysTaken, daysAvailable, medicalLeave, otherLeave, overtimeLeave} = this.state.summary;
+        let {user, idRequest, fromDate, toDate, numberOfDays, proxyUsername, type, status, reason} = this.state.requestDetails;
         return (
             <Card className="mt-4 mb-4 ml-md-5 ml-xl-0 justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
@@ -324,19 +363,19 @@ export default class ViewHoliday extends MyForm{
                     <Col sm={3}>
                         <div className="stats-info m-2 rounded h-100 bg-dark text-white">
                             <h6>Total Zile Concediu Medical</h6>
-                            {({medicalLeave}>0) ? <h4>{({medicalLeave}>1) ? {medicalLeave} + "zile" : "1 zi"}</h4> : <h4><FaTimes/></h4>}
+                            {(Number(medicalLeave) > 0) ? <h4>{(Number(medicalLeave) > 1) ? medicalLeave + " zile" : "1 zi"}</h4> : <h4><FaTimes/></h4>}
                         </div>
                     </Col>
                     <Col sm={3}>
                         <div className="stats-info m-2 rounded h-100 bg-dark text-white">
                             <h6>Concediu din Ore Suplimentare</h6>
-                            {({overtimeLeave} > 0) ? <h4>{overtimeLeave}</h4> : <h4><FaTimes/></h4>}
+                            {(Number(overtimeLeave) > 0) ? <h4>{(Number(overtimeLeave) > 1) ? overtimeLeave + " ore" : "1 oră"}</h4> : <h4><FaTimes/></h4>}
                         </div>
                     </Col>
                     <Col sm={3}>
                         <div className="stats-info m-2 rounded h-100 bg-dark text-white">
                             <h6>Total Alte Tipuri Concedii</h6>
-                            {({otherLeave} > 0) ? <h4>{({otherLeave}>1) ? {otherLeave} + "zile" : "1 zi"}</h4> : <h4><FaTimes/></h4>}
+                            {(Number(otherLeave) > 0) ? <h4>{(Number(otherLeave) > 1) ? otherLeave + " zile" : "1 zi"}</h4> : <h4><FaTimes/></h4>}
                         </div>
                     </Col>
                 </Row>
@@ -377,7 +416,7 @@ export default class ViewHoliday extends MyForm{
                                 <td onClick={(e) => this.openDetailsModal(holiday, e)} className="text-center">{holiday.proxyUsername ? holiday.proxyUsername : <FaTimes/>}</td>
                                 <td onClick={(e) => this.openDetailsModal(holiday, e)} className="font-weight-bold">{holiday.status}</td>
                                 <td className="text-center">
-                                    <Button type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(holiday, e)}><FaTrash/></Button>
+                                    <Button disabled={holiday.type === "Concediu medical"} type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(holiday, e)}><FaTrash/></Button>
                                 </td>
                             </tr>
                         ))}
@@ -457,15 +496,66 @@ export default class ViewHoliday extends MyForm{
                         <Modal.Title>Detalii cerere de concediu</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Container fluid className="mb-3 mt-3">
-                            <Card>
-                                <Card.Header>
-                                    <Card.Body>
-                                        {this.state.holidayDetails.type}
-                                    </Card.Body>
-                                </Card.Header>
-                            </Card>
-                        </Container>
+                        <Card.Body className="bg-light rounded">
+                            <Row>
+                                <Col sm={12}>
+                                    <h4 className="m-b-10 mb-3 text-center text-dark">Cerere Concediu
+                                        <span className="text-muted ml-2">
+                                            #{idRequest}
+                                        </span>
+                                    </h4>
+                                    <h5 className="m-b-10 mb-3 text-center text-dark">
+                                        Status:
+                                        {status === "RESPINS" ? <FaTimes className="align-middle"/> : ""}
+                                        {status === "ACCEPTAT" ? <FaCheck className="align-middle"/> : ""}
+                                        {status === "IN ASTEPTARE" ? <FaHourglassStart className="align-middle"/> : ""}
+                                    </h5>
+                                    <Table hover className="list-group-flush text-dark">
+                                        <tbody>
+                                        <tr>
+                                            <td><strong>Nume de utilizator: </strong>
+                                                <span className="float-right">{user}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tip: </strong>
+                                                <span className="float-right">{type}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>De la: </strong>
+                                                <span className="float-right">{fromDate}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Până la: </strong>
+                                                <span className="float-right">{toDate}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Număr zile: </strong>
+                                                <span className="float-right">{numberOfDays}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Înlocuitor: </strong>
+                                                <span className="float-right">{proxyUsername}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Motiv: </strong>
+                                                {reason ?
+                                                    <span className="float-right">{reason}</span>
+                                                    :
+                                                    <span className="float-right"><FaBan/></span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </Table>
+                                </Col>
+                            </Row>
+                        </Card.Body>
                     </Modal.Body>
                 </Modal>
                 <Modal backdrop="static" keyboard={false} show={this.state.showDeleteModal} onHide={this.closeModal} centered>

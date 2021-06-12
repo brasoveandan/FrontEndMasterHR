@@ -23,7 +23,17 @@ import PrivateRouteEmployeeHR from "./routes/PrivateRouteEmployeeHR";
 import EmployeeHRDashboard from "./components/EmployeeHR/employeeHRDashboard";
 
 function App() {
-  return (
+    window.onbeforeunload = () => {
+        let usersArray = localStorage.getItem("loggedUsers") ? JSON.parse(localStorage.getItem("loggedUsers")) : []
+        const usernameIndex= usersArray.indexOf(sessionStorage.getItem("username"))
+        if (usernameIndex > -1)
+            usersArray.splice(usernameIndex, 1)
+        if (usersArray.length > 0)
+            localStorage.setItem("loggedUsers", JSON.stringify(usersArray))
+        else localStorage.removeItem("loggedUsers")
+    }
+
+    return (
       <React.Fragment>
             <Switch>
               <Route path="/" exact component={HomePage} />
@@ -39,7 +49,7 @@ function App() {
               <Route path="/not-found" component={NotFoundPage} />
             </Switch>
       </React.Fragment>
-  );
+    );
 }
 
 export default App;

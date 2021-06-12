@@ -31,6 +31,7 @@ export default class SidebarDashboard extends React.Component {
             case "cereri_angajati" : this.props.show("cereri_angajati"); break;
             case "contracte_angajati" : this.props.show("contracte_angajati"); break;
             case "pontaje_angajati" : this.props.show("pontaje_angajati"); break;
+            case "adaugare_concediu_medical" : this.props.show("adaugare_concediu_medical"); break;
             case "logout": this.props.show("logout"); break;
             default: this.props.show();
         }
@@ -151,6 +152,7 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Contracte Angajați" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Pontaje Angajați" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Concediu medical" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
                             </div>

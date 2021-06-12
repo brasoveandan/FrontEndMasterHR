@@ -1,5 +1,5 @@
 import React from "react"
-import {FaLock, FaLockOpen, FaRegCalendarCheck} from "react-icons/all"
+import {FaCheck, FaLock, FaLockOpen, FaRegCalendarCheck, FaTimes} from "react-icons/all"
 import {Button, Card, Col, Form, Modal, Row, Table} from "react-bootstrap"
 import SearchBox from "../../common/SearchBox"
 import {paginate} from "../../utils/pagination";
@@ -18,6 +18,7 @@ export default class ViewAllTimesheet extends React.Component{
             perPage: 10,
             pageCount: 0,
             holidayPerMonth: 0,
+            holidaySummary: [],
 
             timesheetDetails: [],
             year: "",
@@ -34,7 +35,6 @@ export default class ViewAllTimesheet extends React.Component{
 
         this.handlePageClick = this.handlePageClick.bind(this)
         this.handleChange = this.handleChange.bind(this)
-
         this.loadData()
     }
 
@@ -101,6 +101,26 @@ export default class ViewAllTimesheet extends React.Component{
                         holidayPerMonth: 0
                     })
             })
+
+        fetch('http://localhost:8080/summaryHoliday/' + payload.username + "/" + payload.year + "/" + payload.month, {
+            method: 'GET',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-type':'application/json',
+                'Authorization' : 'Bearer ' + sessionStorage.getItem("jwt")
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    res.json().then(json =>{
+                        this.setState({holidaySummary: json});
+                    });
+                }
+                else
+                    this.setState({
+                        holidaySummary: []
+                    })
+            })
     }
 
     openDetailsModal = timesheet => {
@@ -108,6 +128,7 @@ export default class ViewAllTimesheet extends React.Component{
             timesheetDetails: timesheet,
             showDetailsModal: true
         });
+        this.loadHolidayUser(timesheet)
     }
 
     openConfirmModal = timesheet => {
@@ -265,16 +286,19 @@ export default class ViewAllTimesheet extends React.Component{
     render(){
         const {timesheets} = this.getPageData()
         const {yearOptions, monthOptions} = this.state
-        let {usernameEmployee, personalNumber, year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours, status} = this.state.timesheetDetails;
+        let {usernameEmployee, personalNumber, year, month, workedHours, homeOfficeHours, requiredHours, overtimeHours, totalOvertimeHours, status, numberOfHoursContract} = this.state.timesheetDetails;
+        let {daysTaken, medicalLeave, otherLeave, overtimeLeave} = this.state.holidaySummary;
         const date = new Date(year + "-" + month).toLocaleDateString("ro-RO", {year: 'numeric', month: 'long'})
         const totalWorkedHours = homeOfficeHours + workedHours
+        const totalHolidayDays = daysTaken + otherLeave + medicalLeave
+        const workerHoursWithHoliday = totalWorkedHours + overtimeLeave + totalHolidayDays * numberOfHoursContract
         return (
             <Card className="my-md-4 my-2 ml-md-5 ml-xl-0 d-flex justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
                     <h4>Vizualizare Pontaje Angajați</h4>
                 </Card.Header>
                 <Row>
-                   <Col sm={4}>
+                    <Col sm={4}>
                        <Form className="ml-2">
                            <Form.Group>
                                <Form.Label>An</Form.Label>
@@ -289,7 +313,7 @@ export default class ViewAllTimesheet extends React.Component{
                                </Form.Control>
                            </Form.Group>
                        </Form>
-                   </Col>
+                    </Col>
                     <Col sm={4}>
                         <Form.Group>
                             <Form.Label>Lună</Form.Label>
@@ -407,6 +431,7 @@ export default class ViewAllTimesheet extends React.Component{
                                     <h5 className="m-b-10 mb-3 text-center text-dark">
                                         Status: {status === "CLOSED" ? <FaLock/> : <FaLockOpen/>}
                                     </h5>
+                                    <h5 className=" m-b-10 mb-3"><strong>Informații angajat</strong></h5>
                                     <Table hover className="list-group-flush text-dark">
                                         <tbody>
                                         <tr>
@@ -419,6 +444,15 @@ export default class ViewAllTimesheet extends React.Component{
                                                 <span className="float-right">{personalNumber}</span>
                                             </td>
                                         </tr>
+                                        </tbody>
+                                    </Table>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col sm={12}>
+                                    <h5 className=" m-b-10 mb-3"><strong>Statistici ore</strong></h5>
+                                    <Table hover className="list-group-flush text-dark">
+                                        <tbody>
                                         <tr>
                                             <td><strong>Ore lucrate: </strong>
                                                 <span className="float-right">{workedHours}</span>
@@ -430,18 +464,47 @@ export default class ViewAllTimesheet extends React.Component{
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td><strong>Total ore lucrate: </strong>
+                                                <span className="float-right">{workedHours + homeOfficeHours}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Ore suplimentare: </strong>
+                                                <span className="float-right">{overtimeHours + totalOvertimeHours}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td><strong>Ore necesare: </strong>
                                                 <span className="float-right">{requiredHours}</span>
                                             </td>
                                         </tr>
+                                        </tbody>
+                                    </Table>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col sm={12}>
+                                    <h5 className=" m-b-10 mb-3"><strong>Statistici concedii</strong></h5>
+                                    <Table hover className="list-group-flush text-dark">
+                                        <tbody>
                                         <tr>
-                                            <td><strong>Ore suplimentare luna curentă: </strong>
-                                                <span className="float-right">{overtimeHours}</span>
+                                            <td><strong>Număr zile concediu normal: </strong>
+                                                <span className="float-right">{daysTaken}</span>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Ore suplimentare anterioare: </strong>
-                                                <span className="float-right">{totalOvertimeHours}</span>
+                                            <td><strong>Concediu din ore suplimentare: </strong>
+                                                <span className="float-right">{overtimeLeave} ore</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Număr zile concediu medical: </strong>
+                                                <span className="float-right">{medicalLeave}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Alte tipuri de concedii: </strong>
+                                                <span className="float-right">{otherLeave}</span>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -460,15 +523,12 @@ export default class ViewAllTimesheet extends React.Component{
                     <Modal.Body>
                         {this.state.holidayPerMonth <= 0 ?
                             <React.Fragment>
+                                <h5 className="text-center"><strong>{date}</strong></h5>
                                 <Row>
                                     <Col sm={12}>
+                                        <h5 className=" m-b-10 mb-3"><strong>Statistici ore</strong></h5>
                                         <Table hover className="list-group-item-dark">
                                             <tbody>
-                                            <tr>
-                                                <td>Luna:
-                                                    <strong><span className="float-right">{date}</span></strong>
-                                                </td>
-                                            </tr>
                                             <tr>
                                                 <td>Ore lucrate:
                                                     <strong><span className="float-right">{workedHours}</span></strong>
@@ -480,20 +540,68 @@ export default class ViewAllTimesheet extends React.Component{
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>Total ore lucrate:
-                                                    <strong><span className={totalWorkedHours >= requiredHours ? "float-right text-success" : "float-right text-danger"}>{totalWorkedHours}</span></strong>
+                                                <td>Ore suplimentare:
+                                                    <strong><span className="float-right">{overtimeHours + totalOvertimeHours}</span></strong>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>Ore necesare:
-                                                    <strong><span className="float-right">{requiredHours}</span></strong>
+                                                <td>Total ore lucrate:
+                                                    <strong><span className="float-right">{totalWorkedHours}</span></strong>
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </Table>
                                     </Col>
                                 </Row>
-                                {totalWorkedHours >= requiredHours ?
+                                <Row>
+                                    <Col sm={12}>
+                                        <h5 className=" m-b-10 mb-3"><strong>Statistici concedii</strong></h5>
+                                        <Table hover className="list-group-item-dark">
+                                            <tbody>
+                                            <tr>
+                                                <td>Număr zile concediu anual:
+                                                    <strong><span className="float-right">{daysTaken}</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Număr zile concediu medical:
+                                                    <strong><span className="float-right">{medicalLeave}</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Concediu din ore suplimentare:
+                                                    <strong><span className="float-right">{overtimeLeave} ore</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Alte tipuri de concedii:
+                                                    <strong><span className="float-right">{otherLeave}</span></strong>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </Table>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={12}>
+                                        <h5 className=" m-b-10 mb-3 text-center"><strong>Sumar</strong></h5>
+                                        <Table>
+                                            <tbody>
+                                            <tr>
+                                                <td className={workerHoursWithHoliday >= requiredHours ? "text-center text-success" : "text-center text-danger"}><strong>Total ore: </strong>
+                                                    <span>{workerHoursWithHoliday}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="text-center"><strong>Ore necesare: </strong>
+                                                    <span>{requiredHours}</span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </Table>
+                                    </Col>
+                                </Row>
+                                {workerHoursWithHoliday >= requiredHours ?
                                     "" :
                                     <div>
                                         <strong><span className="text-danger">Angajatul nu a îndeplinit numărul de ore necesare.</span></strong>

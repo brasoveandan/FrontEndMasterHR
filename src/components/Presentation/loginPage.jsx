@@ -39,6 +39,16 @@ export default class LoginPage extends React.Component {
         })
         .then(res => {
             if (res.status === 200) {
+                let usersArray = localStorage.getItem("loggedUsers") ? JSON.parse(localStorage.getItem("loggedUsers")) : []
+                if (usersArray.indexOf(payload.username) > -1) {
+                    this.setState({
+                        showAlert: true,
+                        message: "Utilizatorul este deja autentificat!"
+                    })
+                    return
+                }
+                usersArray.push(payload.username)
+                localStorage.setItem("loggedUsers", JSON.stringify(usersArray))
                 sessionStorage.setItem('username', this.state.username)
                 res.json().then(json =>{
                     const { adminRole, name, jwt } = json

@@ -1,13 +1,13 @@
 import React from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import {withRouter} from "react-router-dom";
-import GroupLeaderLandingPage from "./groupLeaderLandingPage";
 import ViewContract from "../viewContract";
 import SidebarDashboard from "../../common/sidebarDashboard";
 import ViewPayslip from "../viewPayslip";
 import ViewTimesheet from "../viewTimesheet";
 import ViewHoliday from "../viewHoliday";
 import ViewAllRequests from "./viewAllRequests";
+import {LandingPage} from "../landingPage";
 
 class GroupLeaderDashboard extends React.Component {
 
@@ -23,7 +23,7 @@ class GroupLeaderDashboard extends React.Component {
             case "vizualizare_pontaj": this.state = ({render : <ViewTimesheet/>});break;
             case "vizualizare_concedii" : this.state = ({render: <ViewHoliday/>});break;
             case "cereri_angajati" : this.state = ({render: <ViewAllRequests/>});break;
-            default: this.state = {render: <GroupLeaderLandingPage/>};
+            default: this.state = {render: <LandingPage/>};
         }
     }
 
@@ -35,11 +35,18 @@ class GroupLeaderDashboard extends React.Component {
             case "vizualizare_concedii" : this.setState({render: <ViewHoliday/>}); sessionStorage.setItem("page", "vizualizare_concedii");break;
             case "cereri_angajati" : this.setState({render: <ViewAllRequests/>}); sessionStorage.setItem("page", "cereri_angajati"); break;
             case "logout": this.logout(); break;
-            default: this.setState({render: <GroupLeaderLandingPage/>})
+            default: this.setState({render: <LandingPage/>})
         }
     }
 
     logout(){
+        let usersArray = localStorage.getItem("loggedUsers") ? JSON.parse(localStorage.getItem("loggedUsers")) : []
+        const usernameIndex= usersArray.indexOf(sessionStorage.getItem("username"))
+        if (usernameIndex > -1)
+            usersArray.splice(usernameIndex, 1)
+        if (usersArray.length > 0)
+            localStorage.setItem("loggedUsers", JSON.stringify(usersArray))
+        else localStorage.removeItem("loggedUsers")
         sessionStorage.clear();
         this.props.history.replace('/login');
     }

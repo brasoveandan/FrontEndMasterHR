@@ -76,6 +76,18 @@ export default class ViewPayslip extends React.Component{
         let {year, month, idPayslip, firstName, lastName, companyName, personalNumber, department, position, baseSalary, currency,
             grossSalary, overtimeIncreases, increases, ticketsValue, workedHours, homeOfficeHours, requiredHours, overtimeHours,
             cas, cass, iv, taxExempt, netSalary} = payslip;
+        let totalIncome = (grossSalary + ticketsValue + overtimeIncreases + increases)
+        let totalTaxes = (cas + cass + iv)
+        baseSalary = baseSalary.toFixed(2)
+        grossSalary = grossSalary.toFixed(2)
+        overtimeIncreases = overtimeIncreases.toFixed(2)
+        ticketsValue = ticketsValue.toFixed(2)
+        cas = cas.toFixed(2)
+        cass = cass.toFixed(2)
+        iv = iv.toFixed(2)
+        netSalary = netSalary.toFixed(2)
+        totalIncome = totalIncome.toFixed(2)
+        totalTaxes = totalTaxes.toFixed(2)
         return (
             <Col xs={12} md={10} className="ml-md-5 pr-xl-5 pt-xl-5 mr-xl-5 d-flex justify-content-center">
                 <Card className="text-left mb-4 ml-xl-0" style={{opacity: ".85"}} >
@@ -131,7 +143,7 @@ export default class ViewPayslip extends React.Component{
                                         </tr>
                                         <tr>
                                             <td><strong>Total Venituri</strong>
-                                                <span className="float-right"><strong>{grossSalary + ticketsValue + overtimeIncreases + increases} {currency}</strong></span>
+                                                <span className="float-right"><strong>{totalIncome} {currency}</strong></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -191,7 +203,7 @@ export default class ViewPayslip extends React.Component{
                                     </tr>
                                     <tr>
                                         <td><strong>Total Taxe</strong>
-                                            <span className="float-right"><strong>{cas + cass + iv} {currency}</strong></span>
+                                            <span className="float-right"><strong>{totalTaxes} {currency}</strong></span>
                                         </td>
                                     </tr>
                                     </tbody>

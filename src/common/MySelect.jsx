@@ -2,7 +2,7 @@ import {FormGroup, FormLabel} from "react-bootstrap";
 
 export const currencyOptions = ["RON", "EURO", "USD"];
 export const contractTypeOptions = ["Norma 8 ore / zi", "Norma 6 ore / zi", "Norma 4 ore / zi"];
-export const departmentOptions = ["Resurse Umane", "Controlling", "Productie", "IT"]
+export const departmentOptions = ["Resurse Umane", "Vanzari", "Productie", "IT", "Logistica", "Financiar", "Marketing", "Cercetare si Dezvoltare"]
 export const positionOptions = ["Head of Department", "Group Leader", "Employee", "Student"]
 export const taxExemptOptions = ["Da", "Nu"]
 export const clockingOptions = ["Telemuncă", "Normal"]
