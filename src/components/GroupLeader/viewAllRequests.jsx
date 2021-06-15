@@ -44,12 +44,24 @@ export default class ViewAllRequests extends React.Component {
         .then(res => {
             if (res.status === 200) {
                 res.json().then(json =>{
-                    const data = json;
+                    let array = []
+                    let yourData = [];
+                    for (const element of json) {
+                        if (element.user === sessionStorage.getItem("username")) {
+                            yourData = element
+                            break
+                        }
+                    }
+                    json.forEach(elem => {
+                        if (elem.user !== yourData.user)
+                            array.push(elem)
+                    })
+                    const data = array;
                     let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
 
                     this.setState({
                         pageCount: Math.ceil(data.length / this.state.perPage),
-                        originalData: json,
+                        originalData: array,
                         requests: slice
                     })
                 });

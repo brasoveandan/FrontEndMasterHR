@@ -79,12 +79,24 @@ export default class ViewAllContracts extends MyForm{
         .then(res => {
             if (res.status === 200) {
                 res.json().then(json =>{
-                    const data = json;
+                    let array = []
+                    let yourData = [];
+                    for (const element of json) {
+                        if (element.username === sessionStorage.getItem("username")) {
+                            yourData = element
+                            break
+                        }
+                    }
+                    json.forEach(elem => {
+                        if (elem.username !== yourData.username)
+                            array.push(elem)
+                    })
+                    const data = array;
                     let slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
 
                     this.setState({
                         pageCount: Math.ceil(data.length / this.state.perPage),
-                        originalData: json,
+                        originalData: array,
                         contracts: slice
                     })
                 });
@@ -415,6 +427,7 @@ export default class ViewAllContracts extends MyForm{
                                 <td onClick={(e) => this.openDetailsModal(account, e)}>
                                     {(this.state.currentPage - 1) * this.state.perPage + index + 1}
                                 </td>
+                                {console.log(account.username === sessionStorage.getItem("username"))}
                                 <td onClick={(e) => this.openDetailsModal(account, e)}>{account.username}</td>
                                 <td onClick={(e) => this.openDetailsModal(account, e)}>{account.lastName} {account.firstName}</td>
                                 <td onClick={(e) => this.openDetailsModal(account, e)}>{account.personalNumber}</td>

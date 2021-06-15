@@ -1,8 +1,4 @@
 
-^
-.src/components/EmployeeHR/viewAllContracts.jsx,d\4\d4b033b0c3cbaf66daa61fb37cbfa2db942aa614
-^
-.src/components/GroupLeader/viewAllRequests.jsx,8\0\806705642a3e64c120675e02252fedb4664fdbc5
 G
 src/common/MySelect.jsx,f\b\fbdd84289e9b5cc90b3739845f05f0bf38cabc51
 U
@@ -35,8 +31,6 @@ a
 1src/components/EmployeeHR/employeeHRDashboard.jsx,4\f\4f3b476b797a35273a95aa33dde59762aa3a03c4
 S
 #src/components/Admin/addAccount.jsx,e\3\e3a8d6c080b5eaea473b09e647271ae09189c342
-^
-.src/components/EmployeeHR/viewAllTimesheet.jsx,5\b\5bdf07af8c16b15f38eec24c9221d62a139974ca
 <
 package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
 E
