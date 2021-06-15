@@ -20,8 +20,8 @@ export default class SidebarButton extends Component {
             case 'Vizualizare conturi': return <FaAddressCard className="mr-2"/>;
             case 'Adaugă cont': return <FaUserPlus className="mr-2"/>;
             case 'Cereri angajați': return <FaInbox className="mr-2"/>;
-            case 'Contracte Angajați': return <FaUserCog className="mr-2"/>;
-            case 'Pontaje Angajați': return <FaHistory className="mr-2"/>;
+            case 'Contracte angajați': return <FaUserCog className="mr-2"/>;
+            case 'Pontaje angajați': return <FaHistory className="mr-2"/>;
             case 'Concediu medical': return <FaNotesMedical className="mr-2"/>;
             case 'Deconectare': return <FaSignOutAlt className="mr-2"/>;
             default: return <FaBars className="mr-2"/>;
@@ -37,8 +37,8 @@ export default class SidebarButton extends Component {
             case 'Vizualizare conturi':this.props.show("vizualizare_conturi"); break;
             case 'Adaugă cont':this.props.show("adauga_cont"); break;
             case 'Cereri angajați' : this.props.show("cereri_angajati"); break;
-            case 'Contracte Angajați':this.props.show("contracte_angajati"); break;
-            case 'Pontaje Angajați':this.props.show("pontaje_angajati"); break;
+            case 'Contracte angajați':this.props.show("contracte_angajati"); break;
+            case 'Pontaje angajați':this.props.show("pontaje_angajati"); break;
             case 'Concediu medical':this.props.show("adaugare_concediu_medical"); break;
             case 'Deconectare': this.props.show("logout"); break;
             case '': break;

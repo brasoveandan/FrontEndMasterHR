@@ -41,10 +41,6 @@ N
 src/components/viewHoliday.jsx,7\0\7074e330fc3f9f455173214244efa9a582868cb6
 ^
 .src/components/EmployeeHR/viewAllTimesheet.jsx,5\b\5bdf07af8c16b15f38eec24c9221d62a139974ca
-O
-src/common/sidebarDashboard.jsx,5\6\56247deb7cc4d933bf55da362f3b0edebc657d1e
-L
-src/common/sidebarButton.jsx,3\4\344382b0edec200a4fa94f83df087499e17b924f
 <
 package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
 E
@@ -62,3 +58,7 @@ F
 src/App.js,1\e\1e43fa63aecd2127be034b3fb9d4caa172275714
 P
  src/components/viewTimesheet.jsx,2\1\216815b2559a3f70ec9a1d4a668efaf0ae428004
+L
+src/common/sidebarButton.jsx,3\4\344382b0edec200a4fa94f83df087499e17b924f
+O
+src/common/sidebarDashboard.jsx,5\6\56247deb7cc4d933bf55da362f3b0edebc657d1e

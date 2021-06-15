@@ -150,8 +150,8 @@ export default class SidebarDashboard extends React.Component {
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Fluturaș salariu" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare pontaj" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Vizualizare concedii" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Contracte Angajați" show = {this.show}/>
-                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Pontaje Angajați" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Contracte angajați" show = {this.show}/>
+                            <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Pontaje angajați" show = {this.show}/>
                             <SidebarButton isCollapsed={this.state.isCollapsed} btnText="Concediu medical" show = {this.show}/>
                             <div className="sidebar-footer">
                                 <SidebarButton className="list-group-item collapsed" isCollapsed={this.state.isCollapsed} btnText="Deconectare" show = {this.show}/>
