@@ -53,6 +53,18 @@ export default class ViewTimesheet extends MyForm{
         this.loadData(this.state.year, this.state.month)
     }
 
+    addHours= (hours, date) =>{
+        const newDate = new Date(date)
+        newDate.setHours(newDate.getHours() + hours)
+        return newDate
+    }
+
+    deleteHours= (hours, date) =>{
+        const newDate = new Date(date)
+        newDate.setHours(newDate.getHours() - hours)
+        return newDate
+    }
+
     schema = {
         type: Joi.string().required().error(() => {return {message: "Trebuie selectat tipul pontării."}}),
         fromHour: Joi.date().iso().required().error(() => {return {message: "Ora de început este obligatorie."}}),
@@ -79,7 +91,7 @@ export default class ViewTimesheet extends MyForm{
                 if (res.status === 200) {
                     res.json().then(json =>{
                         let timesheetStatus
-                        timesheetStatus = json.status === "OPENED" || json.month === new Date().getMonth() + 1;
+                        timesheetStatus = json.status === "OPENED" && json.month === new Date().getMonth() + 1;
                         this.setState({
                             showTimesheet: true,
                             timesheet: json,
@@ -133,10 +145,10 @@ export default class ViewTimesheet extends MyForm{
                             const buildToHour = year + "-" + month + "-" + clocking.day + "T" + clocking.toHour + ":00Z"
                             const fromHour = new Date(buildFromHour)
                             const toHour = new Date(buildToHour)
-                            if (fromHour.getDate() === today.getDate()) {
+                            if (fromHour.getDate() === today.getDate() && fromHour.toString() !== toHour.toString()) {
                                 ok = true
-                                workTime = fromHour
-                                workTimeEndOfDay = toHour
+                                workTime = this.deleteHours(3, fromHour)
+                                workTimeEndOfDay = this.deleteHours(3, toHour)
                             }
                         })
                         ok ?
@@ -188,12 +200,6 @@ export default class ViewTimesheet extends MyForm{
         })
     }
 
-    addHours= (hours, date) =>{
-        const newDate = new Date(date)
-        newDate.setHours(newDate.getHours() + hours)
-        return newDate
-    }
-
     handlePontaj = () => {
         const payload = {
             usernameEmployee: sessionStorage.getItem("username"),
@@ -223,7 +229,7 @@ export default class ViewTimesheet extends MyForm{
                     message: "Te-ai pontat la ora " + format(payload.fromHour, "HH:mm")
                 })
                 let {dict, year, month} = this.state
-                dict[payload.usernameEmployee] = {status: "pontat", workTime: this.addHours(3, payload.fromHour), workTimeEndOfDay: ""}
+                dict[payload.usernameEmployee] = {status: "pontat", workTime: payload.fromHour, workTimeEndOfDay: ""}
                 localStorage.setItem("clockingDict", JSON.stringify(dict))
                 this.loadData(year, month)
             }
@@ -254,11 +260,6 @@ export default class ViewTimesheet extends MyForm{
             fromHour:  this.state.workTime,
             toHour: new Date(),
         }
-        console.log(JSON.stringify({
-            usernameEmployee: payload.usernameEmployee,
-            fromHour:  payload.fromHour,
-            toHour: this.addHours(3, payload.toHour),
-        }))
         fetch('http://localhost:8080/clocking', {
             method: 'PUT',
             headers: {

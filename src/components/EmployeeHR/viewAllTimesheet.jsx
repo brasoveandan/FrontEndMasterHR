@@ -1,5 +1,5 @@
 import React from "react"
-import {FaCheck, FaLock, FaLockOpen, FaRegCalendarCheck, FaTimes} from "react-icons/all"
+import {FaLock, FaLockOpen, FaRegCalendarCheck} from "react-icons/all"
 import {Button, Card, Col, Form, Modal, Row, Table} from "react-bootstrap"
 import SearchBox from "../../common/SearchBox"
 import {paginate} from "../../utils/pagination";
