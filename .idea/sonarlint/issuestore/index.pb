@@ -35,10 +35,6 @@ a
 1src/components/EmployeeHR/employeeHRDashboard.jsx,4\f\4f3b476b797a35273a95aa33dde59762aa3a03c4
 S
 #src/components/Admin/addAccount.jsx,e\3\e3a8d6c080b5eaea473b09e647271ae09189c342
-]
--src/components/EmployeeHR/addMedicalLeave.jsx,7\f\7fda00b2a91011a28c5c2b4ede4fab80496daaf7
-N
-src/components/viewHoliday.jsx,7\0\7074e330fc3f9f455173214244efa9a582868cb6
 ^
 .src/components/EmployeeHR/viewAllTimesheet.jsx,5\b\5bdf07af8c16b15f38eec24c9221d62a139974ca
 <
@@ -62,3 +58,5 @@ L
 src/common/sidebarButton.jsx,3\4\344382b0edec200a4fa94f83df087499e17b924f
 O
 src/common/sidebarDashboard.jsx,5\6\56247deb7cc4d933bf55da362f3b0edebc657d1e
+]
+-src/components/EmployeeHR/addMedicalLeave.jsx,7\f\7fda00b2a91011a28c5c2b4ede4fab80496daaf7

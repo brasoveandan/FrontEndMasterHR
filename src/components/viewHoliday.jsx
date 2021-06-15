@@ -213,7 +213,7 @@ export default class ViewHoliday extends MyForm{
             status : "PENDING",
             submittedDate : new Date(),
             proxyUsername : this.state.proxyUsername,
-            reason: this.state.data.reason,
+            description: this.state.data.reason,
             fromDate: this.state.data.fromDate,
             toDate: this.state.data.toDate,
             type: this.state.data.type
@@ -539,7 +539,11 @@ export default class ViewHoliday extends MyForm{
                                         </tr>
                                         <tr>
                                             <td><strong>Înlocuitor: </strong>
-                                                <span className="float-right">{proxyUsername}</span>
+                                                {proxyUsername ?
+                                                    <span className="float-right">{proxyUsername}</span>
+                                                    :
+                                                    <span className="float-right"><FaBan/></span>
+                                                }
                                             </td>
                                         </tr>
                                         <tr>
