@@ -134,13 +134,15 @@ export default class ViewTimesheet extends MyForm{
             .then(res => {
                 if (res.status === 200) {
                     res.json().then(json => {
-                        if (month < 10 && month > 1)
+                        if (month < 10 && month >= 1)
                             month = "0" + month
                         let workTime = new Date()
                         let workTimeEndOfDay = new Date()
                         let ok = false
                         const today = new Date()
                         json.forEach(clocking => {
+                            if (clocking.day < 10 && clocking.day >= 1)
+                                clocking.day = "0" + clocking.day
                             const buildFromHour = year + "-" + month + "-" + clocking.day + "T" + clocking.fromHour + ":00Z"
                             const buildToHour = year + "-" + month + "-" + clocking.day + "T" + clocking.toHour + ":00Z"
                             const fromHour = new Date(buildFromHour)

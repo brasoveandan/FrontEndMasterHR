@@ -348,6 +348,7 @@ export default class ViewHoliday extends MyForm{
         const { holidays, pageCount } = this.getPagedData();
         let {daysTaken, daysAvailable, medicalLeave, otherLeave, overtimeLeave} = this.state.summary;
         let {user, idRequest, fromDate, toDate, numberOfDays, proxyUsername, type, status, reason} = this.state.requestDetails;
+        const today = new Date();
         return (
             <Card className="mt-4 mb-4 ml-md-5 ml-xl-0 justify-content-center" style={{opacity: ".85"}}>
                 <Card.Header className="my-label bg-dark text-center text-monospace">
@@ -416,7 +417,7 @@ export default class ViewHoliday extends MyForm{
                                 <td onClick={(e) => this.openDetailsModal(holiday, e)} className="text-center">{holiday.proxyUsername ? holiday.proxyUsername : <FaTimes/>}</td>
                                 <td onClick={(e) => this.openDetailsModal(holiday, e)} className="font-weight-bold">{holiday.status}</td>
                                 <td className="text-center">
-                                    <Button disabled={holiday.type === "Concediu medical"} type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(holiday, e)}><FaTrash/></Button>
+                                    <Button disabled={holiday.type === "Concediu medical" || new Date(holiday.toDate).getMonth() != today.getMonth()} type="button" size={"sm"} className="my-btn-table mr-2 btn-outline-dark" title="Șterge" onClick={(e) => this.openDeleteModal(holiday, e)}><FaTrash/></Button>
                                 </td>
                             </tr>
                         ))}
